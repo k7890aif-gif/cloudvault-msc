@@ -3,60 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudVault — Multi-Tenant Cloud Storage & Asset Platform</title>
+  <title>CloudVault • Colourful 5-Pillar Cloud Workspace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-base: #050811;
-      --bg-card: rgba(15, 23, 42, 0.62);
-      --bg-elevated: rgba(30, 41, 59, 0.55);
-      --border: rgba(148, 163, 184, 0.14);
-      --border-hover: rgba(56, 189, 248, 0.45);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-indigo: #818cf8;
-      --success: #10b981;
-      --danger: #f43f5e;
-      --radius-lg: 20px;
-      --radius-md: 12px;
+      --bg-dark: #070913;
+      --card-bg: rgba(15, 20, 38, 0.78);
+      --card-elevated: rgba(24, 32, 58, 0.85);
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+
+      --c-cyan: #22d3ee;
+      --c-emerald: #34d399;
+      --c-amber: #fbbf24;
+      --c-violet: #a78bfa;
+      --c-rose: #fb7185;
+      --c-blue: #60a5fa;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-base);
+      background-color: var(--bg-dark);
       background-image:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.16), transparent),
-        radial-gradient(ellipse 60% 45% at 85% 20%, rgba(129, 140, 248, 0.12), transparent);
-      color: var(--text-main);
+        radial-gradient(circle at 12% 12%, rgba(34, 211, 238, 0.14), transparent 36%),
+        radial-gradient(circle at 88% 14%, rgba(167, 139, 250, 0.15), transparent 38%),
+        radial-gradient(circle at 50% 88%, rgba(52, 211, 153, 0.10), transparent 42%);
+      color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
     }
 
-    /* Top Glass Navbar */
-    .navbar {
+    /* Header */
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(5, 8, 17, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      z-index: 40;
+      background: rgba(7, 9, 19, 0.78);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    .nav-inner {
-      max-width: 1180px;
+    .topbar-inner {
+      max-width: 1220px;
       margin: 0 auto;
-      padding: 0.9rem 1.5rem;
+      padding: 0.95rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: 1rem;
     }
 
@@ -66,209 +66,218 @@
       gap: 0.85rem;
     }
 
-    .logo-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #22d3ee 0%, #818cf8 50%, #f472b6 100%);
       display: grid;
       place-items: center;
-      box-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
-      color: #050811;
+      color: #070913;
+      box-shadow: 0 0 26px rgba(129, 140, 248, 0.35);
     }
 
-    .brand-text h1 {
-      font-size: 1.2rem;
+    .brand h1 {
+      font-size: 1.25rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
-      background: linear-gradient(to right, #fff, #cbd5e1);
+      letter-spacing: -0.025em;
+      background: linear-gradient(90deg, #67e8f9, #c4b5fd, #f9a8d4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .brand-text span {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      font-weight: 500;
+    .brand span {
       display: block;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
     }
 
-    .telemetry-badge {
+    .live-pill {
       display: inline-flex;
       align-items: center;
       gap: 0.55rem;
       padding: 0.45rem 0.95rem;
       border-radius: 999px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.32);
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.76rem;
-      color: #cbd5e1;
+      color: #a7f3d0;
     }
 
-    .pulse-dot {
+    .live-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 10px var(--success);
-      animation: pulse 2s infinite;
+      background: var(--c-emerald);
+      box-shadow: 0 0 10px var(--c-emerald);
+      animation: blink 2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.55; transform: scale(1.2); }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
-    /* Main Container */
-    .wrapper {
-      max-width: 1180px;
+    .container {
+      max-width: 1220px;
       margin: 0 auto;
-      padding: 2rem 1.5rem 3.5rem;
+      padding: 1.85rem 1.5rem 3.5rem;
     }
 
-    /* Bento 5-Pillar Strip */
-    .pillars-bento {
+    /* Colourful 5-Pillar Grid */
+    .pillars-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 0.85rem;
-      margin-bottom: 2rem;
+      gap: 0.95rem;
+      margin-bottom: 1.85rem;
     }
 
-    @media (max-width: 960px) { .pillars-bento { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 520px) { .pillars-bento { grid-template-columns: 1fr; } }
+    @media (max-width: 1020px) { .pillars-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .pillars-grid { grid-template-columns: 1fr; } }
 
-    .pillar {
-      background: var(--bg-card);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1rem 1.1rem;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+    .pillar-card {
+      position: relative;
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.05rem 1.15rem;
+      overflow: hidden;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
     }
 
-    .pillar:hover {
-      transform: translateY(-2px);
-      border-color: var(--border-hover);
+    .pillar-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-line);
     }
 
-    .pillar-top {
+    .pillar-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.65);
+    }
+
+    .p-compute { --accent-line: linear-gradient(90deg, #22d3ee, #3b82f6); --tag-bg: rgba(34, 211, 238, 0.14); --tag-fg: #67e8f9; }
+    .p-storage { --accent-line: linear-gradient(90deg, #34d399, #10b981); --tag-bg: rgba(52, 211, 153, 0.14); --tag-fg: #6ee7b7; }
+    .p-database { --accent-line: linear-gradient(90deg, #fbbf24, #f97316); --tag-bg: rgba(251, 191, 36, 0.14); --tag-fg: #fde68a; }
+    .p-network { --accent-line: linear-gradient(90deg, #a78bfa, #ec4899); --tag-bg: rgba(167, 139, 250, 0.14); --tag-fg: #ddd6fe; }
+    .p-security { --accent-line: linear-gradient(90deg, #fb7185, #f43f5e); --tag-bg: rgba(251, 113, 133, 0.14); --tag-fg: #fecdd3; }
+
+    .pillar-card:hover { border-color: var(--tag-fg); }
+
+    .pillar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.55rem;
     }
 
-    .pillar-tag {
+    .pillar-badge {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.68rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--accent);
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: var(--tag-bg);
+      color: var(--tag-fg);
     }
 
-    .pillar h3 {
-      font-size: 0.94rem;
+    .pillar-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+    }
+
+    .pillar-card h3 {
+      font-size: 0.98rem;
       font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.25rem;
     }
 
-    .pillar p {
-      font-size: 0.77rem;
-      color: var(--text-muted);
-      line-height: 1.4;
+    .pillar-card p {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
     }
 
-    /* Toast Notification */
+    /* Toast */
     .toast {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
       padding: 0.85rem 1.15rem;
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       font-size: 0.86rem;
       font-weight: 500;
       margin-bottom: 1.5rem;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      color: #e0f2fe;
-      animation: slideDown 0.25s ease;
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      color: #cffafe;
     }
 
     .toast.error {
-      background: rgba(244, 63, 94, 0.12);
-      border-color: rgba(244, 63, 94, 0.4);
+      background: rgba(251, 113, 133, 0.14);
+      border-color: rgba(251, 113, 133, 0.42);
       color: #ffe4e6;
     }
 
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Auth Card (Centered Modern Modal Style) */
-    .auth-wrapper {
-      max-width: 460px;
-      margin: 2.5rem auto;
-      background: var(--bg-card);
+    /* Auth Card */
+    .auth-box {
+      max-width: 450px;
+      margin: 2rem auto;
+      background: var(--card-bg);
       backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 2.25rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+      border: 1px solid var(--border-subtle);
+      border-radius: 22px;
+      padding: 2.2rem;
+      box-shadow: 0 24px 55px -15px rgba(0, 0, 0, 0.7);
     }
 
-    .auth-header {
-      text-align: center;
-      margin-bottom: 1.75rem;
-    }
-
-    .auth-header h2 {
+    .auth-box h2 {
       font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.35rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.3rem;
     }
 
-    .auth-header p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .auth-box .sub {
+      text-align: center;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.6rem;
     }
 
-    .field { margin-bottom: 1.1rem; }
+    .input-group { margin-bottom: 1.05rem; }
 
-    .field label {
+    .input-group label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       color: #cbd5e1;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.38rem;
     }
 
-    .field input {
+    .input-group input {
       width: 100%;
-      padding: 0.75rem 0.95rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      background: rgba(5, 8, 17, 0.75);
-      color: var(--text-main);
-      font-size: 0.92rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      padding: 0.72rem 0.92rem;
+      border-radius: 11px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(7, 9, 19, 0.8);
+      color: var(--text-primary);
+      font-size: 0.9rem;
     }
 
-    .field input:focus {
+    .input-group input:focus {
       outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+      border-color: var(--c-cyan);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.16);
     }
 
-    .auth-actions {
+    .auth-btns {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
-      margin-top: 1.5rem;
+      margin-top: 1.4rem;
     }
 
     /* Buttons */
@@ -277,178 +286,123 @@
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
-      padding: 0.72rem 1.2rem;
-      border-radius: var(--radius-md);
+      padding: 0.7rem 1.15rem;
+      border-radius: 11px;
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.87rem;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
       transition: all 0.18s ease;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #38bdf8, #3b82f6);
-      color: #050811;
-      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.28);
+    .btn-gradient {
+      background: linear-gradient(135deg, #22d3ee, #818cf8);
+      color: #070913;
+      box-shadow: 0 6px 20px rgba(34, 211, 238, 0.25);
     }
 
-    .btn-primary:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
+    .btn-gradient:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .btn-gradient:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      background: var(--card-elevated);
+      border-color: var(--border-subtle);
+      color: var(--text-primary);
     }
 
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-secondary:hover { border-color: var(--c-violet); color: #ddd6fe; }
 
-    .btn-ghost {
-      background: var(--bg-elevated);
-      border-color: var(--border);
-      color: var(--text-main);
-    }
+    .btn-sm { padding: 0.4rem 0.78rem; font-size: 0.78rem; border-radius: 9px; }
 
-    .btn-ghost:hover {
-      border-color: var(--border-hover);
-      background: rgba(51, 65, 85, 0.65);
-    }
-
-    .btn-sm {
-      padding: 0.42rem 0.8rem;
-      font-size: 0.78rem;
-      border-radius: 9px;
-    }
-
-    .btn-danger {
-      background: rgba(244, 63, 94, 0.12);
-      border-color: rgba(244, 63, 94, 0.3);
+    .btn-del {
+      background: rgba(251, 113, 133, 0.12);
+      border-color: rgba(251, 113, 133, 0.35);
       color: #fda4af;
     }
 
-    .btn-danger:hover {
-      background: rgba(244, 63, 94, 0.22);
-      border-color: rgba(244, 63, 94, 0.55);
-    }
+    .btn-del:hover { background: rgba(251, 113, 133, 0.24); }
 
-    /* Dashboard Panel */
-    .vault-panel {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+    /* Workspace Panel */
+    .workspace {
+      background: var(--card-bg);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 22px;
       padding: 1.75rem;
-      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 24px 55px -15px rgba(0, 0, 0, 0.65);
     }
 
-    .vault-topbar {
+    .ws-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      padding-bottom: 1.35rem;
-      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.3rem;
+      border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 1.5rem;
     }
 
-    .tenant-info h2 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
+    .ws-title h2 { font-size: 1.25rem; font-weight: 800; }
 
-    .tenant-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 0.25rem;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    .tenant-pill {
+    .tenant-chip {
+      display: inline-block;
+      margin-top: 0.3rem;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.76rem;
-      color: var(--accent);
-      background: rgba(56, 189, 248, 0.1);
-      padding: 0.18rem 0.55rem;
-      border-radius: 6px;
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #67e8f9;
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      padding: 0.2rem 0.6rem;
+      border-radius: 7px;
     }
 
-    .stats-row {
+    .metrics-strip {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.7rem;
       flex-wrap: wrap;
     }
 
-    .stat-chip {
-      background: rgba(5, 8, 17, 0.6);
-      border: 1px solid var(--border);
+    .metric-box {
+      background: rgba(7, 9, 19, 0.7);
+      border: 1px solid var(--border-subtle);
       padding: 0.45rem 0.85rem;
-      border-radius: 10px;
+      border-radius: 11px;
       font-size: 0.78rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
 
-    .stat-chip strong {
-      color: var(--text-main);
+    .metric-box strong {
       font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
     }
 
-    /* Drag & Drop Upload Box */
-    .dropzone {
-      position: relative;
-      border: 1.5px dashed rgba(56, 189, 248, 0.35);
-      background: rgba(5, 8, 17, 0.45);
+    /* Uploader */
+    .upload-box {
+      border: 1.5px dashed rgba(167, 139, 250, 0.42);
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(167, 139, 250, 0.06));
       border-radius: 16px;
-      padding: 1.5rem;
+      padding: 1.35rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.4rem;
       transition: border-color 0.2s, background 0.2s;
     }
 
-    .dropzone.dragover {
-      border-color: var(--accent);
-      background: rgba(56, 189, 248, 0.08);
+    .upload-box.dragover {
+      border-color: var(--c-cyan);
+      background: rgba(34, 211, 238, 0.12);
     }
 
-    .drop-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+    .upload-info h4 { font-size: 0.95rem; font-weight: 700; color: #f1f5f9; }
+    .upload-info p { font-size: 0.8rem; color: var(--text-secondary); }
 
-    .upload-icon-box {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      display: grid;
-      place-items: center;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .drop-text h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .drop-text p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .drop-controls {
+    .upload-actions {
       display: flex;
       align-items: center;
       gap: 0.65rem;
@@ -456,234 +410,247 @@
     }
 
     input[type="file"] {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      padding: 0.45rem 0.65rem;
+      max-width: 265px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: rgba(7, 9, 19, 0.75);
+      border: 1px solid var(--border-subtle);
+      padding: 0.42rem 0.65rem;
       border-radius: 10px;
-      max-width: 260px;
     }
 
     input[type="file"]::file-selector-button {
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
+      background: rgba(167, 139, 250, 0.18);
+      color: #ddd6fe;
       border: none;
-      padding: 0.32rem 0.65rem;
+      padding: 0.3rem 0.65rem;
       border-radius: 6px;
       font-weight: 600;
-      margin-right: 0.6rem;
+      margin-right: 0.55rem;
       cursor: pointer;
     }
 
-    /* Modern Data Table */
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: rgba(5, 8, 17, 0.4);
+    /* Search & Filter Bar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.86rem;
+    .search-input {
+      flex: 1;
+      min-width: 220px;
+      max-width: 360px;
+      padding: 0.58rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(7, 9, 19, 0.75);
+      color: var(--text-primary);
+      font-size: 0.85rem;
     }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--c-violet);
+    }
+
+    /* Table */
+    .table-card {
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: 15px;
+      background: rgba(7, 9, 19, 0.55);
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
 
     th {
       text-align: left;
-      padding: 0.85rem 1rem;
-      font-size: 0.72rem;
+      padding: 0.82rem 1rem;
+      font-size: 0.71rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--text-muted);
-      background: rgba(15, 23, 42, 0.75);
-      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      background: rgba(24, 32, 58, 0.85);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
     td {
-      padding: 0.9rem 1rem;
-      border-bottom: 1px solid var(--border);
+      padding: 0.88rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
       vertical-align: middle;
     }
 
     tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: rgba(30, 41, 59, 0.35); }
+    tbody tr:hover { background: rgba(34, 211, 238, 0.04); }
 
-    .file-cell {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-weight: 600;
-    }
-
-    .mime-badge {
+    .type-pill {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      padding: 0.22rem 0.55rem;
+      font-size: 0.71rem;
+      padding: 0.2rem 0.55rem;
       border-radius: 6px;
-      background: rgba(129, 140, 248, 0.12);
-      color: #c7d2fe;
-      border: 1px solid rgba(129, 140, 248, 0.25);
+      background: rgba(52, 211, 153, 0.12);
+      color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, 0.25);
     }
 
-    .mono-dim {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .action-group {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 2.75rem 1rem;
-      color: var(--text-muted);
-      font-size: 0.88rem;
-    }
-
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-secondary); }
+    .btns-row { display: flex; gap: 0.45rem; }
+    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary); font-size: 0.88rem; }
     .hidden { display: none !important; }
 
     footer {
       text-align: center;
-      padding: 1.5rem;
+      padding: 1.6rem 1rem;
       font-size: 0.76rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
   </style>
 </head>
 <body>
 
-  <header class="navbar">
-    <div class="nav-inner">
+  <header class="topbar">
+    <div class="topbar-inner">
       <div class="brand">
-        <div class="logo-mark">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <div class="brand-badge">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
           </svg>
         </div>
-        <div class="brand-text">
+        <div>
           <h1>CloudVault</h1>
-          <span>5-Pillar Cloud Document & Asset Platform</span>
+          <span>Smart Multi-Tenant Cloud Architecture • 5 Pillars</span>
         </div>
       </div>
 
-      <div class="telemetry-badge">
-        <span class="pulse-dot"></span>
-        <span id="computeText">Connecting Edge Runtime...</span>
+      <div class="live-pill">
+        <span class="live-dot"></span>
+        <span id="computeText">Checking Edge Compute...</span>
       </div>
     </div>
   </header>
 
-  <main class="wrapper">
-    <!-- 5 Required Cloud Pillars Bento Grid -->
-    <section class="pillars-bento">
-      <div class="pillar">
-        <div class="pillar-top"><span class="pillar-tag">01 • Compute</span></div>
+  <main class="container">
+    <!-- 5 Cloud Pillars with Distinct Colour Accents & Smart Metadata -->
+    <section class="pillars-grid">
+      <div class="pillar-card p-compute">
+        <div class="pillar-header">
+          <span class="pillar-badge">01 • COMPUTE</span>
+          <span class="pillar-meta">FaaS / Edge</span>
+        </div>
         <h3>Vercel Serverless</h3>
-        <p>Auto-scaling Node.js API & Edge runtime.</p>
+        <p>On-demand Node.js APIs (/api/status) with instant auto-scaling.</p>
       </div>
-      <div class="pillar">
-        <div class="pillar-top"><span class="pillar-tag">02 • Storage</span></div>
-        <h3>S3 Object Bucket</h3>
-        <p>Isolated binary storage with AES-256.</p>
+
+      <div class="pillar-card p-storage">
+        <div class="pillar-header">
+          <span class="pillar-badge">02 • STORAGE</span>
+          <span class="pillar-meta">Bucket: vault-files</span>
+        </div>
+        <h3>S3 Object Storage</h3>
+        <p>Decoupled binary object storage with signed download URLs.</p>
       </div>
-      <div class="pillar">
-        <div class="pillar-top"><span class="pillar-tag">03 • Database</span></div>
-        <h3>Managed PostgreSQL</h3>
-        <p>Relational metadata & ACID indexing.</p>
+
+      <div class="pillar-card p-database">
+        <div class="pillar-header">
+          <span class="pillar-badge">03 • DATABASE</span>
+          <span class="pillar-meta">PostgreSQL 15</span>
+        </div>
+        <h3>Managed DBaaS</h3>
+        <p>ACID-compliant relational indexing for file metadata & logs.</p>
       </div>
-      <div class="pillar">
-        <div class="pillar-top"><span class="pillar-tag">04 • Networking</span></div>
+
+      <div class="pillar-card p-network">
+        <div class="pillar-header">
+          <span class="pillar-badge">04 • NETWORKING</span>
+          <span class="pillar-meta">TLS 1.3 + CDN</span>
+        </div>
         <h3>Global Edge CDN</h3>
-        <p>Anycast routing & TLS 1.3 encryption.</p>
+        <p>Anycast routing, edge caching & encrypted HTTPS delivery.</p>
       </div>
-      <div class="pillar">
-        <div class="pillar-top"><span class="pillar-tag">05 • Security</span></div>
-        <h3>JWT + RLS IAM</h3>
-        <p>Cryptographic per-tenant isolation.</p>
+
+      <div class="pillar-card p-security">
+        <div class="pillar-header">
+          <span class="pillar-badge">05 • SECURITY</span>
+          <span class="pillar-meta">JWT + RLS</span>
+        </div>
+        <h3>Zero-Trust IAM</h3>
+        <p>Per-tenant Row-Level Security isolating every user's vault.</p>
       </div>
     </section>
 
     <div id="banner" class="toast hidden"></div>
 
-    <!-- Tenant Authentication View -->
-    <section id="authCard" class="auth-wrapper">
-      <div class="auth-header">
-        <h2>Sign in to CloudVault</h2>
-        <p>Protected by JWT Authentication & PostgreSQL Row-Level Security</p>
-      </div>
+    <!-- Auth View -->
+    <section id="authCard" class="auth-box">
+      <h2>CloudVault Access</h2>
+      <p class="sub">Sign in or create an isolated tenant account</p>
 
-      <div class="field">
+      <div class="input-group">
         <label for="emailInput">Email Address</label>
-        <input type="email" id="emailInput" placeholder="name@domain.com" autocomplete="email" />
+        <input type="email" id="emailInput" placeholder="user@example.com" autocomplete="email" />
       </div>
 
-      <div class="field">
+      <div class="input-group">
         <label for="passwordInput">Password</label>
         <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" />
       </div>
 
-      <div class="auth-actions">
-        <button class="btn btn-primary" onclick="handleSignIn()">Sign In</button>
-        <button class="btn btn-ghost" onclick="handleSignUp()">Create Account</button>
+      <div class="auth-btns">
+        <button class="btn btn-gradient" onclick="handleSignIn()">Sign In</button>
+        <button class="btn btn-secondary" onclick="handleSignUp()">Sign Up</button>
       </div>
     </section>
 
-    <!-- Authenticated Vault Workspace -->
-    <section id="vaultCard" class="vault-panel hidden">
-      <div class="vault-topbar">
-        <div class="tenant-info">
-          <h2>Encrypted Asset Vault</h2>
-          <div class="tenant-meta">
-            <span>Tenant:</span>
-            <span class="tenant-pill" id="userEmail"></span>
-          </div>
+    <!-- Smart Vault Workspace -->
+    <section id="vaultCard" class="workspace hidden">
+      <div class="ws-header">
+        <div class="ws-title">
+          <h2>Smart Asset Vault</h2>
+          <span class="tenant-chip" id="userEmail"></span>
         </div>
 
-        <div class="stats-row">
-          <div class="stat-chip">Objects: <strong id="statCount">0</strong></div>
-          <div class="stat-chip">Used: <strong id="statSize">0 B</strong></div>
-          <button class="btn btn-ghost btn-sm" onclick="handleSignOut()">Sign Out</button>
+        <div class="metrics-strip">
+          <div class="metric-box">Files: <strong id="statCount">0</strong></div>
+          <div class="metric-box">Storage Used: <strong id="statSize">0 B</strong></div>
+          <button class="btn btn-secondary btn-sm" onclick="loadDocuments()">Refresh</button>
+          <button class="btn btn-secondary btn-sm" onclick="handleSignOut()">Sign Out</button>
         </div>
       </div>
 
-      <div class="dropzone" id="dropzone">
-        <div class="drop-left">
-          <div class="upload-icon-box">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-          </div>
-          <div class="drop-text">
-            <h4>Upload to Cloud Object Storage</h4>
-            <p>Drag & drop a file here or browse to sync with PostgreSQL</p>
-          </div>
+      <div class="upload-box" id="dropzone">
+        <div class="upload-info">
+          <h4>Upload Asset to Cloud</h4>
+          <p>Drag & drop a file or choose one to store in S3 bucket + sync PostgreSQL</p>
         </div>
-
-        <div class="drop-controls">
+        <div class="upload-actions">
           <input type="file" id="fileInput" />
-          <button class="btn btn-primary" id="uploadBtn" onclick="uploadDocument()">Upload File</button>
+          <button class="btn btn-gradient" id="uploadBtn" onclick="uploadDocument()">Upload to Cloud</button>
         </div>
       </div>
 
-      <div class="table-wrap">
+      <div class="toolbar">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search files by name or type..." oninput="renderFilteredDocs()" />
+        <span class="mono" id="filterSummary">Showing 0 files</span>
+      </div>
+
+      <div class="table-card">
         <table>
           <thead>
             <tr>
-              <th>Asset Name</th>
+              <th>File Name</th>
               <th>Type</th>
               <th>Size</th>
-              <th>Timestamp</th>
+              <th>Uploaded</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="docTableBody">
-            <tr><td colspan="5" class="empty-state">No files uploaded yet.</td></tr>
+            <tr><td colspan="5" class="empty">No files stored yet.</td></tr>
           </tbody>
         </table>
       </div>
@@ -691,7 +658,7 @@
   </main>
 
   <footer>
-    CloudVault • Serverless Compute • S3 Object Storage • Managed PostgreSQL • Edge CDN • Row-Level Security
+    CloudVault • Compute • Storage • Database • Networking • Security
   </footer>
 
   <script>
@@ -700,14 +667,15 @@
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
+    let cachedDocs = [];
 
     function showBanner(msg, isError = false) {
       const b = document.getElementById('banner');
       b.textContent = msg;
       b.className = isError ? 'toast error' : 'toast';
       b.classList.remove('hidden');
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => b.classList.add('hidden'), 5000);
+      clearTimeout(window.__bannerTimer);
+      window.__bannerTimer = setTimeout(() => b.classList.add('hidden'), 5000);
     }
 
     async function checkServerlessCompute() {
@@ -716,9 +684,9 @@
         if (!res.ok) throw new Error();
         const data = await res.json();
         document.getElementById('computeText').textContent =
-          `Edge Online • ${data.region} (${data.latencyMs}ms)`;
+          `Edge Live • ${data.region} (${data.latencyMs}ms)`;
       } catch {
-        document.getElementById('computeText').textContent = 'Edge CDN Active • TLS 1.3';
+        document.getElementById('computeText').textContent = 'Edge CDN Live • TLS 1.3';
       }
     }
 
@@ -740,34 +708,35 @@
     async function handleSignUp() {
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value;
-      if (!email || !password) return showBanner('Enter both email and password.', true);
+      if (!email || !password) return showBanner('Please enter email and password.', true);
 
       const { data, error } = await supabaseClient.auth.signUp({ email, password });
       if (error) return showBanner(error.message, true);
       if (data.session) {
         currentUser = data.user;
         onAuthenticated();
-        showBanner('Tenant account created & authenticated.');
+        showBanner('Account created & signed in.');
       } else {
-        showBanner('Account created! Click Sign In to continue.');
+        showBanner('Account created! Click Sign In.');
       }
     }
 
     async function handleSignIn() {
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value;
-      if (!email || !password) return showBanner('Enter both email and password.', true);
+      if (!email || !password) return showBanner('Please enter email and password.', true);
 
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
       if (error) return showBanner(error.message, true);
       currentUser = data.user;
       onAuthenticated();
-      showBanner('Authenticated via JWT • Row-Level Security active.');
+      showBanner('Authenticated with JWT & Row-Level Security.');
     }
 
     async function handleSignOut() {
       await supabaseClient.auth.signOut();
       currentUser = null;
+      cachedDocs = [];
       document.getElementById('vaultCard').classList.add('hidden');
       document.getElementById('authCard').classList.remove('hidden');
     }
@@ -798,13 +767,13 @@
         if (dbErr) throw dbErr;
 
         input.value = '';
-        showBanner(`Stored "${file.name}" in Object Bucket & synced PostgreSQL.`);
+        showBanner(`Uploaded "${file.name}" to Object Storage & PostgreSQL.`);
         loadDocuments();
       } catch (err) {
         showBanner(err.message || 'Upload failed.', true);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Upload File';
+        btn.textContent = 'Upload to Cloud';
       }
     }
 
@@ -816,34 +785,41 @@
 
       if (error) return showBanner(error.message, true);
 
-      const tbody = document.getElementById('docTableBody');
-      const list = data || [];
-      document.getElementById('statCount').textContent = list.length;
-      const totalBytes = list.reduce((sum, d) => sum + (d.file_size || 0), 0);
+      cachedDocs = data || [];
+      document.getElementById('statCount').textContent = cachedDocs.length;
+      const totalBytes = cachedDocs.reduce((sum, d) => sum + (d.file_size || 0), 0);
       document.getElementById('statSize').textContent = formatBytes(totalBytes);
+      renderFilteredDocs();
+    }
 
-      if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No files in your vault yet. Drop or select a file above to upload.</td></tr>';
+    function renderFilteredDocs() {
+      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const filtered = q
+        ? cachedDocs.filter(d =>
+            (d.file_name || '').toLowerCase().includes(q) ||
+            (d.mime_type || '').toLowerCase().includes(q)
+          )
+        : cachedDocs;
+
+      document.getElementById('filterSummary').textContent =
+        `Showing ${filtered.length} of ${cachedDocs.length} files`;
+
+      const tbody = document.getElementById('docTableBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty">${q ? 'No matching files found.' : 'No files stored yet.'}</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map(doc => `
+      tbody.innerHTML = filtered.map(doc => `
         <tr>
+          <td><strong>${escapeHtml(doc.file_name)}</strong></td>
+          <td><span class="type-pill">${escapeHtml(doc.mime_type)}</span></td>
+          <td class="mono">${formatBytes(doc.file_size)}</td>
+          <td class="mono">${new Date(doc.created_at).toLocaleString()}</td>
           <td>
-            <div class="file-cell">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-              </svg>
-              <span>${escapeHtml(doc.file_name)}</span>
-            </div>
-          </td>
-          <td><span class="mime-badge">${escapeHtml(doc.mime_type)}</span></td>
-          <td class="mono-dim">${formatBytes(doc.file_size)}</td>
-          <td class="mono-dim">${new Date(doc.created_at).toLocaleString()}</td>
-          <td>
-            <div class="action-group">
-              <button class="btn btn-ghost btn-sm" onclick="downloadDoc('${doc.storage_path}')">Download</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteDoc('${doc.id}', '${doc.storage_path}')">Delete</button>
+            <div class="btns-row">
+              <button class="btn btn-secondary btn-sm" onclick="downloadDoc('${doc.storage_path}')">Download</button>
+              <button class="btn btn-del btn-sm" onclick="deleteDoc('${doc.id}', '${doc.storage_path}')">Delete</button>
             </div>
           </td>
         </tr>
@@ -860,7 +836,7 @@
       await supabaseClient.storage.from('vault-files').remove([path]);
       const { error } = await supabaseClient.from('documents').delete().eq('id', id);
       if (error) return showBanner(error.message, true);
-      showBanner('Removed from Object Storage & PostgreSQL.');
+      showBanner('Deleted from Object Storage & PostgreSQL.');
       loadDocuments();
     }
 
@@ -875,7 +851,6 @@
       return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     }
 
-    // Drag & drop support
     const dropzone = document.getElementById('dropzone');
     ['dragenter', 'dragover'].forEach(evt => {
       dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); });
