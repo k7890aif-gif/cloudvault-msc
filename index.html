@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudVault • Colourful 5-Pillar Cloud Workspace</title>
+  <title>CODEVAULT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,13 +16,10 @@
       --border-subtle: rgba(148, 163, 184, 0.16);
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
-
       --c-cyan: #22d3ee;
       --c-emerald: #34d399;
-      --c-amber: #fbbf24;
       --c-violet: #a78bfa;
       --c-rose: #fb7185;
-      --c-blue: #60a5fa;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,7 +36,7 @@
       line-height: 1.5;
     }
 
-    /* Header */
+    /* Simple Header with CODEVAULT only */
     .topbar {
       position: sticky;
       top: 0;
@@ -52,155 +49,24 @@
     .topbar-inner {
       max-width: 1220px;
       margin: 0 auto;
-      padding: 0.95rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .brand {
+      padding: 1rem 1.5rem;
       display: flex;
       align-items: center;
-      gap: 0.85rem;
     }
 
-    .brand-badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 13px;
-      background: linear-gradient(135deg, #22d3ee 0%, #818cf8 50%, #f472b6 100%);
-      display: grid;
-      place-items: center;
-      color: #070913;
-      box-shadow: 0 0 26px rgba(129, 140, 248, 0.35);
-    }
-
-    .brand h1 {
-      font-size: 1.25rem;
+    .brand-title {
+      font-size: 1.35rem;
       font-weight: 800;
-      letter-spacing: -0.025em;
+      letter-spacing: 0.06em;
       background: linear-gradient(90deg, #67e8f9, #c4b5fd, #f9a8d4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .brand span {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-    }
-
-    .live-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 0.45rem 0.95rem;
-      border-radius: 999px;
-      background: rgba(52, 211, 153, 0.1);
-      border: 1px solid rgba(52, 211, 153, 0.32);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.76rem;
-      color: #a7f3d0;
-    }
-
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--c-emerald);
-      box-shadow: 0 0 10px var(--c-emerald);
-      animation: blink 2s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
     .container {
       max-width: 1220px;
       margin: 0 auto;
-      padding: 1.85rem 1.5rem 3.5rem;
-    }
-
-    /* Colourful 5-Pillar Grid */
-    .pillars-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0.95rem;
-      margin-bottom: 1.85rem;
-    }
-
-    @media (max-width: 1020px) { .pillars-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 540px) { .pillars-grid { grid-template-columns: 1fr; } }
-
-    .pillar-card {
-      position: relative;
-      background: var(--card-bg);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
-      padding: 1.05rem 1.15rem;
-      overflow: hidden;
-      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-    }
-
-    .pillar-card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--accent-line);
-    }
-
-    .pillar-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.65);
-    }
-
-    .p-compute { --accent-line: linear-gradient(90deg, #22d3ee, #3b82f6); --tag-bg: rgba(34, 211, 238, 0.14); --tag-fg: #67e8f9; }
-    .p-storage { --accent-line: linear-gradient(90deg, #34d399, #10b981); --tag-bg: rgba(52, 211, 153, 0.14); --tag-fg: #6ee7b7; }
-    .p-database { --accent-line: linear-gradient(90deg, #fbbf24, #f97316); --tag-bg: rgba(251, 191, 36, 0.14); --tag-fg: #fde68a; }
-    .p-network { --accent-line: linear-gradient(90deg, #a78bfa, #ec4899); --tag-bg: rgba(167, 139, 250, 0.14); --tag-fg: #ddd6fe; }
-    .p-security { --accent-line: linear-gradient(90deg, #fb7185, #f43f5e); --tag-bg: rgba(251, 113, 133, 0.14); --tag-fg: #fecdd3; }
-
-    .pillar-card:hover { border-color: var(--tag-fg); }
-
-    .pillar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.55rem;
-    }
-
-    .pillar-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      font-weight: 600;
-      padding: 0.2rem 0.55rem;
-      border-radius: 999px;
-      background: var(--tag-bg);
-      color: var(--tag-fg);
-    }
-
-    .pillar-meta {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--text-secondary);
-    }
-
-    .pillar-card h3 {
-      font-size: 0.98rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-
-    .pillar-card p {
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-      line-height: 1.45;
+      padding: 2rem 1.5rem 3.5rem;
     }
 
     /* Toast */
@@ -502,93 +368,23 @@
     .btns-row { display: flex; gap: 0.45rem; }
     .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary); font-size: 0.88rem; }
     .hidden { display: none !important; }
-
-    footer {
-      text-align: center;
-      padding: 1.6rem 1rem;
-      font-size: 0.76rem;
-      color: var(--text-secondary);
-    }
   </style>
 </head>
 <body>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-badge">
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-          </svg>
-        </div>
-        <div>
-          <h1>CloudVault</h1>
-          <span>Smart Multi-Tenant Cloud Architecture • 5 Pillars</span>
-        </div>
-      </div>
-
-      <div class="live-pill">
-        <span class="live-dot"></span>
-        <span id="computeText">Checking Edge Compute...</span>
-      </div>
+      <div class="brand-title">CODEVAULT</div>
     </div>
   </header>
 
   <main class="container">
-    <!-- 5 Cloud Pillars with Distinct Colour Accents & Smart Metadata -->
-    <section class="pillars-grid">
-      <div class="pillar-card p-compute">
-        <div class="pillar-header">
-          <span class="pillar-badge">01 • COMPUTE</span>
-          <span class="pillar-meta">FaaS / Edge</span>
-        </div>
-        <h3>Vercel Serverless</h3>
-        <p>On-demand Node.js APIs (/api/status) with instant auto-scaling.</p>
-      </div>
-
-      <div class="pillar-card p-storage">
-        <div class="pillar-header">
-          <span class="pillar-badge">02 • STORAGE</span>
-          <span class="pillar-meta">Bucket: vault-files</span>
-        </div>
-        <h3>S3 Object Storage</h3>
-        <p>Decoupled binary object storage with signed download URLs.</p>
-      </div>
-
-      <div class="pillar-card p-database">
-        <div class="pillar-header">
-          <span class="pillar-badge">03 • DATABASE</span>
-          <span class="pillar-meta">PostgreSQL 15</span>
-        </div>
-        <h3>Managed DBaaS</h3>
-        <p>ACID-compliant relational indexing for file metadata & logs.</p>
-      </div>
-
-      <div class="pillar-card p-network">
-        <div class="pillar-header">
-          <span class="pillar-badge">04 • NETWORKING</span>
-          <span class="pillar-meta">TLS 1.3 + CDN</span>
-        </div>
-        <h3>Global Edge CDN</h3>
-        <p>Anycast routing, edge caching & encrypted HTTPS delivery.</p>
-      </div>
-
-      <div class="pillar-card p-security">
-        <div class="pillar-header">
-          <span class="pillar-badge">05 • SECURITY</span>
-          <span class="pillar-meta">JWT + RLS</span>
-        </div>
-        <h3>Zero-Trust IAM</h3>
-        <p>Per-tenant Row-Level Security isolating every user's vault.</p>
-      </div>
-    </section>
-
     <div id="banner" class="toast hidden"></div>
 
     <!-- Auth View -->
     <section id="authCard" class="auth-box">
-      <h2>CloudVault Access</h2>
-      <p class="sub">Sign in or create an isolated tenant account</p>
+      <h2>Sign In</h2>
+      <p class="sub">Access your files</p>
 
       <div class="input-group">
         <label for="emailInput">Email Address</label>
@@ -606,17 +402,17 @@
       </div>
     </section>
 
-    <!-- Smart Vault Workspace -->
+    <!-- Vault Workspace -->
     <section id="vaultCard" class="workspace hidden">
       <div class="ws-header">
         <div class="ws-title">
-          <h2>Smart Asset Vault</h2>
+          <h2>My Vault</h2>
           <span class="tenant-chip" id="userEmail"></span>
         </div>
 
         <div class="metrics-strip">
           <div class="metric-box">Files: <strong id="statCount">0</strong></div>
-          <div class="metric-box">Storage Used: <strong id="statSize">0 B</strong></div>
+          <div class="metric-box">Used: <strong id="statSize">0 B</strong></div>
           <button class="btn btn-secondary btn-sm" onclick="loadDocuments()">Refresh</button>
           <button class="btn btn-secondary btn-sm" onclick="handleSignOut()">Sign Out</button>
         </div>
@@ -624,17 +420,17 @@
 
       <div class="upload-box" id="dropzone">
         <div class="upload-info">
-          <h4>Upload Asset to Cloud</h4>
-          <p>Drag & drop a file or choose one to store in S3 bucket + sync PostgreSQL</p>
+          <h4>Upload File</h4>
+          <p>Drag & drop a file or choose one from your device</p>
         </div>
         <div class="upload-actions">
           <input type="file" id="fileInput" />
-          <button class="btn btn-gradient" id="uploadBtn" onclick="uploadDocument()">Upload to Cloud</button>
+          <button class="btn btn-gradient" id="uploadBtn" onclick="uploadDocument()">Upload</button>
         </div>
       </div>
 
       <div class="toolbar">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search files by name or type..." oninput="renderFilteredDocs()" />
+        <input type="text" id="searchInput" class="search-input" placeholder="Search files..." oninput="renderFilteredDocs()" />
         <span class="mono" id="filterSummary">Showing 0 files</span>
       </div>
 
@@ -657,10 +453,6 @@
     </section>
   </main>
 
-  <footer>
-    CloudVault • Compute • Storage • Database • Networking • Security
-  </footer>
-
   <script>
     const SUPABASE_URL = "https://nnhktqaxrhwotcqeaqdp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_8yqtlBDzJWwFl7wpDhebMQ_2W9B_jjV";
@@ -676,18 +468,6 @@
       b.classList.remove('hidden');
       clearTimeout(window.__bannerTimer);
       window.__bannerTimer = setTimeout(() => b.classList.add('hidden'), 5000);
-    }
-
-    async function checkServerlessCompute() {
-      try {
-        const res = await fetch('/api/status');
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        document.getElementById('computeText').textContent =
-          `Edge Live • ${data.region} (${data.latencyMs}ms)`;
-      } catch {
-        document.getElementById('computeText').textContent = 'Edge CDN Live • TLS 1.3';
-      }
     }
 
     async function checkSession() {
@@ -730,7 +510,7 @@
       if (error) return showBanner(error.message, true);
       currentUser = data.user;
       onAuthenticated();
-      showBanner('Authenticated with JWT & Row-Level Security.');
+      showBanner('Signed in successfully.');
     }
 
     async function handleSignOut() {
@@ -767,13 +547,13 @@
         if (dbErr) throw dbErr;
 
         input.value = '';
-        showBanner(`Uploaded "${file.name}" to Object Storage & PostgreSQL.`);
+        showBanner(`Uploaded "${file.name}".`);
         loadDocuments();
       } catch (err) {
         showBanner(err.message || 'Upload failed.', true);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Upload to Cloud';
+        btn.textContent = 'Upload';
       }
     }
 
@@ -836,7 +616,7 @@
       await supabaseClient.storage.from('vault-files').remove([path]);
       const { error } = await supabaseClient.from('documents').delete().eq('id', id);
       if (error) return showBanner(error.message, true);
-      showBanner('Deleted from Object Storage & PostgreSQL.');
+      showBanner('File deleted.');
       loadDocuments();
     }
 
@@ -865,7 +645,6 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
-      checkServerlessCompute();
       checkSession();
     });
   </script>
