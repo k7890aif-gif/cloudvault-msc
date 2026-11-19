@@ -3,276 +3,723 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudVault | Multi-Tenant Cloud Document & Asset Management</title>
+  <title>CloudVault — Multi-Tenant Cloud Storage & Asset Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #0b1120;
-      --surface: #111827;
-      --surface-2: #1e293b;
-      --border: #334155;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --primary: #38bdf8;
-      --primary-dark: #0284c7;
-      --success: #22c55e;
-      --danger: #ef4444;
+      --bg-base: #050811;
+      --bg-card: rgba(15, 23, 42, 0.62);
+      --bg-elevated: rgba(30, 41, 59, 0.55);
+      --border: rgba(148, 163, 184, 0.14);
+      --border-hover: rgba(56, 189, 248, 0.45);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-indigo: #818cf8;
+      --success: #10b981;
+      --danger: #f43f5e;
+      --radius-lg: 20px;
+      --radius-md: 12px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
-    header {
-      background: rgba(17, 24, 39, 0.9);
-      backdrop-filter: blur(10px);
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-base);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.16), transparent),
+        radial-gradient(ellipse 60% 45% at 85% 20%, rgba(129, 140, 248, 0.12), transparent);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Glass Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(5, 8, 17, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem;
+    }
+
+    .nav-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
+      color: #050811;
+    }
+
+    .brand-text h1 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(to right, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text span {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      display: block;
+    }
+
+    .telemetry-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: #cbd5e1;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(1.2); }
+    }
+
+    /* Main Container */
+    .wrapper {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3.5rem;
+    }
+
+    /* Bento 5-Pillar Strip */
+    .pillars-bento {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 960px) { .pillars-bento { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .pillars-bento { grid-template-columns: 1fr; } }
+
+    .pillar {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.1rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pillar:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+    }
+
+    .pillar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .pillar-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+    }
+
+    .pillar h3 {
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.2rem;
+    }
+
+    .pillar p {
+      font-size: 0.77rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Toast Notification */
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.85rem 1.15rem;
+      border-radius: var(--radius-md);
+      font-size: 0.86rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #e0f2fe;
+      animation: slideDown 0.25s ease;
+    }
+
+    .toast.error {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #ffe4e6;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Auth Card (Centered Modern Modal Style) */
+    .auth-wrapper {
+      max-width: 460px;
+      margin: 2.5rem auto;
+      background: var(--bg-card);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-header h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+
+    .auth-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .field { margin-bottom: 1.1rem; }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.4rem;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 0.75rem 0.95rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: rgba(5, 8, 17, 0.75);
+      color: var(--text-main);
+      font-size: 0.92rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+    }
+
+    .auth-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.72rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #3b82f6);
+      color: #050811;
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.28);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-ghost {
+      background: var(--bg-elevated);
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--border-hover);
+      background: rgba(51, 65, 85, 0.65);
+    }
+
+    .btn-sm {
+      padding: 0.42rem 0.8rem;
+      font-size: 0.78rem;
+      border-radius: 9px;
+    }
+
+    .btn-danger {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: #fda4af;
+    }
+
+    .btn-danger:hover {
+      background: rgba(244, 63, 94, 0.22);
+      border-color: rgba(244, 63, 94, 0.55);
+    }
+
+    /* Dashboard Panel */
+    .vault-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
+    }
+
+    .vault-topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      padding-bottom: 1.35rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
     }
-    .brand { display: flex; align-items: center; gap: 0.75rem; }
-    .brand-icon {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--primary), #6366f1);
-      display: grid; place-items: center; font-weight: 800; color: #0b1120; font-size: 1.1rem;
+
+    .tenant-info h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
-    .brand h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
-    .brand span { font-size: 0.78rem; color: var(--primary); display: block; }
-    .status-pill {
-      display: flex; align-items: center; gap: 0.5rem;
-      background: var(--surface-2); border: 1px solid var(--border);
-      padding: 0.4rem 0.85rem; border-radius: 999px; font-size: 0.82rem; color: var(--muted);
+
+    .tenant-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.25rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
     }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
-    .container { max-width: 1120px; margin: 2rem auto; padding: 0 1.25rem; }
-    .pillars-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0.9rem; margin-bottom: 1.75rem;
+
+    .tenant-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 0.18rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
     }
-    .pillar-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      padding: 0.95rem 1rem;
+
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
-    .pillar-card small { color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
-    .pillar-card h3 { font-size: 0.95rem; margin: 0.2rem 0; }
-    .pillar-card p { font-size: 0.78rem; color: var(--muted); }
-    .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;
+
+    .stat-chip {
+      background: rgba(5, 8, 17, 0.6);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
-    .card h2 { font-size: 1.15rem; margin-bottom: 0.35rem; }
-    .card p.sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.2rem; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
-    label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.35rem; }
-    input[type="email"], input[type="password"], input[type="text"], input[type="file"] {
-      width: 100%; padding: 0.65rem 0.85rem; border-radius: 8px;
-      border: 1px solid var(--border); background: var(--bg); color: var(--text);
-      font-size: 0.92rem; margin-bottom: 0.9rem;
+
+    .stat-chip strong {
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
     }
-    input:focus { outline: none; border-color: var(--primary); }
-    .btn {
-      padding: 0.65rem 1.2rem; border-radius: 8px; border: none; font-weight: 600;
-      cursor: pointer; font-size: 0.9rem; transition: 0.15s ease;
+
+    /* Drag & Drop Upload Box */
+    .dropzone {
+      position: relative;
+      border: 1.5px dashed rgba(56, 189, 248, 0.35);
+      background: rgba(5, 8, 17, 0.45);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .btn-primary { background: var(--primary); color: #0b1120; }
-    .btn-primary:hover { background: #7dd3fc; }
-    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-    .btn-danger { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.35rem 0.7rem; font-size: 0.8rem; }
-    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
-    .row-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: center; }
-    .alert {
-      padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;
-      background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.35); color: #bae6fd;
+
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
     }
-    .alert.error { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.4); color: #fecaca; }
-    table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.88rem; }
-    th, td { text-align: left; padding: 0.75rem 0.65rem; border-bottom: 1px solid var(--border); }
-    th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; }
-    .badge {
-      display: inline-block; padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.75rem;
-      background: var(--surface-2); color: var(--primary); border: 1px solid var(--border);
+
+    .drop-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
+
+    .upload-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .drop-text h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .drop-text p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .drop-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    input[type="file"] {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.65rem;
+      border-radius: 10px;
+      max-width: 260px;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: none;
+      padding: 0.32rem 0.65rem;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-right: 0.6rem;
+      cursor: pointer;
+    }
+
+    /* Modern Data Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(5, 8, 17, 0.4);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.85rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.75);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(30, 41, 59, 0.35); }
+
+    .file-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-weight: 600;
+    }
+
+    .mime-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+      background: rgba(129, 140, 248, 0.12);
+      color: #c7d2fe;
+      border: 1px solid rgba(129, 140, 248, 0.25);
+    }
+
+    .mono-dim {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .action-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.75rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
     .hidden { display: none !important; }
-    footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 2rem 1rem; }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <div class="brand-icon">CV</div>
-      <div>
-        <h1>CloudVault</h1>
-        <span>M.Sc. IT Cloud Computing Solution • 5-Pillar Architecture</span>
+
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>CloudVault</h1>
+          <span>5-Pillar Cloud Document & Asset Platform</span>
+        </div>
       </div>
-    </div>
-    <div class="status-pill" id="computeStatus">
-      <span class="dot"></span>
-      <span id="computeText">Checking Serverless Compute...</span>
+
+      <div class="telemetry-badge">
+        <span class="pulse-dot"></span>
+        <span id="computeText">Connecting Edge Runtime...</span>
+      </div>
     </div>
   </header>
 
-  <main class="container">
-    <!-- 5 Cloud Pillars Architecture Overview -->
-    <section class="pillars-grid">
-      <div class="pillar-card">
-        <small>1. Compute</small>
+  <main class="wrapper">
+    <!-- 5 Required Cloud Pillars Bento Grid -->
+    <section class="pillars-bento">
+      <div class="pillar">
+        <div class="pillar-top"><span class="pillar-tag">01 • Compute</span></div>
         <h3>Vercel Serverless</h3>
-        <p>Auto-scaling Node.js Edge & API functions (/api/status).</p>
+        <p>Auto-scaling Node.js API & Edge runtime.</p>
       </div>
-      <div class="pillar-card">
-        <small>2. Storage</small>
-        <h3>S3 Object Storage</h3>
-        <p>Isolated 'vault-files' bucket for binary assets.</p>
+      <div class="pillar">
+        <div class="pillar-top"><span class="pillar-tag">02 • Storage</span></div>
+        <h3>S3 Object Bucket</h3>
+        <p>Isolated binary storage with AES-256.</p>
       </div>
-      <div class="pillar-card">
-        <small>3. Database</small>
+      <div class="pillar">
+        <div class="pillar-top"><span class="pillar-tag">03 • Database</span></div>
         <h3>Managed PostgreSQL</h3>
-        <p>Relational metadata indexing & ACID transactions.</p>
+        <p>Relational metadata & ACID indexing.</p>
       </div>
-      <div class="pillar-card">
-        <small>4. Networking</small>
+      <div class="pillar">
+        <div class="pillar-top"><span class="pillar-tag">04 • Networking</span></div>
         <h3>Global Edge CDN</h3>
-        <p>Anycast DNS routing & TLS 1.3 HTTPS termination.</p>
+        <p>Anycast routing & TLS 1.3 encryption.</p>
       </div>
-      <div class="pillar-card">
-        <small>5. Security</small>
-        <h3>JWT + RLS Policies</h3>
-        <p>Per-tenant cryptographic Row-Level Security.</p>
+      <div class="pillar">
+        <div class="pillar-top"><span class="pillar-tag">05 • Security</span></div>
+        <h3>JWT + RLS IAM</h3>
+        <p>Cryptographic per-tenant isolation.</p>
       </div>
     </section>
 
-    <div id="banner" class="alert hidden"></div>
+    <div id="banner" class="toast hidden"></div>
 
-    <!-- Step 1: Quick Cloud Config Banner (If keys not yet hardcoded) -->
-    <section id="configCard" class="card">
-      <h2>Cloud Backend Connection (Supabase Credentials)</h2>
-      <p class="sub">Paste your Supabase Project URL and Anon Public Key below (or hardcode them in <code>index.html</code> before final deployment).</p>
-      <div class="grid-2">
-        <div>
-          <label>Supabase Project URL</label>
-          <input type="text" id="sbUrl" placeholder="https://xxxxxxxxxxxx.supabase.co" />
-        </div>
-        <div>
-          <label>Supabase Anon Public Key</label>
-          <input type="text" id="sbKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
-        </div>
+    <!-- Tenant Authentication View -->
+    <section id="authCard" class="auth-wrapper">
+      <div class="auth-header">
+        <h2>Sign in to CloudVault</h2>
+        <p>Protected by JWT Authentication & PostgreSQL Row-Level Security</p>
       </div>
-      <button class="btn btn-primary" onclick="saveCloudConfig()">Connect Cloud Backend</button>
-    </section>
 
-    <!-- Step 2: Authentication Card -->
-    <section id="authCard" class="card hidden">
-      <h2>Tenant Authentication (Security Pillar — JWT & IAM)</h2>
-      <p class="sub">Sign in or register an isolated tenant account protected by PostgreSQL Row-Level Security.</p>
-      <div class="grid-2">
-        <div>
-          <label>Email Address</label>
-          <input type="email" id="emailInput" placeholder="student@mscit.edu.in" />
-        </div>
-        <div>
-          <label>Password (min 6 characters)</label>
-          <input type="password" id="passwordInput" placeholder="••••••••" />
-        </div>
+      <div class="field">
+        <label for="emailInput">Email Address</label>
+        <input type="email" id="emailInput" placeholder="name@domain.com" autocomplete="email" />
       </div>
-      <div class="row-actions">
+
+      <div class="field">
+        <label for="passwordInput">Password</label>
+        <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <div class="auth-actions">
         <button class="btn btn-primary" onclick="handleSignIn()">Sign In</button>
-        <button class="btn btn-outline" onclick="handleSignUp()">Create Account</button>
+        <button class="btn btn-ghost" onclick="handleSignUp()">Create Account</button>
       </div>
     </section>
 
-    <!-- Step 3: Authenticated Cloud Vault Dashboard -->
-    <section id="vaultCard" class="card hidden">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
-        <div>
-          <h2>Your Encrypted Cloud Vault</h2>
-          <p class="sub" style="margin-bottom:0;">Authenticated Tenant: <strong id="userEmail" style="color:var(--primary)"></strong></p>
+    <!-- Authenticated Vault Workspace -->
+    <section id="vaultCard" class="vault-panel hidden">
+      <div class="vault-topbar">
+        <div class="tenant-info">
+          <h2>Encrypted Asset Vault</h2>
+          <div class="tenant-meta">
+            <span>Tenant:</span>
+            <span class="tenant-pill" id="userEmail"></span>
+          </div>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="handleSignOut()">Sign Out</button>
+
+        <div class="stats-row">
+          <div class="stat-chip">Objects: <strong id="statCount">0</strong></div>
+          <div class="stat-chip">Used: <strong id="statSize">0 B</strong></div>
+          <button class="btn btn-ghost btn-sm" onclick="handleSignOut()">Sign Out</button>
+        </div>
       </div>
 
-      <div style="background:var(--bg); border:1px dashed var(--border); border-radius:10px; padding:1.1rem; margin-bottom:1.25rem;">
-        <label>Upload Document to Cloud Object Storage + Sync PostgreSQL Metadata</label>
-        <div class="row-actions">
-          <input type="file" id="fileInput" style="max-width:420px; margin-bottom:0;" />
-          <button class="btn btn-primary" id="uploadBtn" onclick="uploadDocument()">Upload to Cloud</button>
+      <div class="dropzone" id="dropzone">
+        <div class="drop-left">
+          <div class="upload-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="drop-text">
+            <h4>Upload to Cloud Object Storage</h4>
+            <p>Drag & drop a file here or browse to sync with PostgreSQL</p>
+          </div>
+        </div>
+
+        <div class="drop-controls">
+          <input type="file" id="fileInput" />
+          <button class="btn btn-primary" id="uploadBtn" onclick="uploadDocument()">Upload File</button>
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>File Name</th>
-            <th>MIME Type</th>
-            <th>Size</th>
-            <th>Uploaded (UTC)</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="docTableBody">
-          <tr><td colspan="5" style="color:var(--muted); text-align:center;">No documents stored yet. Upload a file above.</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Asset Name</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Timestamp</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="docTableBody">
+            <tr><td colspan="5" class="empty-state">No files uploaded yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
 
   <footer>
-    CloudVault M.Sc. IT Cloud Computing Mini-Project • Compute • Storage • Database • Networking • Security
+    CloudVault • Serverless Compute • S3 Object Storage • Managed PostgreSQL • Edge CDN • Row-Level Security
   </footer>
 
   <script>
-    // OPTIONAL: Hardcode your Supabase credentials here once created so visitors don't need to enter them:
-    const DEFAULT_SUPABASE_URL = "https://nnhktqaxrhwotcqeaqdp.supabase.co";
-    const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_8yqtlBDzJWwFl7wpDhebMQ_2W9B_jjV";
+    const SUPABASE_URL = "https://nnhktqaxrhwotcqeaqdp.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_8yqtlBDzJWwFl7wpDhebMQ_2W9B_jjV";
 
-    let supabaseClient = null;
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
 
     function showBanner(msg, isError = false) {
       const b = document.getElementById('banner');
       b.textContent = msg;
-      b.className = isError ? 'alert error' : 'alert';
+      b.className = isError ? 'toast error' : 'toast';
       b.classList.remove('hidden');
-      setTimeout(() => b.classList.add('hidden'), 6000);
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => b.classList.add('hidden'), 5000);
     }
 
     async function checkServerlessCompute() {
       try {
         const res = await fetch('/api/status');
-        if (!res.ok) throw new Error('Local static preview');
+        if (!res.ok) throw new Error();
         const data = await res.json();
         document.getElementById('computeText').textContent =
-          `Compute Online • ${data.region} (${data.latencyMs}ms)`;
-      } catch (e) {
-        document.getElementById('computeText').textContent = 'Edge CDN Ready • HTTPS/TLS 1.3';
+          `Edge Online • ${data.region} (${data.latencyMs}ms)`;
+      } catch {
+        document.getElementById('computeText').textContent = 'Edge CDN Active • TLS 1.3';
       }
-    }
-
-    function initSupabase(url, key) {
-      if (!url || !key) return false;
-      supabaseClient = window.supabase.createClient(url, key);
-      document.getElementById('configCard').classList.add('hidden');
-      document.getElementById('authCard').classList.remove('hidden');
-      checkSession();
-      return true;
-    }
-
-    function saveCloudConfig() {
-      const url = document.getElementById('sbUrl').value.trim();
-      const key = document.getElementById('sbKey').value.trim();
-      if (!url.startsWith('https://') || key.length < 20) {
-        showBanner('Please enter a valid Supabase Project URL and Anon Public Key.', true);
-        return;
-      }
-      localStorage.setItem('cv_sb_url', url);
-      localStorage.setItem('cv_sb_key', key);
-      initSupabase(url, key);
-      showBanner('Connected to Supabase PostgreSQL & Object Storage.');
     }
 
     async function checkSession() {
@@ -293,24 +740,29 @@
     async function handleSignUp() {
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value;
+      if (!email || !password) return showBanner('Enter both email and password.', true);
+
       const { data, error } = await supabaseClient.auth.signUp({ email, password });
       if (error) return showBanner(error.message, true);
       if (data.session) {
         currentUser = data.user;
         onAuthenticated();
+        showBanner('Tenant account created & authenticated.');
       } else {
-        showBanner('Account created! Check your email for confirmation or disable email confirmation in Supabase Auth settings.');
+        showBanner('Account created! Click Sign In to continue.');
       }
     }
 
     async function handleSignIn() {
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value;
+      if (!email || !password) return showBanner('Enter both email and password.', true);
+
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
       if (error) return showBanner(error.message, true);
       currentUser = data.user;
       onAuthenticated();
-      showBanner('Authenticated via JWT. Row-Level Security active.');
+      showBanner('Authenticated via JWT • Row-Level Security active.');
     }
 
     async function handleSignOut() {
@@ -323,7 +775,7 @@
     async function uploadDocument() {
       const input = document.getElementById('fileInput');
       const file = input.files[0];
-      if (!file) return showBanner('Please select a file first.', true);
+      if (!file) return showBanner('Select a file first.', true);
 
       const btn = document.getElementById('uploadBtn');
       btn.disabled = true;
@@ -331,13 +783,11 @@
 
       try {
         const storagePath = `${currentUser.id}/${Date.now()}_${file.name}`;
-        // 1. Upload binary object to Storage Bucket
         const { error: uploadErr } = await supabaseClient.storage
           .from('vault-files')
           .upload(storagePath, file);
         if (uploadErr) throw uploadErr;
 
-        // 2. Insert structured metadata into Managed PostgreSQL
         const { error: dbErr } = await supabaseClient.from('documents').insert({
           user_id: currentUser.id,
           file_name: file.name,
@@ -348,13 +798,13 @@
         if (dbErr) throw dbErr;
 
         input.value = '';
-        showBanner(`Uploaded "${file.name}" to Object Storage & synced PostgreSQL metadata.`);
+        showBanner(`Stored "${file.name}" in Object Bucket & synced PostgreSQL.`);
         loadDocuments();
       } catch (err) {
         showBanner(err.message || 'Upload failed.', true);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Upload to Cloud';
+        btn.textContent = 'Upload File';
       }
     }
 
@@ -365,27 +815,42 @@
         .order('created_at', { ascending: false });
 
       if (error) return showBanner(error.message, true);
+
       const tbody = document.getElementById('docTableBody');
-      if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted); text-align:center;">No documents stored yet. Upload a file above.</td></tr>';
+      const list = data || [];
+      document.getElementById('statCount').textContent = list.length;
+      const totalBytes = list.reduce((sum, d) => sum + (d.file_size || 0), 0);
+      document.getElementById('statSize').textContent = formatBytes(totalBytes);
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No files in your vault yet. Drop or select a file above to upload.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = data.map(doc => `
+      tbody.innerHTML = list.map(doc => `
         <tr>
-          <td><strong>${escapeHtml(doc.file_name)}</strong></td>
-          <td><span class="badge">${escapeHtml(doc.mime_type)}</span></td>
-          <td>${formatBytes(doc.file_size)}</td>
-          <td>${new Date(doc.created_at).toLocaleString()}</td>
-          <td class="row-actions">
-            <button class="btn btn-outline btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
-            <button class="btn btn-danger" onclick="deleteDoc('${doc.id}', '${doc.storage_path}')">Delete</button>
+          <td>
+            <div class="file-cell">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span>${escapeHtml(doc.file_name)}</span>
+            </div>
+          </td>
+          <td><span class="mime-badge">${escapeHtml(doc.mime_type)}</span></td>
+          <td class="mono-dim">${formatBytes(doc.file_size)}</td>
+          <td class="mono-dim">${new Date(doc.created_at).toLocaleString()}</td>
+          <td>
+            <div class="action-group">
+              <button class="btn btn-ghost btn-sm" onclick="downloadDoc('${doc.storage_path}')">Download</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteDoc('${doc.id}', '${doc.storage_path}')">Delete</button>
+            </div>
           </td>
         </tr>
       `).join('');
     }
 
-    async function downloadDoc(path, fileName) {
+    async function downloadDoc(path) {
       const { data, error } = await supabaseClient.storage.from('vault-files').createSignedUrl(path, 60);
       if (error) return showBanner(error.message, true);
       window.open(data.signedUrl, '_blank');
@@ -395,7 +860,7 @@
       await supabaseClient.storage.from('vault-files').remove([path]);
       const { error } = await supabaseClient.from('documents').delete().eq('id', id);
       if (error) return showBanner(error.message, true);
-      showBanner('Document deleted from Storage & PostgreSQL.');
+      showBanner('Removed from Object Storage & PostgreSQL.');
       loadDocuments();
     }
 
@@ -410,11 +875,23 @@
       return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     }
 
+    // Drag & drop support
+    const dropzone = document.getElementById('dropzone');
+    ['dragenter', 'dragover'].forEach(evt => {
+      dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    });
+    ['dragleave', 'drop'].forEach(evt => {
+      dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+    });
+    dropzone.addEventListener('drop', e => {
+      if (e.dataTransfer.files.length) {
+        document.getElementById('fileInput').files = e.dataTransfer.files;
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
       checkServerlessCompute();
-      const url = DEFAULT_SUPABASE_URL || localStorage.getItem('cv_sb_url');
-      const key = DEFAULT_SUPABASE_ANON_KEY || localStorage.getItem('cv_sb_key');
-      if (url && key) initSupabase(url, key);
+      checkSession();
     });
   </script>
 </body>
