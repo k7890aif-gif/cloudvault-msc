@@ -49,6 +49,7 @@
     .hidden { display: none !important; }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
+    /* ================= CLICK RIPPLE & SOUND PULSE ================= */
     .ripple-circle {
       position: fixed;
       border-radius: 50%;
@@ -64,6 +65,7 @@
       100% { width: 140px; height: 140px; opacity: 0; transform: translate(-50%, -50%) scale(1.25); }
     }
 
+    /* ================= ANIMATED HEADER & SITE NAME ================= */
     .topbar {
       position: sticky;
       top: 0;
@@ -120,7 +122,11 @@
       animation: shimmerText 4.5s linear infinite;
     }
 
-    .top-right-controls { display: flex; align-items: center; gap: 0.6rem; }
+    .top-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
 
     .coin-hud {
       display: inline-flex;
@@ -177,6 +183,7 @@
       50% { transform: translateY(-3px) rotate(4deg); }
     }
 
+    /* ================= PAGE TRANSITION ANIMATIONS ================= */
     @keyframes pageEnter {
       0% { opacity: 0; transform: translateY(18px) scale(0.98); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -187,8 +194,11 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
-    .animate-page { animation: pageEnter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .animate-page {
+      animation: pageEnter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
 
+    /* ================= BUTTONS ================= */
     .btn {
       position: relative;
       display: inline-flex;
@@ -230,12 +240,15 @@
     }
 
     .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
     .btn-ghost { background: transparent; color: var(--text-muted); }
     .btn-ghost:hover { background: rgba(15, 23, 42, 0.05); color: var(--text-main); }
+
     .btn-danger { background: #fff1f2; border-color: #fecdd3; color: var(--danger); }
     .btn-danger-solid { background: linear-gradient(135deg, #e11d48, #be123c); color: #fff; }
     .btn-sm { padding: 0.44rem 0.85rem; font-size: 0.8rem; border-radius: 10px; }
 
+    /* ================= TOAST ================= */
     .toast-wrap {
       position: fixed;
       bottom: 1.35rem;
@@ -261,6 +274,7 @@
 
     .toast.error { border-left-color: var(--danger); background: #fff1f2; color: #9f1239; }
 
+    /* ================= BLUR WELCOME OVERLAY ON LOGIN / SIGNUP ================= */
     .blur-welcome-overlay {
       position: fixed;
       inset: 0;
@@ -308,8 +322,13 @@
       animation: shimmerText 3s linear infinite;
     }
 
-    .blur-welcome-card p { margin-top: 0.55rem; color: var(--text-muted); font-size: 0.95rem; }
+    .blur-welcome-card p {
+      margin-top: 0.55rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
 
+    /* ================= REALISTIC ANIMATED DRUMS STAGE (LOGIN & SIGNUP BG) ================= */
     .auth-stage {
       position: relative;
       min-height: calc(100vh - 68px);
@@ -332,7 +351,12 @@
       opacity: 0.92;
     }
 
-    .drum-hero-banner { position: relative; z-index: 3; text-align: center; margin-bottom: 1.2rem; }
+    .drum-hero-banner {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
 
     .drum-100mb-text {
       font-family: 'Space Grotesk', sans-serif;
@@ -363,8 +387,14 @@
       width: 100%;
     }
 
-    .drum-unit { position: relative; display: flex; flex-direction: column; align-items: center; }
+    .drum-unit {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
+    /* Cymbal */
     .cymbal {
       width: 130px;
       height: 18px;
@@ -376,7 +406,12 @@
       margin-bottom: 4px;
     }
 
-    .cymbal-stand { width: 6px; height: 130px; background: linear-gradient(180deg, #cbd5e1, #64748b); border-radius: 99px; }
+    .cymbal-stand {
+      width: 6px;
+      height: 130px;
+      background: linear-gradient(180deg, #cbd5e1, #64748b);
+      border-radius: 99px;
+    }
 
     @keyframes cymbalWobble {
       0%, 100% { transform: rotate(-5deg) scale(1); }
@@ -385,6 +420,7 @@
       75% { transform: rotate(4deg) scale(1.02); }
     }
 
+    /* Drum Cylinder (Snare & Tom) */
     .drum-shell {
       position: relative;
       border-radius: 14px;
@@ -452,6 +488,7 @@
       60% { transform: scale(0.98); }
     }
 
+    /* Animated Drumsticks */
     .drumstick {
       position: absolute;
       top: -54px;
@@ -488,6 +525,7 @@
       35% { transform: rotate(-22deg); }
     }
 
+    /* Floating auth card over drum stage */
     .auth-card {
       position: relative;
       z-index: 5;
@@ -543,6 +581,7 @@
     .link-btn { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; font-size: inherit; }
     .link-btn:hover { text-decoration: underline; }
 
+    /* ================= LANDING HERO ================= */
     .welcome-screen { max-width: 980px; margin: 3.5rem auto; padding: 0 1.5rem; text-align: center; }
     .welcome-pill {
       display: inline-flex; align-items: center; gap: 0.5rem;
@@ -584,6 +623,7 @@
       border: 1px solid var(--border); padding: 0.42rem 0.9rem; border-radius: 999px; box-shadow: var(--shadow-sm);
     }
 
+    /* ================= 10+ PAGE DASHBOARD SHELL ================= */
     .app-shell {
       max-width: 1360px; margin: 0 auto; padding: 1.5rem;
       display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; align-items: start;
@@ -656,7 +696,13 @@
       padding: 1.3rem; margin-bottom: 1.35rem;
     }
 
-    .coin-arena { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.4rem; }
+    /* ================= DAILY VAULT COIN & +10MB EXPANDER ANIMATIONS ================= */
+    .coin-arena {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.4rem;
+    }
     @media (max-width: 780px) { .coin-arena { grid-template-columns: 1fr; } }
 
     .coin-machine-card {
@@ -696,7 +742,9 @@
       animation: coinFloatSpin 3.6s ease-in-out infinite;
     }
 
-    .vault-coin-3d.burst { animation: coinBurst 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .vault-coin-3d.burst {
+      animation: coinBurst 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
     @keyframes coinFloatSpin {
       0%, 100% { transform: translateY(0px) rotateY(0deg); }
@@ -721,13 +769,16 @@
       pointer-events: none;
     }
 
-    .floating-plus-coin.fly { animation: plusFlyUp 1.1s ease-out forwards; }
+    .floating-plus-coin.fly {
+      animation: plusFlyUp 1.1s ease-out forwards;
+    }
 
     @keyframes plusFlyUp {
       0% { opacity: 1; transform: translateY(8px) scale(0.8); }
       100% { opacity: 0; transform: translateY(-34px) scale(1.25); }
     }
 
+    /* Tables, Grids, Modals */
     .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 16px; background: #fff; }
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     th { text-align: left; padding: 0.8rem 0.95rem; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); background: var(--surface-soft); border-bottom: 1px solid var(--border); }
@@ -755,10 +806,105 @@
     .warning-banner { background: #fff1f2; border: 1px solid #fda4af; color: #9f1239; padding: 0.85rem 1rem; border-radius: 12px; font-size: 0.84rem; margin: 0.85rem 0 1.1rem; }
 
     .quick-note-area { width: 100%; min-height: 170px; padding: 1rem; border-radius: 14px; border: 1px solid var(--border); background: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; resize: vertical; }
+
+    /* ================= VAULTSTORAGE-INSPIRED HOME SHOWCASE (NON-DESTRUCTIVE) ================= */
+    .vault-home-band {
+      max-width: 1360px;
+      margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+    }
+
+    .vs-hero-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.75rem;
+      align-items: center;
+      margin-bottom: 1.35rem;
+    }
+
+    @media (max-width: 920px) {
+      .vs-hero-card { grid-template-columns: 1fr; padding: 1.4rem; }
+    }
+
+    .vs-hero-card h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.85rem, 3.8vw, 2.85rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      margin: 0.65rem 0 0.8rem;
+    }
+
+    .vs-hero-card p.vs-lead {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .vs-mini-preview {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.25rem;
+    }
+
+    .vs-strip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.95rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .vs-info-tile {
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.15rem 1.25rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+    }
+
+    .vs-info-tile:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+    }
+
+    .vs-info-tile h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .vs-info-tile p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .vs-cta-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 1.65rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+    }
   </style>
 </head>
 <body>
 
+  <!-- TOP BAR WITH ANIMATED HARSHAL CODE VAULT + SOUND TOGGLE + COIN HUD -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="animated-brand" onclick="goHome()">
@@ -785,10 +931,82 @@
 
   <div id="toastWrap" class="toast-wrap"></div>
 
+  <!-- BLUR WELCOME OVERLAY ON SIGN IN / CREATE ACCOUNT -->
   <div id="blurWelcomeOverlay" class="blur-welcome-overlay hidden">
     <div class="blur-welcome-card">
       <h2 id="blurWelcomeTitle">Welcome</h2>
       <p id="blurWelcomeSub">Preparing your workspace...</p>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 1: WELCOME / CHOICE SCREEN ==================== -->
+  <!-- VAULTSTORAGE-STYLE HOME SHOWCASE AT TOP OF PAGE 1 (KEEPS ALL EXISTING FEATURES INTACT) -->
+  <div id="vaultHomeShowcase" class="vault-home-band animate-page">
+    <div class="vs-hero-card">
+      <div>
+        <span class="welcome-pill" style="margin-bottom:0.25rem;">Harshal Code Vault • 100 MB Base + Daily Vault Coins</span>
+        <h1>Every important file and asset, organized in <span>one vault</span>.</h1>
+        <p class="vs-lead">
+          Keep your project files, PDFs, images, and notes in a private workspace with 100 MB
+          starter storage, daily Vault Coins (+1 coin/day), and +10 MB boosts for every 10 coins.
+        </p>
+        <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="openAuthPage('register')">Create Free Account</button>
+          <button class="btn btn-outline" onclick="openAuthPage('login')">Sign In</button>
+        </div>
+      </div>
+
+      <div class="vs-mini-preview">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:0.75rem; border-bottom:1px solid var(--border); margin-bottom:0.75rem;">
+          <div>
+            <strong style="font-size:0.95rem;">Vault Snapshot</strong>
+            <div class="mono" style="font-size:0.74rem; color:var(--text-muted);">100 MB Base • +10 MB / 10 Coins</div>
+          </div>
+          <span class="mono" style="background:#fffbeb; border:1px solid #fcd34d; color:#92400e; padding:0.22rem 0.65rem; border-radius:999px; font-size:0.75rem; font-weight:700;">Vault Coins</span>
+        </div>
+        <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:0.65rem 0.8rem; margin-bottom:0.55rem; font-size:0.84rem;">
+          <strong>Documents, Images & Archives</strong>
+          <div class="mono" style="font-size:0.73rem; color:var(--text-muted);">Search, sort, star, list/grid & 1-hour links</div>
+        </div>
+        <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:0.65rem 0.8rem; font-size:0.84rem;">
+          <strong style="color:#92400e;">Daily Vault Coin Reward</strong>
+          <div style="font-size:0.77rem; color:#b45309;">Collect 1 coin per day after login • 10 coins = +10 MB</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-strip-grid">
+      <div class="vs-info-tile">
+        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">STEP 01</span>
+        <h3>Create Account</h3>
+        <p>Start immediately with 100 MB of personal cloud storage.</p>
+      </div>
+      <div class="vs-info-tile">
+        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">STEP 02</span>
+        <h3>Upload & Organize</h3>
+        <p>Batch drag-and-drop uploads, starred files, rename & share links.</p>
+      </div>
+      <div class="vs-info-tile">
+        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">STEP 03</span>
+        <h3>Collect Vault Coins</h3>
+        <p>Earn 1 Vault Coin daily and spend 10 coins to add +10 MB.</p>
+      </div>
+      <div class="vs-info-tile">
+        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">CONTROL</span>
+        <h3>Full Account Control</h3>
+        <p>View activity logs, switch themes, or delete your account anytime.</p>
+      </div>
+    </div>
+
+    <div class="vs-cta-banner">
+      <div>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.35rem; font-weight:800;">Ready to enter Harshal Code Vault?</h3>
+        <p style="color:#cbd5e1; font-size:0.88rem; margin-top:0.2rem;">Choose Sign In or Create Account below to launch the animated drums stage and workspace.</p>
+      </div>
+      <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" onclick="openAuthPage('register')">Create Account</button>
+        <button class="btn btn-outline btn-sm" onclick="openAuthPage('login')">Sign In</button>
+      </div>
     </div>
   </div>
 
@@ -834,6 +1052,7 @@
     </div>
   </section>
 
+  <!-- ==================== PAGE 2: SIGN IN WITH ANIMATED DRUMS + "100MB for You!" ==================== -->
   <section id="pageLogin" class="auth-stage hidden">
     <div class="drum-backdrop">
       <div class="drum-hero-banner">
@@ -898,6 +1117,7 @@
     </div>
   </section>
 
+  <!-- ==================== PAGE 3: CREATE ACCOUNT WITH ANIMATED DRUMS + "100MB for You!" ==================== -->
   <section id="pageRegister" class="auth-stage hidden">
     <div class="drum-backdrop">
       <div class="drum-hero-banner">
@@ -973,6 +1193,7 @@
     </div>
   </section>
 
+  <!-- ==================== PAGE 4+: 10+ MULTI-VIEW WORKSPACE ==================== -->
   <section id="pageApp" class="app-shell hidden">
     <aside class="sidebar animate-page">
       <div class="user-mini">
@@ -1017,6 +1238,7 @@
     </aside>
 
     <div class="main-view animate-page">
+      <!-- 1. OVERVIEW -->
       <div id="view-overview" class="subview animate-page">
         <div class="view-header">
           <div>
@@ -1067,6 +1289,7 @@
         </div>
       </div>
 
+      <!-- 2 & 3. MY FILES / STARRED -->
       <div id="view-files" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1113,6 +1336,7 @@
         <div id="explorerGridWrap" class="files-grid hidden"></div>
       </div>
 
+      <!-- 4. UPLOAD CENTER -->
       <div id="view-upload" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1140,6 +1364,7 @@
         </div>
       </div>
 
+      <!-- 5. DAILY VAULT COINS PAGE -->
       <div id="view-coins" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1175,6 +1400,7 @@
         </div>
       </div>
 
+      <!-- 6. EXPAND +10MB PAGE (10 COINS = +10 MB) -->
       <div id="view-expand" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1206,6 +1432,7 @@
         </div>
       </div>
 
+      <!-- 7. FILE CATEGORIES PAGE -->
       <div id="view-categories" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1221,6 +1448,7 @@
         </div>
       </div>
 
+      <!-- 8. QUICK SCRATCHPAD PAGE -->
       <div id="view-notes" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1232,6 +1460,7 @@
         <textarea id="scratchpadArea" class="quick-note-area" placeholder="Write quick notes here..."></textarea>
       </div>
 
+      <!-- 9. ACTIVITY LOG PAGE -->
       <div id="view-activity" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1248,6 +1477,7 @@
         </div>
       </div>
 
+      <!-- 10. SECURITY & QUOTA PAGE -->
       <div id="view-security" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1264,6 +1494,7 @@
         </div>
       </div>
 
+      <!-- 11. THEME & ACCOUNT SETTINGS (WITH DELETE ACCOUNT WARNING) -->
       <div id="view-settings" class="subview hidden animate-page">
         <div class="view-header">
           <div>
@@ -1296,6 +1527,7 @@
     </div>
   </section>
 
+  <!-- FILE INSPECTOR MODAL -->
   <div id="inspectorModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeInspector()">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem;">
@@ -1306,6 +1538,7 @@
     </div>
   </div>
 
+  <!-- DELETE ACCOUNT WARNING MODAL -->
   <div id="deleteAccountModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeDeleteAccountModal()">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1335,8 +1568,8 @@
   <script>
     const SUPABASE_URL = "https://nnhktqaxrhwotcqeaqdp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_8yqtlBDzJWwFl7wpDhebMQ_2W9B_jjV";
-    const BASE_QUOTA_BYTES = 100 * 1024 * 1024;
-    const EXPAND_STEP_BYTES = 10 * 1024 * 1024;
+    const BASE_QUOTA_BYTES = 100 * 1024 * 1024; // 100 MB starter
+    const EXPAND_STEP_BYTES = 10 * 1024 * 1024; // +10 MB per expansion
     const COIN_COST_FOR_10MB = 10;
     const MAX_SINGLE_FILE_BYTES = 50 * 1024 * 1024;
 
@@ -1353,6 +1586,7 @@
     let activityLogs = JSON.parse(localStorage.getItem('hcv_activity') || '[]');
     let economy = { vault_coins: 0, bonus_quota_bytes: 0, last_claim_date: '' };
 
+    /* ---------- Web Audio Click Sound Synthesizer ---------- */
     function playClickSound(freq = 540, type = 'sine', duration = 0.07) {
       if (!soundEnabled) return;
       try {
@@ -1384,6 +1618,7 @@
       if (soundEnabled) playClickSound(620, 'sine', 0.08);
     }
 
+    /* ---------- Global Click Ripple + Sound ---------- */
     document.addEventListener('click', (e) => {
       playClickSound(480, 'sine', 0.055);
       const ripple = document.createElement('span');
@@ -1394,6 +1629,7 @@
       setTimeout(() => ripple.remove(), 640);
     });
 
+    /* ---------- Toast & Activity ---------- */
     function showToast(msg, isError = false) {
       const wrap = document.getElementById('toastWrap');
       const el = document.createElement('div');
@@ -1414,6 +1650,7 @@
       return new Date().toISOString().slice(0, 10);
     }
 
+    /* ---------- Blur Welcome Overlay ("Welcome back @username" / "Welcome to harshal code vault @name") ---------- */
     function showBlurWelcome(headingText, subText, onComplete) {
       const overlay = document.getElementById('blurWelcomeOverlay');
       document.getElementById('blurWelcomeTitle').textContent = headingText;
@@ -1426,10 +1663,15 @@
       }, 1750);
     }
 
+    /* ---------- Top-Level Routing ---------- */
     function showTopPage(page) {
       ['pageWelcome', 'pageLogin', 'pageRegister', 'pageApp'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
+      const homeShowcase = document.getElementById('vaultHomeShowcase');
+      if (homeShowcase) {
+        homeShowcase.classList.toggle('hidden', page !== 'welcome');
+      }
       const map = { welcome: 'pageWelcome', login: 'pageLogin', register: 'pageRegister', app: 'pageApp' };
       const target = document.getElementById(map[page]);
       target.classList.remove('hidden');
@@ -1468,6 +1710,7 @@
       fill.style.background = score < 40 ? '#e11d48' : score < 75 ? '#d97706' : '#059669';
     }
 
+    /* ---------- Auth Handlers ---------- */
     async function checkSession() {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session && session.user) {
@@ -1559,6 +1802,7 @@
       showTopPage('welcome');
     }
 
+    /* ---------- Vault Coins & +10MB Economy ---------- */
     async function initUserEconomy() {
       const { data, error } = await supabaseClient
         .from('user_vault_economy')
@@ -1697,6 +1941,7 @@
       showToast('Expanded your storage by +10 MB!');
     }
 
+    /* ---------- Workspace & Sub-Views ---------- */
     function enterWorkspace() {
       const name = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
       document.getElementById('sidebarUserName').textContent = name;
