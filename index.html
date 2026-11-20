@@ -3,1303 +3,1000 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> Code Vault</title>
+  <title>Code Vault</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-page: #f3f6fc;
-      --surface: rgba(255, 255, 255, 0.9);
-      --surface-solid: #ffffff;
+      --bg-page: #f4f6f9;
+      --surface: #ffffff;
       --surface-soft: #f1f5f9;
-      --border: rgba(15, 23, 42, 0.09);
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
       --text-main: #0f172a;
-      --text-muted: #64748b;
-      --primary: #4f46e5;
-      --primary-2: #0ea5e9;
-      --accent-pink: #ec4899;
-      --coin-gold: #f59e0b;
+      --text-muted: #475569;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #7dd3fc;
+      --coin-bg: #facc15;
+      --coin-text: #422006;
       --success: #059669;
-      --danger: #e11d48;
-      --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.05);
-      --shadow-lg: 0 24px 55px -12px rgba(15, 23, 42, 0.13);
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --danger-border: #fecaca;
+      --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 10px 28px rgba(15, 23, 42, 0.08);
     }
 
-    body.theme-ocean { --primary: #0284c7; --primary-2: #06b6d4; }
-    body.theme-emerald { --primary: #059669; --primary-2: #10b981; }
-    body.theme-sunset { --primary: #e11d48; --primary-2: #f97316; }
+    body.theme-indigo {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --primary-border: #a5b4fc;
+    }
+
+    body.theme-emerald {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #6ee7b7;
+    }
+
+    body.theme-slate {
+      --primary: #1e293b;
+      --primary-hover: #0f172a;
+      --primary-light: #e2e8f0;
+      --primary-border: #94a3b8;
+    }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background-color: var(--bg-page);
-      background-image:
-        radial-gradient(circle at 12% 10%, rgba(79, 70, 229, 0.14), transparent 38%),
-        radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.14), transparent 40%),
-        radial-gradient(circle at 50% 92%, rgba(236, 72, 153, 0.10), transparent 44%);
       color: var(--text-main);
       min-height: 100vh;
-      line-height: 1.55;
+      line-height: 1.5;
       overflow-x: hidden;
     }
 
     .hidden { display: none !important; }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* ================= CLICK RIPPLE & SOUND PULSE ================= */
+    /* Click Ripple */
     .ripple-circle {
       position: fixed;
       border-radius: 50%;
       pointer-events: none;
       transform: translate(-50%, -50%) scale(0);
-      background: radial-gradient(circle, rgba(79, 70, 229, 0.36) 0%, rgba(14, 165, 233, 0.14) 60%, transparent 100%);
-      animation: clickPulse 0.62s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      background: rgba(2, 132, 199, 0.18);
+      animation: clickPulse 0.5s ease-out forwards;
       z-index: 9999;
     }
-
     @keyframes clickPulse {
-      0% { width: 0px; height: 0px; opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
-      100% { width: 140px; height: 140px; opacity: 0; transform: translate(-50%, -50%) scale(1.25); }
+      0% { width: 0; height: 0; opacity: 0.85; transform: translate(-50%, -50%) scale(0.2); }
+      100% { width: 110px; height: 110px; opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
     }
 
-    /* ================= ANIMATED HEADER & SITE NAME ================= */
+    @keyframes pageEnter {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-page { animation: pageEnter 0.3s ease both; }
+
+    /* Top Header */
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 60;
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(18px);
+      z-index: 80;
+      background: var(--surface);
       border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
     }
 
     .topbar-inner {
       max-width: 1360px;
       margin: 0 auto;
-      padding: 0.9rem 1.5rem;
+      padding: 0.85rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
     }
 
-    .animated-brand {
+    .brand-btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.72rem;
+      gap: 0.65rem;
+      background: none;
+      border: none;
       cursor: pointer;
-      user-select: none;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      color: var(--text-main);
     }
 
-    .animated-brand:hover { transform: scale(1.03); }
-    .animated-brand:active { transform: scale(0.95); }
-
-    .brand-orb {
-      width: 40px;
-      height: 40px;
-      border-radius: 13px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2), var(--accent-pink));
-      background-size: 220% 220%;
-      animation: gradientFlow 4s ease infinite, floatOrb 3s ease-in-out infinite;
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #ffffff;
       display: grid;
       place-items: center;
-      color: #fff;
-      box-shadow: 0 8px 22px rgba(79, 70, 229, 0.3);
     }
 
-    .brand-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
+    .brand-name {
+      font-size: 1.28rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      background: linear-gradient(90deg, #4f46e5, #0ea5e9, #ec4899, #4f46e5);
-      background-size: 250% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmerText 4.5s linear infinite;
     }
 
-    .top-right-controls {
+    .top-actions {
       display: flex;
       align-items: center;
       gap: 0.6rem;
-    }
-
-    .coin-hud {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.42rem 0.9rem;
-      border-radius: 999px;
-      background: #fffbeb;
-      border: 1.5px solid #fcd34d;
-      color: #92400e;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .coin-hud:hover { transform: scale(1.05); }
-    .coin-hud:active { transform: scale(0.95); }
-
-    .spinning-coin {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
-      color: #78350f;
-      font-size: 0.72rem;
-      font-weight: 800;
-      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.45);
-      animation: coinSpin 3.4s linear infinite;
-    }
-
-    @keyframes coinSpin {
-      0% { transform: rotateY(0deg); }
-      50% { transform: rotateY(180deg); }
-      100% { transform: rotateY(360deg); }
-    }
-
-    @keyframes shimmerText {
-      0% { background-position: 0% center; }
-      100% { background-position: 250% center; }
-    }
-
-    @keyframes gradientFlow {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    @keyframes floatOrb {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-3px) rotate(4deg); }
-    }
-
-    /* ================= PAGE TRANSITION ANIMATIONS ================= */
-    @keyframes pageEnter {
-      0% { opacity: 0; transform: translateY(18px) scale(0.98); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.9); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    .animate-page {
-      animation: pageEnter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    /* ================= BUTTONS ================= */
-    .btn {
       position: relative;
+    }
+
+    .coin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 10px;
+      background: var(--coin-bg);
+      color: var(--coin-text);
+      font-size: 0.84rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Notification Bell & Dropdown */
+    .bell-wrap { position: relative; }
+
+    .bell-btn {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .bell-btn:hover { background: var(--primary-light); border-color: var(--primary-border); color: var(--primary); }
+
+    .bell-dot {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--danger);
+      color: #ffffff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      border: 2px solid #ffffff;
+    }
+
+    .notif-dropdown {
+      position: absolute;
+      top: 46px;
+      right: 0;
+      width: 350px;
+      max-width: 90vw;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      box-shadow: var(--shadow-md);
+      z-index: 120;
+      overflow: hidden;
+    }
+
+    .notif-head {
+      padding: 0.85rem 1rem;
+      background: var(--surface-soft);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .notif-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .notif-item {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item strong { display: block; color: var(--text-main); }
+    .notif-item span { color: var(--text-muted); font-size: 0.78rem; }
+    .notif-time { float: right; font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+    /* Buttons */
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.48rem;
-      padding: 0.74rem 1.3rem;
-      border-radius: 13px;
+      gap: 0.45rem;
+      padding: 0.65rem 1.15rem;
+      border-radius: 10px;
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
-      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
     }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .btn:hover { transform: translateY(-2px); }
-    .btn:active { transform: scale(0.93); }
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-hover); }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #ffffff;
-      box-shadow: 0 8px 22px rgba(79, 70, 229, 0.25);
-    }
+    .btn-soft { background: var(--primary-light); color: var(--primary); border-color: var(--primary-border); }
+    .btn-soft:hover { background: #bae6fd; }
 
-    .btn-gold {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #451a03;
-      font-weight: 700;
-      box-shadow: 0 8px 22px rgba(245, 158, 11, 0.3);
-    }
-
-    .btn-outline {
-      background: var(--surface-solid);
-      border-color: var(--border);
-      color: var(--text-main);
-      box-shadow: var(--shadow-sm);
-    }
-
+    .btn-outline { background: var(--surface); color: var(--text-main); border-color: var(--border-strong); }
     .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
 
-    .btn-ghost { background: transparent; color: var(--text-muted); }
-    .btn-ghost:hover { background: rgba(15, 23, 42, 0.05); color: var(--text-main); }
+    .btn-gold { background: var(--coin-bg); color: var(--coin-text); font-weight: 700; }
+    .btn-gold:hover { background: #eab308; }
 
-    .btn-danger { background: #fff1f2; border-color: #fecdd3; color: var(--danger); }
-    .btn-danger-solid { background: linear-gradient(135deg, #e11d48, #be123c); color: #fff; }
-    .btn-sm { padding: 0.44rem 0.85rem; font-size: 0.8rem; border-radius: 10px; }
+    .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger-border); }
+    .btn-danger:hover { background: #fee2e2; }
 
-    /* ================= TOAST ================= */
+    .btn-danger-solid { background: var(--danger); color: #ffffff; }
+    .btn-danger-solid:hover { background: #b91c1c; }
+
+    .btn-sm { padding: 0.42rem 0.8rem; font-size: 0.8rem; border-radius: 8px; }
+
+    /* Toast */
     .toast-wrap {
       position: fixed;
-      bottom: 1.35rem;
-      right: 1.35rem;
+      bottom: 1.25rem;
+      right: 1.25rem;
       z-index: 250;
       display: flex;
       flex-direction: column;
-      gap: 0.55rem;
-      max-width: 390px;
+      gap: 0.5rem;
+      max-width: 360px;
     }
-
     .toast {
-      padding: 0.9rem 1.15rem;
-      border-radius: 14px;
-      font-size: 0.86rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
       font-weight: 600;
-      background: #ffffff;
-      border-left: 4px solid var(--primary);
-      color: var(--text-main);
-      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
-      animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: #0f172a;
+      color: #ffffff;
+      box-shadow: var(--shadow-md);
     }
+    .toast.error { background: var(--danger); }
 
-    .toast.error { border-left-color: var(--danger); background: #fff1f2; color: #9f1239; }
-
-    /* ================= BLUR WELCOME OVERLAY ON LOGIN / SIGNUP ================= */
-    .blur-welcome-overlay {
+    /* Blur Welcome Overlay */
+    .blur-overlay {
       position: fixed;
       inset: 0;
       z-index: 300;
-      background: rgba(15, 23, 42, 0.42);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: rgba(15, 23, 42, 0.35);
+      backdrop-filter: blur(12px);
       display: grid;
       place-items: center;
       padding: 1.5rem;
-      animation: fadeOverlay 0.25s ease forwards;
     }
-
-    @keyframes fadeOverlay {
-      from { opacity: 0; backdrop-filter: blur(0px); }
-      to { opacity: 1; backdrop-filter: blur(18px); }
-    }
-
-    .blur-welcome-card {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 28px;
-      padding: 2.5rem 3rem;
-      text-align: center;
-      max-width: 560px;
-      width: 100%;
-      box-shadow: 0 30px 70px rgba(15, 23, 42, 0.3);
-      animation: welcomePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-
-    @keyframes welcomePop {
-      0% { opacity: 0; transform: scale(0.78) translateY(20px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .blur-welcome-card h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.6rem, 3.6vw, 2.35rem);
-      font-weight: 800;
-      line-height: 1.2;
-      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent-pink));
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmerText 3s linear infinite;
-    }
-
-    .blur-welcome-card p {
-      margin-top: 0.55rem;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    /* ================= REALISTIC ANIMATED DRUMS STAGE (LOGIN & SIGNUP BG) ================= */
-    .auth-stage {
-      position: relative;
-      min-height: calc(100vh - 68px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2.5rem 1.25rem;
-      overflow: hidden;
-    }
-
-    .drum-backdrop {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      opacity: 0.92;
-    }
-
-    .drum-hero-banner {
-      position: relative;
-      z-index: 3;
-      text-align: center;
-      margin-bottom: 1.2rem;
-    }
-
-    .drum-100mb-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.4rem, 6vw, 4.4rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      background: linear-gradient(90deg, #4f46e5, #0ea5e9, #ec4899, #f59e0b, #4f46e5);
-      background-size: 250% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmerText 3.2s linear infinite, badgeBounce 2.2s ease-in-out infinite;
-      filter: drop-shadow(0 10px 24px rgba(79, 70, 229, 0.2));
-    }
-
-    @keyframes badgeBounce {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(-7px) scale(1.03); }
-    }
-
-    .drum-kit-container {
-      position: relative;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 1.2rem;
-      padding: 1rem 2rem 2rem;
-      max-width: 780px;
-      width: 100%;
-    }
-
-    .drum-unit {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* Cymbal */
-    .cymbal {
-      width: 130px;
-      height: 18px;
-      border-radius: 50%;
-      background: linear-gradient(90deg, #d97706, #fde68a, #f59e0b, #fef3c7, #b45309);
-      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35), inset 0 2px 4px rgba(255,255,255,0.8);
-      transform-origin: center center;
-      animation: cymbalWobble 1.2s ease-in-out infinite;
-      margin-bottom: 4px;
-    }
-
-    .cymbal-stand {
-      width: 6px;
-      height: 130px;
-      background: linear-gradient(180deg, #cbd5e1, #64748b);
-      border-radius: 99px;
-    }
-
-    @keyframes cymbalWobble {
-      0%, 100% { transform: rotate(-5deg) scale(1); }
-      25% { transform: rotate(6deg) scale(1.04); }
-      50% { transform: rotate(-3deg) scale(1); }
-      75% { transform: rotate(4deg) scale(1.02); }
-    }
-
-    /* Drum Cylinder (Snare & Tom) */
-    .drum-shell {
-      position: relative;
-      border-radius: 14px;
-      background: linear-gradient(90deg, #1e1b4b 0%, #4338ca 28%, #6366f1 50%, #312e81 82%, #1e1b4b 100%);
-      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.25), inset 0 -6px 14px rgba(0,0,0,0.35);
-      border: 2px solid #cbd5e1;
-      overflow: visible;
-    }
-
-    .drum-head {
-      position: absolute;
-      top: -11px;
-      left: -4px;
-      right: -4px;
-      height: 22px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f1f5f9 65%, #cbd5e1 100%);
-      border: 2.5px solid #94a3b8;
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
-      animation: headHit 0.6s ease-out infinite;
-    }
-
-    .snare-shell { width: 136px; height: 78px; animation: drumBounce 0.6s ease-out infinite; }
-    .tom-shell { width: 122px; height: 92px; animation: drumBounce 0.8s ease-out infinite 0.2s; }
-    .kick-shell {
-      width: 175px;
-      height: 155px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #6366f1, #312e81 65%, #0f172a 100%);
-      border: 6px solid #e2e8f0;
-      box-shadow: 0 22px 45px rgba(15, 23, 42, 0.32), inset 0 0 24px rgba(0,0,0,0.5);
-      display: grid;
-      place-items: center;
-      animation: kickThump 0.5s ease-out infinite;
-    }
-
-    .kick-inner {
-      width: 138px;
-      height: 138px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 85%, #94a3b8 100%);
-      display: grid;
-      place-items: center;
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 800;
-      color: #312e81;
-      font-size: 0.9rem;
-      letter-spacing: 0.05em;
-    }
-
-    @keyframes drumBounce {
-      0%, 100% { transform: translateY(0px) scaleY(1); }
-      20% { transform: translateY(5px) scaleY(0.95); }
-      50% { transform: translateY(-2px) scaleY(1.02); }
-    }
-
-    @keyframes headHit {
-      0%, 100% { transform: scaleX(1); }
-      20% { transform: scaleX(1.04) scaleY(0.82); }
-    }
-
-    @keyframes kickThump {
-      0%, 100% { transform: scale(1); }
-      25% { transform: scale(1.06); }
-      60% { transform: scale(0.98); }
-    }
-
-    /* Animated Drumsticks */
-    .drumstick {
-      position: absolute;
-      top: -54px;
-      width: 8px;
-      height: 92px;
-      border-radius: 99px;
-      background: linear-gradient(180deg, #fde68a, #d97706);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transform-origin: bottom center;
-    }
-
-    .drumstick::after {
-      content: "";
-      position: absolute;
-      top: -5px;
-      left: -3px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #f8fafc;
-      border: 2px solid #d97706;
-    }
-
-    .stick-left { left: 26px; animation: stickStrikeLeft 0.6s ease-in-out infinite; }
-    .stick-right { right: 26px; animation: stickStrikeRight 0.6s ease-in-out infinite 0.3s; }
-
-    @keyframes stickStrikeLeft {
-      0%, 100% { transform: rotate(-28deg); }
-      35% { transform: rotate(22deg); }
-    }
-
-    @keyframes stickStrikeRight {
-      0%, 100% { transform: rotate(28deg); }
-      35% { transform: rotate(-22deg); }
-    }
-
-    /* Floating auth card over drum stage */
-    .auth-card {
-      position: relative;
-      z-index: 5;
-      width: 100%;
-      max-width: 455px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.75);
-      border-radius: 26px;
-      padding: 2.2rem;
-      box-shadow: 0 28px 65px rgba(15, 23, 42, 0.22);
-    }
-
-    .auth-top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.3rem; }
-    .auth-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 800; }
-    .auth-card p.sub { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-    .field { margin-bottom: 1.05rem; }
-    .field label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.38rem; }
-    .input-wrap { position: relative; }
-    .field input {
-      width: 100%;
-      padding: 0.75rem 0.95rem;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.92rem;
-      transition: all 0.2s ease;
-    }
-    .field input:focus {
-      outline: none;
-      background: #fff;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
-    }
-    .toggle-pass {
-      position: absolute;
-      right: 0.8rem;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 0.78rem;
-      cursor: pointer;
-    }
-    .strength-bar { height: 6px; border-radius: 99px; background: #e2e8f0; margin-top: 0.45rem; overflow: hidden; }
-    .strength-fill { height: 100%; width: 0%; transition: width 0.25s ease, background 0.25s ease; }
-    .auth-footer { margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.85rem; color: var(--text-muted); }
-    .link-btn { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; font-size: inherit; }
-    .link-btn:hover { text-decoration: underline; }
-
-    /* ================= LANDING HERO ================= */
-    .welcome-screen { max-width: 980px; margin: 3.5rem auto; padding: 0 1.5rem; text-align: center; }
-    .welcome-pill {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.42rem 1rem; border-radius: 999px; background: #fff;
-      border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-      color: var(--primary); font-size: 0.8rem; font-weight: 700; margin-bottom: 1.2rem;
-    }
-    .welcome-screen h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.2rem, 4.8vw, 3.5rem);
-      font-weight: 800; letter-spacing: -0.03em; line-height: 1.14; margin-bottom: 1rem;
-    }
-    .welcome-screen h1 span {
-      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent-pink));
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmerText 4s linear infinite;
-    }
-    .welcome-screen p.lead { max-width: 600px; margin: 0 auto 2.2rem; color: var(--text-muted); font-size: 1.04rem; }
-    .gate-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem; max-width: 740px; margin: 0 auto 2.5rem; }
-    @media (max-width: 640px) { .gate-cards { grid-template-columns: 1fr; } }
-    .gate-card {
-      background: var(--surface); backdrop-filter: blur(16px); border: 1px solid var(--border);
-      border-radius: 24px; padding: 2rem 1.8rem; text-align: left; cursor: pointer; box-shadow: var(--shadow-lg);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease;
-    }
-    .gate-card:hover { transform: translateY(-6px); border-color: var(--primary); }
-    .gate-card:active { transform: scale(0.97); }
-    .gate-icon {
-      width: 50px; height: 50px; border-radius: 15px; display: grid; place-items: center;
-      margin-bottom: 1.1rem; background: rgba(79, 70, 229, 0.1); color: var(--primary);
-    }
-    .gate-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.35rem; }
-    .gate-card p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.3rem; }
-    .feature-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
-    .f-chip {
-      font-size: 0.78rem; font-weight: 600; color: var(--text-muted); background: #fff;
-      border: 1px solid var(--border); padding: 0.42rem 0.9rem; border-radius: 999px; box-shadow: var(--shadow-sm);
-    }
-
-    /* ================= 10+ PAGE DASHBOARD SHELL ================= */
-    .app-shell {
-      max-width: 1360px; margin: 0 auto; padding: 1.5rem;
-      display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; align-items: start;
-    }
-    @media (max-width: 940px) { .app-shell { grid-template-columns: 1fr; } }
-
-    .sidebar {
-      background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px;
-      padding: 1.25rem; box-shadow: var(--shadow-lg); position: sticky; top: 5.2rem;
-    }
-
-    .user-mini {
-      padding: 0.85rem; border-radius: 16px;
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(14, 165, 233, 0.08));
-      border: 1px solid rgba(79, 70, 229, 0.16); margin-bottom: 1rem;
-    }
-    .user-mini small { display: block; font-size: 0.68rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
-    .user-mini strong { display: block; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .nav-list { display: flex; flex-direction: column; gap: 0.28rem; max-height: 410px; overflow-y: auto; padding-right: 2px; }
-    .nav-item {
-      display: flex; align-items: center; justify-content: space-between; width: 100%;
-      padding: 0.64rem 0.88rem; border-radius: 12px; background: transparent; border: 1px solid transparent;
-      color: var(--text-muted); font-family: inherit; font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; text-align: left; transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .nav-item:hover { background: var(--surface-soft); color: var(--text-main); transform: translateX(3px); }
-    .nav-item:active { transform: scale(0.96); }
-    .nav-item.active {
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff; box-shadow: 0 6px 16px rgba(79, 70, 229, 0.22);
-    }
-    .nav-item.active .nav-count { background: rgba(255,255,255,0.25); color: #fff; }
-    .nav-count {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.1rem 0.45rem;
-      border-radius: 99px; background: var(--surface-soft); color: var(--primary);
-    }
-
-    .quota-widget { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-    .quota-top { display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-    .progress-track { height: 8px; border-radius: 99px; background: #e2e8f0; overflow: hidden; }
-    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--primary-2)); transition: width 0.35s ease; }
-
-    .main-view {
-      background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px;
-      padding: 1.8rem; box-shadow: var(--shadow-lg); min-height: 560px;
-    }
-
-    .view-header {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      gap: 1rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 1.45rem;
-    }
-    .view-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.38rem; font-weight: 800; }
-    .view-header p { font-size: 0.85rem; color: var(--text-muted); }
-
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.95rem; margin-bottom: 1.45rem; }
-    @media (max-width: 1080px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 520px) { .kpi-grid { grid-template-columns: 1fr; } }
-
-    .kpi-card {
-      background: var(--surface-soft); border: 1px solid var(--border); border-radius: 17px;
-      padding: 1.1rem 1.2rem; transition: transform 0.2s ease;
-    }
-    .kpi-card:hover { transform: translateY(-3px); }
-    .kpi-card small { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
-    .kpi-card .val { font-size: 1.5rem; font-weight: 800; margin-top: 0.2rem; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
-
-    .section-card {
-      background: var(--surface-soft); border: 1px solid var(--border); border-radius: 18px;
-      padding: 1.3rem; margin-bottom: 1.35rem;
-    }
-
-    /* ================= DAILY VAULT COIN & +10MB EXPANDER ANIMATIONS ================= */
-    .coin-arena {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.25rem;
-      margin-bottom: 1.4rem;
-    }
-    @media (max-width: 780px) { .coin-arena { grid-template-columns: 1fr; } }
-
-    .coin-machine-card {
-      position: relative;
-      background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
-      border: 1.5px solid #fcd34d;
-      border-radius: 22px;
-      padding: 1.5rem;
-      overflow: hidden;
-      box-shadow: 0 14px 32px rgba(245, 158, 11, 0.14);
-    }
-
-    .expand-machine-card {
-      position: relative;
-      background: linear-gradient(145deg, #eef2ff 0%, #e0f2fe 100%);
-      border: 1.5px solid rgba(79, 70, 229, 0.28);
-      border-radius: 22px;
-      padding: 1.5rem;
-      overflow: hidden;
-      box-shadow: 0 14px 32px rgba(79, 70, 229, 0.12);
-    }
-
-    .vault-coin-3d {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fef08a, #f59e0b 65%, #b45309 100%);
-      border: 4px solid #fef3c7;
-      box-shadow: 0 10px 24px rgba(217, 119, 6, 0.35), inset 0 0 10px rgba(255,255,255,0.7);
-      display: grid;
-      place-items: center;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: #78350f;
-      margin: 0.75rem 0 1rem;
-      animation: coinFloatSpin 3.6s ease-in-out infinite;
-    }
-
-    .vault-coin-3d.burst {
-      animation: coinBurst 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes coinFloatSpin {
-      0%, 100% { transform: translateY(0px) rotateY(0deg); }
-      50% { transform: translateY(-6px) rotateY(180deg); }
-    }
-
-    @keyframes coinBurst {
-      0% { transform: scale(1) rotate(0deg); }
-      45% { transform: scale(1.32) rotate(180deg); }
-      100% { transform: scale(1) rotate(360deg); }
-    }
-
-    .floating-plus-coin {
-      position: absolute;
-      top: 18px;
-      right: 22px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: #d97706;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .floating-plus-coin.fly {
-      animation: plusFlyUp 1.1s ease-out forwards;
-    }
-
-    @keyframes plusFlyUp {
-      0% { opacity: 1; transform: translateY(8px) scale(0.8); }
-      100% { opacity: 0; transform: translateY(-34px) scale(1.25); }
-    }
-
-    /* Tables, Grids, Modals */
-    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 16px; background: #fff; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th { text-align: left; padding: 0.8rem 0.95rem; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); background: var(--surface-soft); border-bottom: 1px solid var(--border); }
-    td { padding: 0.85rem 0.95rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    tr:last-child td { border-bottom: none; }
-
-    .star-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #cbd5e1; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .star-btn:hover { transform: scale(1.25); }
-    .star-btn.starred { color: #f59e0b; }
-
-    .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
-    .file-tile { background: var(--surface-soft); border: 1px solid var(--border); border-radius: 18px; padding: 1.1rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.85rem; transition: transform 0.2s ease; }
-    .file-tile:hover { transform: translateY(-3px); border-color: var(--primary); }
-
-    .big-dropzone { border: 2px dashed rgba(79, 70, 229, 0.35); border-radius: 22px; padding: 2.3rem 1.5rem; text-align: center; background: rgba(79, 70, 229, 0.03); margin-bottom: 1.25rem; }
-    .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-radius: 13px; background: var(--surface-soft); border: 1px solid var(--border); margin-bottom: 0.5rem; font-size: 0.85rem; animation: popIn 0.2s ease; }
-
-    .danger-zone { background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 18px; padding: 1.35rem; margin-top: 1.3rem; }
-    .danger-zone h4 { color: #be123c; font-weight: 800; margin-bottom: 0.25rem; }
-    .danger-zone p { color: #881337; font-size: 0.84rem; margin-bottom: 0.9rem; }
-
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(6px); z-index: 150; display: grid; place-items: center; padding: 1rem; }
-    .modal-box { width: 100%; max-width: 470px; background: #fff; border: 1px solid var(--border); border-radius: 22px; padding: 1.7rem; animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .detail-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.62rem 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
-    .warning-banner { background: #fff1f2; border: 1px solid #fda4af; color: #9f1239; padding: 0.85rem 1rem; border-radius: 12px; font-size: 0.84rem; margin: 0.85rem 0 1.1rem; }
-
-    .quick-note-area { width: 100%; min-height: 170px; padding: 1rem; border-radius: 14px; border: 1px solid var(--border); background: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; resize: vertical; }
-
-    /* ================= VAULTSTORAGE-INSPIRED HOME SHOWCASE (NON-DESTRUCTIVE) ================= */
-    .vault-home-band {
-      max-width: 1360px;
-      margin: 1.5rem auto 0;
-      padding: 0 1.5rem;
-    }
-
-    .vs-hero-card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 1.75rem;
-      align-items: center;
-      margin-bottom: 1.35rem;
-    }
-
-    @media (max-width: 920px) {
-      .vs-hero-card { grid-template-columns: 1fr; padding: 1.4rem; }
-    }
-
-    .vs-hero-card h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.85rem, 3.8vw, 2.85rem);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.025em;
-      margin: 0.65rem 0 0.8rem;
-    }
-
-    .vs-hero-card p.vs-lead {
-      color: var(--text-muted);
-      font-size: 0.98rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .vs-mini-preview {
-      background: var(--surface-soft);
+    .blur-card {
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 1.25rem;
+      padding: 2.2rem 2.8rem;
+      text-align: center;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: var(--shadow-md);
     }
+    .blur-card h2 { font-size: 1.75rem; font-weight: 800; color: var(--primary); }
+    .blur-card p { margin-top: 0.4rem; color: var(--text-muted); font-size: 0.94rem; }
 
-    .vs-strip-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 0.95rem;
-      margin-bottom: 1.35rem;
-    }
+    /* Home Landing Page */
+    .home-wrap { max-width: 1180px; margin: 2.2rem auto; padding: 0 1.5rem 3rem; }
 
-    .vs-info-tile {
-      background: var(--surface-solid);
+    .hero-card {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 1.15rem 1.25rem;
+      border-radius: 20px;
+      padding: 2.4rem;
       box-shadow: var(--shadow-sm);
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
     }
+    @media (max-width: 860px) { .hero-card { grid-template-columns: 1fr; padding: 1.6rem; } }
 
-    .vs-info-tile:hover {
-      transform: translateY(-3px);
-      border-color: var(--primary);
-    }
-
-    .vs-info-tile h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
+    .pill-tag {
+      display: inline-block;
+      padding: 0.32rem 0.78rem;
+      border-radius: 999px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.78rem;
       font-weight: 700;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.9rem;
     }
 
-    .vs-info-tile p {
-      font-size: 0.84rem;
-      color: var(--text-muted);
+    .hero-card h1 { font-size: clamp(1.9rem, 3.6vw, 2.85rem); font-weight: 800; line-height: 1.15; margin-bottom: 0.85rem; }
+    .hero-card p.lead { color: var(--text-muted); font-size: 1rem; margin-bottom: 1.45rem; }
+
+    .snapshot-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.35rem;
     }
 
-    .vs-cta-banner {
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    .snapshot-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      margin-top: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .features-grid { grid-template-columns: 1fr; } }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .feature-card small { font-size: 0.72rem; font-weight: 700; color: var(--primary); }
+    .feature-card h3 { font-size: 1rem; margin: 0.25rem 0; }
+    .feature-card p { font-size: 0.84rem; color: var(--text-muted); }
+
+    .cta-strip {
+      background: #0f172a;
       color: #ffffff;
-      border-radius: 22px;
-      padding: 1.65rem 2rem;
+      border-radius: 18px;
+      padding: 1.75rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow-lg);
     }
+
+    /* Auth Stage with Moving Hanging Scattered "100MB Storage Pool" */
+    .auth-stage {
+      position: relative;
+      min-height: calc(100vh - 66px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+      overflow: hidden;
+    }
+
+    .hanging-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hanging-tag {
+      position: absolute;
+      top: -80px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      transform-origin: top center;
+      animation: dropSwing var(--dur, 9s) ease-in-out var(--delay, 0s) infinite;
+    }
+
+    .hanging-cord {
+      width: 2px;
+      height: 54px;
+      background: #cbd5e1;
+    }
+
+    .pool-pill {
+      padding: 0.48rem 0.95rem;
+      border-radius: 10px;
+      font-size: var(--fsize, 0.95rem);
+      font-weight: 700;
+      color: #ffffff;
+      background: var(--fill, #0284c7);
+      box-shadow: var(--shadow-sm);
+      white-space: nowrap;
+    }
+
+    @keyframes dropSwing {
+      0% { opacity: 0; transform: translate3d(0, -100px, 0) rotate(-8deg); }
+      15% { opacity: 0.9; transform: translate3d(var(--dx, 14px), var(--ry, 40px), 0) rotate(5deg); }
+      50% { opacity: 0.9; transform: translate3d(calc(var(--dx, 14px) * -0.7), calc(var(--ry, 40px) + 34px), 0) rotate(-5deg); }
+      85% { opacity: 0.65; transform: translate3d(var(--dx, 14px), calc(var(--ry, 40px) + 70px), 0) rotate(4deg); }
+      100% { opacity: 0; transform: translate3d(0, calc(var(--ry, 40px) + 100px), 0) rotate(-4deg); }
+    }
+
+    .auth-card {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .auth-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+    .auth-card h2 { font-size: 1.5rem; font-weight: 800; }
+    .auth-card p.sub { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 1.4rem; }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .input-wrap { position: relative; }
+    .field input {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .field input:focus { outline: none; border-color: var(--primary); }
+
+    .toggle-pass {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+
+    .strength-bar { height: 5px; border-radius: 99px; background: var(--border); margin-top: 0.4rem; overflow: hidden; }
+    .strength-fill { height: 100%; width: 0%; transition: width 0.2s ease, background 0.2s ease; }
+
+    .auth-footer {
+      margin-top: 1.3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+    .link-btn { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; font-size: inherit; }
+
+    /* Workspace Layout */
+    .app-shell {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 245px 1fr;
+      gap: 1.4rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .app-shell { grid-template-columns: 1fr; } }
+
+    .sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.15rem;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 5.1rem;
+    }
+
+    .user-box {
+      padding: 0.8rem;
+      border-radius: 12px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .user-box small { font-size: 0.68rem; font-weight: 700; color: var(--primary); text-transform: uppercase; }
+    .user-box strong { display: block; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .nav-list { display: flex; flex-direction: column; gap: 0.28rem; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+    }
+    .nav-item:hover { background: var(--surface-soft); color: var(--text-main); }
+    .nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 700; }
+
+    .nav-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 99px;
+      background: var(--surface);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .quota-box { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .quota-top { display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .progress-track { height: 8px; border-radius: 99px; background: var(--border); overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s ease; }
+
+    .main-view {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      min-height: 560px;
+    }
+
+    .view-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-bottom: 1.1rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.4rem;
+    }
+    .view-head h2 { font-size: 1.4rem; font-weight: 800; }
+    .view-head p { font-size: 0.85rem; color: var(--text-muted); }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; margin-bottom: 1.4rem; }
+    @media (max-width: 1050px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .kpi-grid { grid-template-columns: 1fr; } }
+
+    .kpi-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.15rem;
+    }
+    .kpi-card small { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; }
+    .kpi-card .val { font-size: 1.45rem; font-weight: 800; margin-top: 0.2rem; font-family: 'JetBrains Mono', monospace; color: var(--text-main); }
+
+    /* Solid Professional Storage Expansion Engine Card */
+    .engine-card {
+      background: var(--primary-light);
+      border: 1.5px solid var(--primary-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.35rem;
+      position: relative;
+    }
+    .engine-card small { font-size: 0.72rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .engine-card h3 { font-size: 1.3rem; font-weight: 800; margin: 0.45rem 0 0.9rem; }
+
+    .two-col { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+    @media (max-width: 780px) { .two-col { grid-template-columns: 1fr; } }
+
+    .panel-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .coin-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--coin-bg);
+      color: var(--coin-text);
+      border: 3px solid #fef08a;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin: 0.8rem 0;
+    }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 0.78rem 0.9rem; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); background: var(--surface-soft); border-bottom: 1px solid var(--border); }
+    td { padding: 0.82rem 0.9rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+
+    .star-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #cbd5e1; }
+    .star-btn.starred { color: #eab308; }
+
+    .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.95rem; }
+    .file-tile { background: var(--surface-soft); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.8rem; }
+
+    .input-compact, .select-compact {
+      padding: 0.48rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.84rem;
+    }
+
+    .dropzone {
+      border: 2px dashed var(--primary-border);
+      border-radius: 16px;
+      padding: 2.2rem 1.5rem;
+      text-align: center;
+      background: var(--primary-light);
+      margin-bottom: 1.2rem;
+    }
+    .dropzone.dragover { border-color: var(--primary); background: #bae6fd; }
+
+    .queue-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .note-area {
+      width: 100%;
+      min-height: 170px;
+      padding: 0.95rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      resize: vertical;
+    }
+
+    .detail-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
+    .danger-zone { background: var(--danger-soft); border: 1px solid var(--danger-border); border-radius: 14px; padding: 1.3rem; margin-top: 1.2rem; }
+    .danger-zone h4 { color: var(--danger); margin-bottom: 0.25rem; }
+    .danger-zone p { font-size: 0.84rem; color: #7f1d1d; margin-bottom: 0.9rem; }
+
+    /* Modals */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 180; display: grid; place-items: center; padding: 1rem; }
+    .modal-box { width: 100%; max-width: 460px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-md); }
+    .warn-box { background: var(--danger-soft); border: 1px solid var(--danger-border); color: #991b1b; padding: 0.85rem; border-radius: 10px; font-size: 0.84rem; margin: 0.8rem 0 1rem; }
   </style>
 </head>
 <body>
 
-  <!-- TOP BAR WITH ANIMATED  CODE VAULT + SOUND TOGGLE + COIN HUD -->
+  <!-- TOP HEADER WITH SOLID BRAND, COINS, BELL ICON NOTIFICATIONS & SOUND -->
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="animated-brand" onclick="goHome()">
-        <div class="brand-orb">
+      <button class="brand-btn" onclick="goHome()">
+        <span class="brand-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
           </svg>
-        </div>
-        <span class="brand-title"> Code Vault</span>
-      </div>
+        </span>
+        <span class="brand-name">Code Vault</span>
+      </button>
 
-      <div class="top-right-controls">
-        <button class="coin-hud hidden" id="topCoinHud" onclick="switchTab('coins')" title="Vault Coins & +10MB Expansion">
-          <span class="spinning-coin">V</span>
-          <span id="topCoinCount">0</span>
-          <span>Coins</span>
+      <div class="top-actions">
+        <button class="coin-badge hidden" id="topCoinHud" onclick="switchTab('coins')">
+          <span id="topCoinCount">0</span> Coins
         </button>
-        <button class="btn btn-outline btn-sm" id="soundToggleBtn" onclick="toggleSound()">
-          Sound: ON
-        </button>
+
+        <!-- TOP BELL ICON FOR ACTIVITY & NOTIFICATIONS -->
+        <div class="bell-wrap hidden" id="bellWrap">
+          <button class="bell-btn" id="bellBtn" onclick="toggleNotifPanel(event)" title="Activity & Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="bell-dot hidden" id="bellBadge">0</span>
+          </button>
+
+          <div class="notif-dropdown hidden" id="notifDropdown" onclick="event.stopPropagation()">
+            <div class="notif-head">
+              <span>Activity & Notifications</span>
+              <button class="link-btn" style="font-size:0.76rem;" onclick="clearActivityLog()">Clear</button>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-outline btn-sm" id="soundBtn" onclick="toggleSound()">Sound: ON</button>
       </div>
     </div>
   </header>
 
   <div id="toastWrap" class="toast-wrap"></div>
 
-  <!-- BLUR WELCOME OVERLAY ON SIGN IN / CREATE ACCOUNT -->
-  <div id="blurWelcomeOverlay" class="blur-welcome-overlay hidden">
-    <div class="blur-welcome-card">
-      <h2 id="blurWelcomeTitle">Welcome</h2>
-      <p id="blurWelcomeSub">Preparing your workspace...</p>
+  <!-- BLUR WELCOME OVERLAY -->
+  <div id="blurOverlay" class="blur-overlay hidden">
+    <div class="blur-card">
+      <h2 id="blurTitle">Welcome</h2>
+      <p id="blurSub">Loading your workspace...</p>
     </div>
   </div>
 
-  <!-- ==================== PAGE 1: WELCOME / CHOICE SCREEN ==================== -->
-  <!-- VAULTSTORAGE-STYLE HOME SHOWCASE AT TOP OF PAGE 1 (KEEPS ALL EXISTING FEATURES INTACT) -->
-  <div id="vaultHomeShowcase" class="vault-home-band animate-page">
-    <div class="vs-hero-card">
+  <!-- ==================== PAGE 1: HOME LANDING ==================== -->
+  <section id="pageHome" class="home-wrap animate-page">
+    <div class="hero-card">
       <div>
-        <span class="welcome-pill" style="margin-bottom:0.25rem;"> Code Vault • 100 MB Base + Daily Vault Coins</span>
-        <h1>Every important file and asset, organized in <span>one vault</span>.</h1>
-        <p class="vs-lead">
-          Keep your project files, PDFs, images, and notes in a private workspace with 100 MB
-          starter storage, daily Vault Coins (+1 coin/day), and +10 MB boosts for every 10 coins.
+        <span class="pill-tag">100 MB Base Storage • Daily Vault Coins</span>
+        <h1>Every important file and asset, organized in one vault.</h1>
+        <p class="lead">
+          Store documents, images, and archives in a private workspace with 100 MB starter storage,
+          1-hour expiring share links, daily Vault Coins (+1/day), and +10 MB storage boosts for every 10 coins.
         </p>
         <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="openAuthPage('register')">Create Free Account</button>
-          <button class="btn btn-outline" onclick="openAuthPage('login')">Sign In</button>
+          <button class="btn btn-primary" onclick="openAuth('register')">Create Free Account</button>
+          <button class="btn btn-outline" onclick="openAuth('login')">Sign In</button>
         </div>
       </div>
 
-      <div class="vs-mini-preview">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:0.75rem; border-bottom:1px solid var(--border); margin-bottom:0.75rem;">
+      <div class="snapshot-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong>Workspace Snapshot</strong>
+          <span class="coin-badge" style="cursor:default; padding:0.25rem 0.65rem; font-size:0.75rem;">10 Coins = +10 MB</span>
+        </div>
+        <div class="snapshot-row">
           <div>
-            <strong style="font-size:0.95rem;">Vault Snapshot</strong>
-            <div class="mono" style="font-size:0.74rem; color:var(--text-muted);">100 MB Base • +10 MB / 10 Coins</div>
+            <strong>Starter Storage Pool</strong>
+            <div class="mono" style="font-size:0.75rem; color:var(--text-muted);">100 MB per account</div>
           </div>
-          <span class="mono" style="background:#fffbeb; border:1px solid #fcd34d; color:#92400e; padding:0.22rem 0.65rem; border-radius:999px; font-size:0.75rem; font-weight:700;">Vault Coins</span>
+          <span class="mono" style="color:var(--primary); font-weight:700;">Active</span>
         </div>
-        <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:0.65rem 0.8rem; margin-bottom:0.55rem; font-size:0.84rem;">
-          <strong>Documents, Images & Archives</strong>
-          <div class="mono" style="font-size:0.73rem; color:var(--text-muted);">Search, sort, star, list/grid & 1-hour links</div>
+        <div class="snapshot-row">
+          <div>
+            <strong>Daily Vault Coins</strong>
+            <div class="mono" style="font-size:0.75rem; color:var(--text-muted);">+1 coin daily after login</div>
+          </div>
+          <span class="mono" style="color:var(--success); font-weight:700;">+1 / Day</span>
         </div>
-        <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:0.65rem 0.8rem; font-size:0.84rem;">
-          <strong style="color:#92400e;">Daily Vault Coin Reward</strong>
-          <div style="font-size:0.77rem; color:#b45309;">Collect 1 coin per day after login • 10 coins = +10 MB</div>
+        <div class="snapshot-row">
+          <div>
+            <strong>Expiring Share Links</strong>
+            <div class="mono" style="font-size:0.75rem; color:var(--text-muted);">Signed 1-hour downloads</div>
+          </div>
+          <span class="mono" style="color:var(--text-muted);">1 Hour</span>
         </div>
       </div>
     </div>
 
-    <div class="vs-strip-grid">
-      <div class="vs-info-tile">
-        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">STEP 01</span>
+    <div class="features-grid">
+      <div class="feature-card">
+        <small>STEP 01</small>
         <h3>Create Account</h3>
-        <p>Start immediately with 100 MB of personal cloud storage.</p>
+        <p>Sign up to receive 100 MB of personal storage immediately.</p>
       </div>
-      <div class="vs-info-tile">
-        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">STEP 02</span>
+      <div class="feature-card">
+        <small>STEP 02</small>
         <h3>Upload & Organize</h3>
-        <p>Batch drag-and-drop uploads, starred files, rename & share links.</p>
+        <p>Drag-and-drop batch uploads, search, sort, star, and list/grid views.</p>
       </div>
-      <div class="vs-info-tile">
-        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">STEP 03</span>
+      <div class="feature-card">
+        <small>STEP 03</small>
         <h3>Collect Vault Coins</h3>
-        <p>Earn 1 Vault Coin daily and spend 10 coins to add +10 MB.</p>
+        <p>Claim +1 coin daily and redeem 10 coins for +10 MB extra storage.</p>
       </div>
-      <div class="vs-info-tile">
-        <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">CONTROL</span>
+      <div class="feature-card">
+        <small>CONTROL</small>
         <h3>Full Account Control</h3>
-        <p>View activity logs, switch themes, or delete your account anytime.</p>
+        <p>Live bell notifications, quick scratchpad, and permanent account deletion.</p>
       </div>
     </div>
 
-    <div class="vs-cta-banner">
+    <div class="cta-strip">
       <div>
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.35rem; font-weight:800;">Ready to enter  Code Vault?</h3>
-        <p style="color:#cbd5e1; font-size:0.88rem; margin-top:0.2rem;">Choose Sign In or Create Account below to launch the animated drums stage and workspace.</p>
+        <h3 style="font-size:1.3rem;">Ready to open Code Vault?</h3>
+        <p style="color:#cbd5e1; font-size:0.88rem; margin-top:0.2rem;">Sign in to your workspace or create a new account with 100 MB storage.</p>
       </div>
       <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-        <button class="btn btn-primary btn-sm" onclick="openAuthPage('register')">Create Account</button>
-        <button class="btn btn-outline btn-sm" onclick="openAuthPage('login')">Sign In</button>
+        <button class="btn btn-primary btn-sm" onclick="openAuth('register')">Create Account</button>
+        <button class="btn btn-outline btn-sm" onclick="openAuth('login')">Sign In</button>
       </div>
-    </div>
-  </div>
-
-  <section id="pageWelcome" class="welcome-screen animate-page">
-    <div class="welcome-pill">Start with 100 MB Free + Daily Vault Coins (+10 MB per 10 Coins)</div>
-    <h1>Welcome to <span> Code Vault</span></h1>
-    <p class="lead">
-      Your animated cloud file vault with daily Vault Coins, 100 MB starter storage,
-      expandable space, and instant multi-page tools.
-    </p>
-
-    <div class="gate-cards">
-      <div class="gate-card" onclick="openAuthPage('login')">
-        <div class="gate-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
-          </svg>
-        </div>
-        <h3>Sign In</h3>
-        <p>Already have an account? Sign in to collect daily coins and open your vault.</p>
-        <span class="btn btn-primary btn-sm">Sign In &rarr;</span>
-      </div>
-
-      <div class="gate-card" onclick="openAuthPage('register')">
-        <div class="gate-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
-          </svg>
-        </div>
-        <h3>Create Account</h3>
-        <p>Create your account to claim 100 MB storage and start earning daily Vault Coins.</p>
-        <span class="btn btn-outline btn-sm">Create Account &rarr;</span>
-      </div>
-    </div>
-
-    <div class="feature-chips">
-      <span class="f-chip">100 MB Base + Expandable</span>
-      <span class="f-chip">Daily Vault Coins</span>
-      <span class="f-chip">10 Coins = +10 MB</span>
-      <span class="f-chip">Click Sound Effects</span>
-      <span class="f-chip">10+ Workspace Views</span>
-      <span class="f-chip">Account Self-Delete</span>
     </div>
   </section>
 
-  <!-- ==================== PAGE 2: SIGN IN WITH ANIMATED DRUMS + "100MB for You!" ==================== -->
+  <!-- ==================== PAGE 2: SIGN IN ==================== -->
   <section id="pageLogin" class="auth-stage hidden">
-    <div class="drum-backdrop">
-      <div class="drum-hero-banner">
-        <div class="drum-100mb-text">100MB for You!</div>
-      </div>
-      <div class="drum-kit-container">
-        <div class="drum-unit">
-          <div class="cymbal"></div>
-          <div class="cymbal-stand"></div>
-        </div>
-        <div class="drum-unit">
-          <div class="drumstick stick-left"></div>
-          <div class="drum-shell snare-shell">
-            <div class="drum-head"></div>
-          </div>
-        </div>
-        <div class="drum-unit">
-          <div class="kick-shell">
-            <div class="kick-inner">VAULT BEAT</div>
-          </div>
-        </div>
-        <div class="drum-unit">
-          <div class="drumstick stick-right"></div>
-          <div class="drum-shell tom-shell">
-            <div class="drum-head"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <div class="hanging-bg" id="loginBg" aria-hidden="true"></div>
     <div class="auth-card animate-page">
-      <div class="auth-top-nav">
-        <button class="btn btn-ghost btn-sm" onclick="showTopPage('welcome')">&larr; Back</button>
-        <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">SIGN IN</span>
+      <div class="auth-nav">
+        <button class="btn btn-outline btn-sm" onclick="showPage('home')">&larr; Back</button>
+        <span class="mono" style="font-size:0.74rem; color:var(--text-muted);">SIGN IN</span>
       </div>
-
       <h2>Sign In</h2>
-      <p class="sub">Enter your account to unlock  Code Vault</p>
+      <p class="sub">Access your Code Vault workspace</p>
 
       <form onsubmit="event.preventDefault(); handleSignIn();">
         <div class="field">
           <label for="loginEmail">Email Address</label>
           <input type="email" id="loginEmail" placeholder="you@example.com" required />
         </div>
-
         <div class="field">
           <label for="loginPassword">Password</label>
           <div class="input-wrap">
             <input type="password" id="loginPassword" placeholder="••••••••" required />
-            <button type="button" class="toggle-pass" onclick="togglePassword('loginPassword', this)">Show</button>
+            <button type="button" class="toggle-pass" onclick="togglePass('loginPassword', this)">Show</button>
           </div>
         </div>
-
-        <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width:100%; margin-top:0.5rem;">
-          Sign In
-        </button>
+        <button type="submit" class="btn btn-primary" id="loginBtn" style="width:100%; margin-top:0.4rem;">Sign In</button>
       </form>
 
       <div class="auth-footer">
-        New here? <button class="link-btn" onclick="openAuthPage('register')">Create Account</button>
+        New user? <button class="link-btn" onclick="openAuth('register')">Create Account</button>
       </div>
     </div>
   </section>
 
-  <!-- ==================== PAGE 3: CREATE ACCOUNT WITH ANIMATED DRUMS + "100MB for You!" ==================== -->
+  <!-- ==================== PAGE 3: CREATE ACCOUNT ==================== -->
   <section id="pageRegister" class="auth-stage hidden">
-    <div class="drum-backdrop">
-      <div class="drum-hero-banner">
-        <div class="drum-100mb-text">100MB for You!</div>
-      </div>
-      <div class="drum-kit-container">
-        <div class="drum-unit">
-          <div class="cymbal"></div>
-          <div class="cymbal-stand"></div>
-        </div>
-        <div class="drum-unit">
-          <div class="drumstick stick-left"></div>
-          <div class="drum-shell snare-shell">
-            <div class="drum-head"></div>
-          </div>
-        </div>
-        <div class="drum-unit">
-          <div class="kick-shell">
-            <div class="kick-inner">100 MB CLUB</div>
-          </div>
-        </div>
-        <div class="drum-unit">
-          <div class="drumstick stick-right"></div>
-          <div class="drum-shell tom-shell">
-            <div class="drum-head"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <div class="hanging-bg" id="registerBg" aria-hidden="true"></div>
     <div class="auth-card animate-page">
-      <div class="auth-top-nav">
-        <button class="btn btn-ghost btn-sm" onclick="showTopPage('welcome')">&larr; Back</button>
-        <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">CREATE ACCOUNT</span>
+      <div class="auth-nav">
+        <button class="btn btn-outline btn-sm" onclick="showPage('home')">&larr; Back</button>
+        <span class="mono" style="font-size:0.74rem; color:var(--text-muted);">CREATE ACCOUNT</span>
       </div>
-
       <h2>Create Account</h2>
-      <p class="sub">Claim 100MB for You! + daily Vault Coins</p>
+      <p class="sub">Start with 100 MB Storage Pool + daily Vault Coins</p>
 
       <form onsubmit="event.preventDefault(); handleSignUp();">
         <div class="field">
-          <label for="regName">Your Name</label>
-          <input type="text" id="regName" placeholder="" required />
+          <label for="regName">Display Name</label>
+          <input type="text" id="regName" placeholder="Your Name" required />
         </div>
-
         <div class="field">
           <label for="regEmail">Email Address</label>
           <input type="email" id="regEmail" placeholder="you@example.com" required />
         </div>
-
         <div class="field">
           <label for="regPassword">Password (min 6 characters)</label>
           <div class="input-wrap">
-            <input type="password" id="regPassword" placeholder="Create password" oninput="updatePassStrength(this.value)" required />
-            <button type="button" class="toggle-pass" onclick="togglePassword('regPassword', this)">Show</button>
+            <input type="password" id="regPassword" placeholder="Create password" oninput="updateStrength(this.value)" required />
+            <button type="button" class="toggle-pass" onclick="togglePass('regPassword', this)">Show</button>
           </div>
           <div class="strength-bar"><div id="strengthFill" class="strength-fill"></div></div>
         </div>
-
         <div class="field">
           <label for="regConfirm">Confirm Password</label>
           <input type="password" id="regConfirm" placeholder="Confirm password" required />
         </div>
-
-        <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="width:100%; margin-top:0.5rem;">
-          Create Account
-        </button>
+        <button type="submit" class="btn btn-primary" id="regBtn" style="width:100%; margin-top:0.4rem;">Create Account</button>
       </form>
 
       <div class="auth-footer">
-        Already registered? <button class="link-btn" onclick="openAuthPage('login')">Sign In</button>
+        Already registered? <button class="link-btn" onclick="openAuth('login')">Sign In</button>
       </div>
     </div>
   </section>
 
-  <!-- ==================== PAGE 4+: 10+ MULTI-VIEW WORKSPACE ==================== -->
+  <!-- ==================== PAGE 4: WORKSPACE ==================== -->
   <section id="pageApp" class="app-shell hidden">
-    <aside class="sidebar animate-page">
-      <div class="user-mini">
-        <small>Signed In As</small>
-        <strong id="sidebarUserName">User</strong>
-        <span class="mono" id="sidebarUserEmail" style="font-size:0.73rem; color:var(--text-muted);"></span>
+    <aside class="sidebar">
+      <div class="user-box">
+        <small>Signed In</small>
+        <strong id="sidebarName">User</strong>
+        <span class="mono" id="sidebarEmail" style="font-size:0.72rem; color:var(--text-muted);"></span>
       </div>
 
       <nav class="nav-list">
-        <button class="nav-item active" data-tab="overview" onclick="switchTab('overview')">1. Overview</button>
+        <button class="nav-item active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
         <button class="nav-item" data-tab="files" onclick="switchTab('files')">
-          <span>2. My Files</span><span class="nav-count" id="navFileCount">0</span>
+          <span>My Files</span><span class="nav-count" id="navFiles">0</span>
         </button>
         <button class="nav-item" data-tab="starred" onclick="switchTab('starred')">
-          <span>3. Starred</span><span class="nav-count" id="navStarCount">0</span>
+          <span>Starred</span><span class="nav-count" id="navStars">0</span>
         </button>
-        <button class="nav-item" data-tab="upload" onclick="switchTab('upload')">4. Upload Center</button>
+        <button class="nav-item" data-tab="upload" onclick="switchTab('upload')">Upload Center</button>
         <button class="nav-item" data-tab="coins" onclick="switchTab('coins')">
-          <span>5. Vault Coins</span><span class="nav-count" id="navCoinCount">0</span>
+          <span>Vault Coins</span><span class="nav-count" id="navCoins">0</span>
         </button>
-        <button class="nav-item" data-tab="expand" onclick="switchTab('expand')">6. Expand +10MB</button>
-        <button class="nav-item" data-tab="categories" onclick="switchTab('categories')">7. File Categories</button>
-        <button class="nav-item" data-tab="notes" onclick="switchTab('notes')">8. Quick Scratchpad</button>
-        <button class="nav-item" data-tab="activity" onclick="switchTab('activity')">9. Activity Log</button>
-        <button class="nav-item" data-tab="security" onclick="switchTab('security')">10. Security & Quota</button>
-        <button class="nav-item" data-tab="settings" onclick="switchTab('settings')">11. Theme & Account</button>
+        <button class="nav-item" data-tab="expand" onclick="switchTab('expand')">Expand +10MB</button>
+        <button class="nav-item" data-tab="categories" onclick="switchTab('categories')">File Categories</button>
+        <button class="nav-item" data-tab="notes" onclick="switchTab('notes')">Scratchpad</button>
+        <button class="nav-item" data-tab="security" onclick="switchTab('security')">Security & Quota</button>
+        <button class="nav-item" data-tab="settings" onclick="switchTab('settings')">Settings</button>
       </nav>
 
-      <div class="quota-widget">
+      <div class="quota-box">
         <div class="quota-top">
-          <span>Storage Limit</span>
+          <span>Storage</span>
           <strong id="quotaLabel">0 B / 100 MB</strong>
         </div>
-        <div class="progress-track">
-          <div id="quotaFill" class="progress-fill"></div>
-        </div>
+        <div class="progress-track"><div id="quotaFill" class="progress-fill"></div></div>
       </div>
 
-      <button class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem;" onclick="handleSignOut()">
-        Sign Out
-      </button>
+      <button class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem;" onclick="handleSignOut()">Sign Out</button>
     </aside>
 
-    <div class="main-view animate-page">
+    <main class="main-view">
       <!-- 1. OVERVIEW -->
       <div id="view-overview" class="subview animate-page">
-        <div class="view-header">
+        <div class="view-head">
           <div>
-            <h2>Workspace Overview</h2>
-            <p>Live stats, Vault Coins, and expanded storage limit</p>
+            <h2>Overview</h2>
+            <p>Summary of your files, quota, and Vault Coins</p>
           </div>
           <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-            <button class="btn btn-gold btn-sm" onclick="switchTab('coins')">Claim Daily Coin</button>
+            <button class="btn btn-gold btn-sm" onclick="claimDailyCoin()">Collect Daily Coin</button>
             <button class="btn btn-primary btn-sm" onclick="switchTab('upload')">+ Upload Files</button>
           </div>
         </div>
 
         <div class="kpi-grid">
-          <div class="kpi-card">
-            <small>Total Files</small>
-            <div class="val" id="kpiFiles">0</div>
-          </div>
-          <div class="kpi-card">
-            <small>Storage Used</small>
-            <div class="val" id="kpiUsed">0 B</div>
-          </div>
-          <div class="kpi-card">
-            <small>Total Quota</small>
-            <div class="val" id="kpiTotalQuota">100 MB</div>
-          </div>
-          <div class="kpi-card">
-            <small>Vault Coins</small>
-            <div class="val" id="kpiCoins" style="color:#d97706;">0</div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-            <div>
-              <strong style="font-size:0.96rem;">Daily Vault Coin & +10 MB Boost</strong>
-              <p style="font-size:0.82rem; color:var(--text-muted);">Collect 1 Vault Coin per day after login • Spend 10 Coins = +10 MB extra storage</p>
-            </div>
-            <button class="btn btn-gold btn-sm" onclick="claimDailyCoin()">Collect Daily Coin</button>
-          </div>
+          <div class="kpi-card"><small>Total Files</small><div class="val" id="kpiFiles">0</div></div>
+          <div class="kpi-card"><small>Storage Used</small><div class="val" id="kpiUsed">0 B</div></div>
+          <div class="kpi-card"><small>Total Quota</small><div class="val" id="kpiQuota">100 MB</div></div>
+          <div class="kpi-card"><small>Vault Coins</small><div class="val" id="kpiCoins" style="color:#b45309;">0</div></div>
         </div>
 
         <h3 style="font-size:1rem; margin-bottom:0.75rem;">Recent Uploads</h3>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Date</th><th>Action</th></tr></thead>
-            <tbody id="recentTableBody"></tbody>
+            <thead><tr><th>File Name</th><th>Type</th><th>Size</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="recentBody"></tbody>
           </table>
         </div>
       </div>
 
       <!-- 2 & 3. MY FILES / STARRED -->
       <div id="view-files" class="subview hidden animate-page">
-        <div class="view-header">
+        <div class="view-head">
           <div>
             <h2 id="explorerTitle">My Files</h2>
-            <p>Search, sort, toggle grid/list, share links, rename, or delete</p>
+            <p>Search, sort, star, share 1-hour links, rename, or delete</p>
           </div>
           <div style="display:flex; gap:0.5rem;">
-            <button class="btn btn-danger btn-sm hidden" id="bulkDeleteBtn" onclick="bulkDeleteSelected()">
-              Delete (<span id="selectedCount">0</span>)
-            </button>
+            <button class="btn btn-danger btn-sm hidden" id="bulkDelBtn" onclick="bulkDelete()">Delete (<span id="selCount">0</span>)</button>
             <button class="btn btn-primary btn-sm" onclick="switchTab('upload')">+ Upload</button>
           </div>
         </div>
@@ -1311,17 +1008,17 @@
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
               <option value="largest">Largest First</option>
-              <option value="az">Name (A–Z)</option>
+              <option value="az">Name (A-Z)</option>
             </select>
-            <button class="btn btn-outline btn-sm" id="viewModeBtn" onclick="toggleLayoutMode()">Grid View</button>
+            <button class="btn btn-outline btn-sm" id="layoutBtn" onclick="toggleLayout()">Grid View</button>
           </div>
         </div>
 
-        <div id="explorerTableWrap" class="table-wrap">
+        <div id="tableWrap" class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th style="width:32px;"><input type="checkbox" id="selectAllBox" onchange="toggleSelectAll(this.checked)" /></th>
+                <th style="width:32px;"><input type="checkbox" id="selAll" onchange="toggleSelectAll(this.checked)" /></th>
                 <th style="width:34px;"></th>
                 <th>File Name</th>
                 <th>Type</th>
@@ -1330,237 +1027,192 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="filesTableBody"></tbody>
+            <tbody id="filesBody"></tbody>
           </table>
         </div>
-        <div id="explorerGridWrap" class="files-grid hidden"></div>
+        <div id="gridWrap" class="files-grid hidden"></div>
       </div>
 
       <!-- 4. UPLOAD CENTER -->
       <div id="view-upload" class="subview hidden animate-page">
-        <div class="view-header">
+        <div class="view-head">
           <div>
             <h2>Upload Center</h2>
-            <p>Batch upload files within your active storage quota</p>
+            <p>Drag and drop multiple files (max 50 MB per single file)</p>
           </div>
         </div>
 
-        <div class="big-dropzone" id="multiDropzone">
-          <h3 style="margin-bottom:0.35rem;">Drag & drop files here</h3>
-          <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:1rem;">Up to 50 MB per single file</p>
-          <input type="file" id="multiFileInput" multiple class="hidden" onchange="queueSelectedFiles(this.files)" />
-          <button class="btn btn-primary" onclick="document.getElementById('multiFileInput').click()">Browse Files</button>
+        <div class="dropzone" id="dropzone">
+          <h3 style="margin-bottom:0.3rem;">Drop files here to upload</h3>
+          <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:1rem;">Files are automatically checked against your active storage limit</p>
+          <input type="file" id="fileInput" multiple class="hidden" onchange="queueFiles(this.files)" />
+          <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Browse Files</button>
         </div>
 
-        <div id="queueSection" class="hidden">
+        <div id="queueWrap" class="hidden">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
-            <strong>Queue (<span id="queueCount">0</span>)</strong>
+            <strong>Upload Queue (<span id="qCount">0</span>)</strong>
             <div style="display:flex; gap:0.5rem;">
               <button class="btn btn-outline btn-sm" onclick="clearQueue()">Clear</button>
-              <button class="btn btn-primary btn-sm" id="startBatchBtn" onclick="processUploadQueue()">Upload All</button>
+              <button class="btn btn-primary btn-sm" id="uploadAllBtn" onclick="uploadQueueFiles()">Upload All</button>
             </div>
           </div>
           <div id="queueList"></div>
         </div>
       </div>
 
-      <!-- 5. DAILY VAULT COINS PAGE -->
+      <!-- 5. VAULT COINS -->
       <div id="view-coins" class="subview hidden animate-page">
-        <div class="view-header">
+        <div class="view-head">
           <div>
-            <h2>Daily Vault Coins</h2>
-            <p>Collect 1 Vault Coin per day after login and grow your storage</p>
+            <h2>Vault Coins</h2>
+            <p>Collect +1 Vault Coin per day after login</p>
           </div>
         </div>
 
-        <div class="coin-arena">
-          <div class="coin-machine-card">
-            <span class="floating-plus-coin" id="plusCoinAnim">+1 COIN!</span>
-            <small class="mono" style="color:#b45309; font-weight:700;">DAILY LOGIN REWARD</small>
-            <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.35rem; margin-top:0.2rem;">Vault Coin Collector</h3>
-            <div class="vault-coin-3d" id="vaultCoin3d">V</div>
-            <p style="font-size:0.85rem; color:#78350f; margin-bottom:1rem;" id="dailyClaimStatus">
-              Checking today's claim status...
-            </p>
-            <button class="btn btn-gold" id="claimDailyBtn" onclick="claimDailyCoin()">
-              Collect 1 Daily Vault Coin
-            </button>
+        <div class="two-col">
+          <div class="panel-card" style="background:#fefce8; border-color:#fde047;">
+            <small style="font-weight:700; color:#854d0e;">DAILY REWARD</small>
+            <div class="coin-circle">V</div>
+            <p id="claimStatusText" style="font-size:0.86rem; color:#713f12; margin-bottom:1rem;">Checking status...</p>
+            <button class="btn btn-gold" id="claimBtn" onclick="claimDailyCoin()">Collect 1 Daily Vault Coin</button>
           </div>
 
-          <div class="section-card" style="margin-bottom:0; background:#fff;">
-            <small class="mono" style="color:var(--primary); font-weight:700;">COIN BALANCE</small>
-            <div style="font-family:'Space Grotesk',sans-serif; font-size:2.4rem; font-weight:800; color:#d97706; margin:0.35rem 0;">
-              <span id="coinBalanceBig">0</span> <span style="font-size:1rem; color:var(--text-muted);">Vault Coins</span>
+          <div class="panel-card">
+            <small style="font-weight:700; color:var(--primary);">CURRENT BALANCE</small>
+            <div style="font-size:2.3rem; font-weight:800; color:#b45309; margin:0.4rem 0;">
+              <span id="bigCoinCount">0</span> <span style="font-size:1rem; color:var(--text-muted);">Coins</span>
             </div>
-            <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:1rem;">
-              Every <strong>10 Vault Coins</strong> can be redeemed on the <strong>Expand +10MB</strong> page to add <strong>+10 MB</strong> to your storage limit.
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+              Redeem 10 Vault Coins to add +10 MB to your permanent storage quota.
             </p>
-            <button class="btn btn-primary btn-sm" onclick="switchTab('expand')">Go to Expand +10MB &rarr;</button>
+            <button class="btn btn-soft btn-sm" onclick="switchTab('expand')">Go to Expand +10MB &rarr;</button>
           </div>
         </div>
       </div>
 
-      <!-- 6. EXPAND +10MB PAGE (10 COINS = +10 MB) -->
+      <!-- 6. EXPAND +10MB (LIGHT SOLID ENGINE CARD) -->
       <div id="view-expand" class="subview hidden animate-page">
-        <div class="view-header">
+        <div class="view-head">
           <div>
             <h2>Expand Storage (+10 MB per 10 Coins)</h2>
-            <p>Spend 10 Vault Coins to permanently expand your personal storage by +10 MB</p>
+            <p>Turn your daily Vault Coins into extra storage space seamlessly</p>
           </div>
         </div>
 
-        <div class="expand-machine-card">
-          <span class="floating-plus-coin" id="plusMbAnim" style="color:#4f46e5;">+10 MB!</span>
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
-            <div class="kpi-card" style="background:#fff;">
-              <small>Available Coins</small>
-              <div class="val" id="expandCoinBalance" style="color:#d97706;">0</div>
-            </div>
-            <div class="kpi-card" style="background:#fff;">
-              <small>Bonus Storage Earned</small>
-              <div class="val" id="expandBonusMb">0 MB</div>
-            </div>
-            <div class="kpi-card" style="background:#fff;">
-              <small>Current Total Limit</small>
-              <div class="val" id="expandTotalLimit">100 MB</div>
-            </div>
+        <div class="engine-card">
+          <small>Storage Expansion Engine</small>
+          <h3 id="engineFormula">100 MB Base + 0 MB Bonus = 100 MB Total</h3>
+          <div class="progress-track" style="height:10px; background:#cbd5e1; margin-bottom:1.1rem;">
+            <div id="engineProgress" class="progress-fill" style="width:10%;"></div>
+          </div>
+          <button class="btn btn-primary" id="expandBtn" onclick="redeemTenMb()">Redeem 10 Coins for +10 MB</button>
+        </div>
+
+        <div class="two-col">
+          <div class="panel-card">
+            <h3 style="font-size:1.05rem; margin-bottom:0.35rem;">Daily Coin Streak</h3>
+            <p style="font-size:0.86rem; color:var(--text-main); font-weight:600;">Current Balance: <span id="streakCoins">0</span> Vault Coins</p>
+            <p id="streakSub" style="font-size:0.83rem; color:var(--text-muted); margin-top:0.25rem;">Collect 10 coins to unlock a +10 MB expansion.</p>
           </div>
 
-          <button class="btn btn-primary" id="expand10MbBtn" onclick="redeemTenMb()">
-            Spend 10 Vault Coins for +10 MB Storage
-          </button>
+          <div class="panel-card">
+            <h3 style="font-size:1.05rem; margin-bottom:0.45rem;">Quick Scratchpad</h3>
+            <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:0.75rem;">Keep quick project notes and share link reminders.</p>
+            <button class="btn btn-outline btn-sm" onclick="switchTab('notes')">Open Scratchpad</button>
+          </div>
         </div>
       </div>
 
-      <!-- 7. FILE CATEGORIES PAGE -->
+      <!-- 7. FILE CATEGORIES -->
       <div id="view-categories" class="subview hidden animate-page">
-        <div class="view-header">
-          <div>
-            <h2>File Categories</h2>
-            <p>Breakdown of your files by format</p>
-          </div>
+        <div class="view-head">
+          <div><h2>File Categories</h2><p>Distribution of your files by type</p></div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-card"><small>Documents & PDF</small><div class="val" id="catCountDocs">0</div></div>
-          <div class="kpi-card"><small>Images</small><div class="val" id="catCountImgs">0</div></div>
-          <div class="kpi-card"><small>Archives (ZIP/RAR)</small><div class="val" id="catCountArch">0</div></div>
-          <div class="kpi-card"><small>Other Files</small><div class="val" id="catCountOther">0</div></div>
+          <div class="kpi-card"><small>Documents & PDF</small><div class="val" id="catDocs">0</div></div>
+          <div class="kpi-card"><small>Images</small><div class="val" id="catImgs">0</div></div>
+          <div class="kpi-card"><small>Archives</small><div class="val" id="catArch">0</div></div>
+          <div class="kpi-card"><small>Other</small><div class="val" id="catOther">0</div></div>
         </div>
       </div>
 
-      <!-- 8. QUICK SCRATCHPAD PAGE -->
+      <!-- 8. SCRATCHPAD -->
       <div id="view-notes" class="subview hidden animate-page">
-        <div class="view-header">
-          <div>
-            <h2>Quick Scratchpad</h2>
-            <p>Jot down quick notes or snippets locally in your workspace</p>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="saveScratchpad()">Save Note</button>
+        <div class="view-head">
+          <div><h2>Quick Scratchpad</h2><p>Saved locally to your account browser storage</p></div>
+          <button class="btn btn-primary btn-sm" onclick="saveNotes()">Save Notes</button>
         </div>
-        <textarea id="scratchpadArea" class="quick-note-area" placeholder="Write quick notes here..."></textarea>
+        <textarea id="noteArea" class="note-area" placeholder="// Project notes & reminders..."></textarea>
       </div>
 
-      <!-- 9. ACTIVITY LOG PAGE -->
-      <div id="view-activity" class="subview hidden animate-page">
-        <div class="view-header">
-          <div>
-            <h2>Activity Log</h2>
-            <p>Recent actions in  Code Vault</p>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="clearActivityLog()">Clear</button>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Time</th><th>Action</th><th>Details</th></tr></thead>
-            <tbody id="activityTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- 10. SECURITY & QUOTA PAGE -->
+      <!-- 9. SECURITY & QUOTA -->
       <div id="view-security" class="subview hidden animate-page">
-        <div class="view-header">
-          <div>
-            <h2>Security & Quota Status</h2>
-            <p>Active user isolation and quota details</p>
-          </div>
+        <div class="view-head">
+          <div><h2>Security & Quota</h2><p>Account isolation and active limits</p></div>
         </div>
-        <div class="section-card">
-          <div class="detail-row"><span>User Email</span><span class="mono" id="secEmail">-</span></div>
-          <div class="detail-row"><span>Tenant ID</span><span class="mono" id="secUid">-</span></div>
-          <div class="detail-row"><span>Base Starter Quota</span><span class="mono">100 MB</span></div>
-          <div class="detail-row"><span>Expanded Bonus Quota</span><span class="mono" id="secBonus">0 MB</span></div>
-          <div class="detail-row" style="border-bottom:none;"><span>Access Control</span><span class="mono" style="color:var(--success);">Active (Per-User Isolated)</span></div>
+        <div class="panel-card">
+          <div class="detail-row"><span>Account Email</span><span class="mono" id="secEmail">-</span></div>
+          <div class="detail-row"><span>User ID</span><span class="mono" id="secUid">-</span></div>
+          <div class="detail-row"><span>Base Quota</span><span class="mono">100 MB</span></div>
+          <div class="detail-row"><span>Bonus Quota</span><span class="mono" id="secBonus">0 B</span></div>
+          <div class="detail-row" style="border-bottom:none;"><span>Isolation</span><span class="mono" style="color:var(--success);">Row-Level Security Active</span></div>
         </div>
       </div>
 
-      <!-- 11. THEME & ACCOUNT SETTINGS (WITH DELETE ACCOUNT WARNING) -->
+      <!-- 10. SETTINGS & ACCOUNT DELETION -->
       <div id="view-settings" class="subview hidden animate-page">
-        <div class="view-header">
-          <div>
-            <h2>Theme & Account</h2>
-            <p>Switch accent colors or permanently delete your account</p>
-          </div>
+        <div class="view-head">
+          <div><h2>Settings</h2><p>Switch solid accent colors or manage your account</p></div>
         </div>
 
-        <div class="section-card">
-          <strong style="font-size:0.95rem;">Accent Theme</strong>
+        <div class="panel-card">
+          <strong style="font-size:0.95rem;">Solid Color Accent</strong>
           <div style="display:flex; gap:0.55rem; flex-wrap:wrap; margin-top:0.75rem;">
-            <button class="btn btn-outline btn-sm" onclick="setTheme('default')">Indigo</button>
-            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-ocean')">Ocean</button>
+            <button class="btn btn-outline btn-sm" onclick="setTheme('default')">Sky Blue</button>
+            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-indigo')">Indigo</button>
             <button class="btn btn-outline btn-sm" onclick="setTheme('theme-emerald')">Emerald</button>
-            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-sunset')">Sunset</button>
+            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-slate')">Slate</button>
           </div>
         </div>
 
         <div class="danger-zone">
           <h4>Danger Zone — Delete Account</h4>
-          <p>
-            Warning: Deleting your account permanently removes your profile, Vault Coins, bonus storage,
-            and all uploaded files. This cannot be undone.
-          </p>
-          <button class="btn btn-danger-solid btn-sm" onclick="openDeleteAccountModal()">
-            Delete My Account
-          </button>
+          <p>Permanently delete your account, all uploaded files, Vault Coins, and bonus storage. This cannot be undone.</p>
+          <button class="btn btn-danger-solid btn-sm" onclick="openDelModal()">Delete My Account</button>
         </div>
       </div>
-    </div>
+    </main>
   </section>
 
   <!-- FILE INSPECTOR MODAL -->
-  <div id="inspectorModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeInspector()">
+  <div id="infoModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeInfoModal()">
     <div class="modal-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
         <h3>File Details</h3>
-        <button class="btn btn-ghost btn-sm" onclick="closeInspector()">✕</button>
+        <button class="btn btn-outline btn-sm" onclick="closeInfoModal()">Close</button>
       </div>
-      <div id="inspectorContent"></div>
+      <div id="infoBody"></div>
     </div>
   </div>
 
-  <!-- DELETE ACCOUNT WARNING MODAL -->
-  <div id="deleteAccountModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeDeleteAccountModal()">
+  <!-- DELETE ACCOUNT MODAL -->
+  <div id="delModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeDelModal()">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="color:#be123c;">Warning: Permanent Account Deletion</h3>
-        <button class="btn btn-ghost btn-sm" onclick="closeDeleteAccountModal()">✕</button>
+        <h3 style="color:var(--danger);">Warning: Delete Account</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeDelModal()">Close</button>
       </div>
-
-      <div class="warning-banner">
-        <strong>Are you sure you want to delete your account?</strong><br>
-        This will permanently erase <strong id="delModalFileCount">0</strong> file(s), your Vault Coins, and your account login.
+      <div class="warn-box">
+        <strong>Are you sure?</strong> This permanently erases <strong id="delFileCount">0</strong> file(s), your Vault Coins, and your login account.
       </div>
-
       <div class="field">
-        <label for="deleteConfirmInput">Type <strong>DELETE</strong> to confirm:</label>
-        <input type="text" id="deleteConfirmInput" placeholder="DELETE" oninput="validateDeleteInput()" />
+        <label for="delInput">Type <strong>DELETE</strong> to confirm:</label>
+        <input type="text" id="delInput" placeholder="DELETE" oninput="checkDelInput()" />
       </div>
-
-      <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1rem;">
-        <button class="btn btn-outline btn-sm" onclick="closeDeleteAccountModal()">Cancel</button>
-        <button class="btn btn-danger-solid btn-sm" id="confirmDeleteAcctBtn" disabled onclick="executeDeleteAccount()">
-          Permanently Delete Account
-        </button>
+      <div style="display:flex; justify-content:flex-end; gap:0.55rem; margin-top:0.9rem;">
+        <button class="btn btn-outline btn-sm" onclick="closeDelModal()">Cancel</button>
+        <button class="btn btn-danger-solid btn-sm" id="confirmDelBtn" disabled onclick="executeDeleteAccount()">Permanently Delete</button>
       </div>
     </div>
   </div>
@@ -1568,157 +1220,206 @@
   <script>
     const SUPABASE_URL = "https://nnhktqaxrhwotcqeaqdp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_8yqtlBDzJWwFl7wpDhebMQ_2W9B_jjV";
-    const BASE_QUOTA_BYTES = 100 * 1024 * 1024; // 100 MB starter
-    const EXPAND_STEP_BYTES = 10 * 1024 * 1024; // +10 MB per expansion
-    const COIN_COST_FOR_10MB = 10;
-    const MAX_SINGLE_FILE_BYTES = 50 * 1024 * 1024;
+    const BASE_QUOTA = 100 * 1024 * 1024;
+    const STEP_BYTES = 10 * 1024 * 1024;
+    const COIN_COST = 10;
+    const MAX_FILE = 50 * 1024 * 1024;
 
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let soundEnabled = true;
+    let soundOn = true;
     let audioCtx = null;
     let currentUser = null;
-    let allDocs = [];
+    let docs = [];
     let currentTab = 'overview';
-    let selectedIds = new Set();
-    let uploadQueue = [];
-    let starredIds = new Set(JSON.parse(localStorage.getItem('hcv_starred') || '[]'));
-    let activityLogs = JSON.parse(localStorage.getItem('hcv_activity') || '[]');
+    let selected = new Set();
+    let queue = [];
+    let unreadNotifs = 0;
+    let starred = new Set(JSON.parse(localStorage.getItem('cv_starred') || '[]'));
+    let logs = JSON.parse(localStorage.getItem('cv_logs') || '[]');
     let economy = { vault_coins: 0, bonus_quota_bytes: 0, last_claim_date: '' };
 
-    /* ---------- Web Audio Click Sound Synthesizer ---------- */
-    function playClickSound(freq = 540, type = 'sine', duration = 0.07) {
-      if (!soundEnabled) return;
+    /* Build Hanging Scattered "100MB Storage Pool" Background */
+    function initHangingBg() {
+      const items = [
+        { l: '6%', ry: '30px', dur: '8s', d: '0s', fs: '1rem', dx: '14px', c: '#0284c7' },
+        { l: '24%', ry: '115px', dur: '9s', d: '0.8s', fs: '0.88rem', dx: '-14px', c: '#0369a1' },
+        { l: '45%', ry: '24px', dur: '7.6s', d: '1.4s', fs: '1.08rem', dx: '16px', c: '#1e293b' },
+        { l: '67%', ry: '130px', dur: '9.2s', d: '0.5s', fs: '0.9rem', dx: '-16px', c: '#059669' },
+        { l: '83%', ry: '45px', dur: '8.4s', d: '1.8s', fs: '0.98rem', dx: '12px', c: '#4f46e5' },
+        { l: '14%', ry: '270px', dur: '8.9s', d: '2.1s', fs: '0.92rem', dx: '-12px', c: '#0284c7' },
+        { l: '76%', ry: '310px', dur: '8.3s', d: '1.1s', fs: '0.96rem', dx: '15px', c: '#0f172a' },
+        { l: '36%', ry: '360px', dur: '9.4s', d: '2.4s', fs: '0.9rem', dx: '-14px', c: '#059669' }
+      ];
+      const markup = items.map(it =>
+        `<div class="hanging-tag" style="left:${it.l}; --ry:${it.ry}; --dur:${it.dur}; --delay:${it.d}; --dx:${it.dx};">` +
+        `<span class="hanging-cord"></span>` +
+        `<span class="pool-pill" style="--fsize:${it.fs}; --fill:${it.c};">100MB Storage Pool</span>` +
+        `</div>`
+      ).join('');
+      document.getElementById('loginBg').innerHTML = markup;
+      document.getElementById('registerBg').innerHTML = markup;
+    }
+
+    /* Click Sound & Ripple */
+    function playBeep(freq = 520, type = 'sine', dur = 0.06) {
+      if (!soundOn) return;
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.35, audioCtx.currentTime + duration);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = type;
+        o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(freq * 1.25, audioCtx.currentTime + dur);
+        g.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.start();
+        o.stop(audioCtx.currentTime + dur);
       } catch {}
     }
 
-    function playCoinSound() {
-      if (!soundEnabled) return;
-      playClickSound(880, 'triangle', 0.11);
-      setTimeout(() => playClickSound(1174, 'sine', 0.14), 85);
+    function playRewardBeep() {
+      playBeep(780, 'triangle', 0.1);
+      setTimeout(() => playBeep(1040, 'sine', 0.12), 80);
     }
 
     function toggleSound() {
-      soundEnabled = !soundEnabled;
-      document.getElementById('soundToggleBtn').textContent = `Sound: ${soundEnabled ? 'ON' : 'OFF'}`;
-      if (soundEnabled) playClickSound(620, 'sine', 0.08);
+      soundOn = !soundOn;
+      document.getElementById('soundBtn').textContent = `Sound: ${soundOn ? 'ON' : 'OFF'}`;
+      if (soundOn) playBeep(600, 'sine', 0.07);
     }
 
-    /* ---------- Global Click Ripple + Sound ---------- */
     document.addEventListener('click', (e) => {
-      playClickSound(480, 'sine', 0.055);
-      const ripple = document.createElement('span');
-      ripple.className = 'ripple-circle';
-      ripple.style.left = `${e.clientX}px`;
-      ripple.style.top = `${e.clientY}px`;
-      document.body.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 640);
+      playBeep(460, 'sine', 0.05);
+      const r = document.createElement('span');
+      r.className = 'ripple-circle';
+      r.style.left = `${e.clientX}px`;
+      r.style.top = `${e.clientY}px`;
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 520);
+
+      const dd = document.getElementById('notifDropdown');
+      if (dd && !dd.classList.contains('hidden') && !e.target.closest('#bellWrap')) {
+        dd.classList.add('hidden');
+      }
     });
 
-    /* ---------- Toast & Activity ---------- */
-    function showToast(msg, isError = false) {
+    /* Notifications & Activity Bell */
+    function addActivity(action, details) {
+      logs.unshift({ time: new Date().toLocaleTimeString(), action, details });
+      logs = logs.slice(0, 50);
+      localStorage.setItem('cv_logs', JSON.stringify(logs));
+      unreadNotifs++;
+      renderNotifications();
+    }
+
+    function renderNotifications() {
+      const badge = document.getElementById('bellBadge');
+      if (unreadNotifs > 0) {
+        badge.textContent = unreadNotifs > 9 ? '9+' : unreadNotifs;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      const list = document.getElementById('notifList');
+      if (!logs.length) {
+        list.innerHTML = '<div class="notif-item" style="text-align:center; color:var(--text-muted);">No activity yet.</div>';
+        return;
+      }
+      list.innerHTML = logs.map(l => `
+        <div class="notif-item">
+          <span class="notif-time">${esc(l.time)}</span>
+          <strong>${esc(l.action)}</strong>
+          <span>${esc(l.details)}</span>
+        </div>
+      `).join('');
+    }
+
+    function toggleNotifPanel(e) {
+      e.stopPropagation();
+      const dd = document.getElementById('notifDropdown');
+      const opening = dd.classList.contains('hidden');
+      dd.classList.toggle('hidden');
+      if (opening) {
+        unreadNotifs = 0;
+        renderNotifications();
+      }
+    }
+
+    function clearActivityLog() {
+      logs = [];
+      unreadNotifs = 0;
+      localStorage.removeItem('cv_logs');
+      renderNotifications();
+    }
+
+    function showToast(msg, isErr = false) {
       const wrap = document.getElementById('toastWrap');
       const el = document.createElement('div');
-      el.className = isError ? 'toast error' : 'toast';
+      el.className = isErr ? 'toast error' : 'toast';
       el.textContent = msg;
       wrap.appendChild(el);
-      setTimeout(() => el.remove(), 4500);
+      setTimeout(() => el.remove(), 4000);
     }
 
-    function logActivity(action, details) {
-      activityLogs.unshift({ time: new Date().toLocaleTimeString(), action, details });
-      activityLogs = activityLogs.slice(0, 60);
-      localStorage.setItem('hcv_activity', JSON.stringify(activityLogs));
-      renderActivityLog();
-    }
-
-    function getTodayKey() {
-      return new Date().toISOString().slice(0, 10);
-    }
-
-    /* ---------- Blur Welcome Overlay ("Welcome back @username" / "Welcome to  code vault @name") ---------- */
-    function showBlurWelcome(headingText, subText, onComplete) {
-      const overlay = document.getElementById('blurWelcomeOverlay');
-      document.getElementById('blurWelcomeTitle').textContent = headingText;
-      document.getElementById('blurWelcomeSub').textContent = subText;
-      overlay.classList.remove('hidden');
-      playCoinSound();
+    function showBlurWelcome(title, sub, done) {
+      const ov = document.getElementById('blurOverlay');
+      document.getElementById('blurTitle').textContent = title;
+      document.getElementById('blurSub').textContent = sub;
+      ov.classList.remove('hidden');
+      playRewardBeep();
       setTimeout(() => {
-        overlay.classList.add('hidden');
-        if (typeof onComplete === 'function') onComplete();
-      }, 1750);
+        ov.classList.add('hidden');
+        if (done) done();
+      }, 1500);
     }
 
-    /* ---------- Top-Level Routing ---------- */
-    function showTopPage(page) {
-      ['pageWelcome', 'pageLogin', 'pageRegister', 'pageApp'].forEach(id => {
+    /* Routing */
+    function showPage(name) {
+      ['pageHome', 'pageLogin', 'pageRegister', 'pageApp'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
-      const homeShowcase = document.getElementById('vaultHomeShowcase');
-      if (homeShowcase) {
-        homeShowcase.classList.toggle('hidden', page !== 'welcome');
-      }
-      const map = { welcome: 'pageWelcome', login: 'pageLogin', register: 'pageRegister', app: 'pageApp' };
-      const target = document.getElementById(map[page]);
-      target.classList.remove('hidden');
-      target.classList.remove('animate-page');
-      void target.offsetWidth;
-      target.classList.add('animate-page');
+      const map = { home: 'pageHome', login: 'pageLogin', register: 'pageRegister', app: 'pageApp' };
+      document.getElementById(map[name]).classList.remove('hidden');
     }
 
-    function openAuthPage(mode) {
-      showTopPage(mode === 'register' ? 'register' : 'login');
-    }
+    function openAuth(mode) { showPage(mode === 'register' ? 'register' : 'login'); }
 
     function goHome() {
-      if (currentUser) {
-        showTopPage('app');
-        switchTab('overview');
-      } else {
-        showTopPage('welcome');
-      }
+      if (currentUser) { showPage('app'); switchTab('overview'); }
+      else showPage('home');
     }
 
-    function togglePassword(inputId, btn) {
-      const inp = document.getElementById(inputId);
-      const isPass = inp.type === 'password';
-      inp.type = isPass ? 'text' : 'password';
-      btn.textContent = isPass ? 'Hide' : 'Show';
+    function togglePass(id, btn) {
+      const inp = document.getElementById(id);
+      const isP = inp.type === 'password';
+      inp.type = isP ? 'text' : 'password';
+      btn.textContent = isP ? 'Hide' : 'Show';
     }
 
-    function updatePassStrength(val) {
+    function updateStrength(val) {
       const fill = document.getElementById('strengthFill');
-      let score = 0;
-      if (val.length >= 6) score += 35;
-      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score += 35;
-      if (/[^A-Za-z0-9]/.test(val) || val.length >= 10) score += 30;
-      fill.style.width = `${score}%`;
-      fill.style.background = score < 40 ? '#e11d48' : score < 75 ? '#d97706' : '#059669';
+      let s = 0;
+      if (val.length >= 6) s += 35;
+      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) s += 35;
+      if (/[^A-Za-z0-9]/.test(val) || val.length >= 10) s += 30;
+      fill.style.width = `${s}%`;
+      fill.style.background = s < 40 ? '#dc2626' : s < 75 ? '#d97706' : '#059669';
     }
 
-    /* ---------- Auth Handlers ---------- */
+    /* Auth */
     async function checkSession() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
+      const { data: { session } } = await sb.auth.getSession();
       if (session && session.user) {
         currentUser = session.user;
-        await initUserEconomy();
-        enterWorkspace();
+        await loadEconomy();
+        enterApp();
       } else {
-        showTopPage('welcome');
+        showPage('home');
       }
     }
 
@@ -1731,15 +1432,15 @@
       if (password.length < 6) return showToast('Password must be at least 6 characters.', true);
       if (password !== confirm) return showToast('Passwords do not match.', true);
 
-      const btn = document.getElementById('regSubmitBtn');
+      const btn = document.getElementById('regBtn');
       btn.disabled = true;
-      btn.textContent = 'Creating Account...';
+      btn.textContent = 'Creating...';
 
-      const displayName = name || email.split('@')[0];
-      const { data, error } = await supabaseClient.auth.signUp({
+      const display = name || email.split('@')[0];
+      const { data, error } = await sb.auth.signUp({
         email,
         password,
-        options: { data: { display_name: displayName } }
+        options: { data: { display_name: display } }
       });
 
       btn.disabled = false;
@@ -1747,32 +1448,28 @@
 
       if (error) return showToast(error.message, true);
 
-      showBlurWelcome(
-        `Welcome to  code vault @${displayName}`,
-        'Setting up your 100 MB personal vault...',
-        async () => {
-          if (data.session) {
-            currentUser = data.user;
-            await initUserEconomy();
-            logActivity('Account Created', displayName);
-            enterWorkspace();
-          } else {
-            openAuthPage('login');
-            showToast('Account created! Sign in to enter your vault.');
-          }
+      showBlurWelcome(`Welcome to Code Vault @${display}`, 'Preparing your 100 MB workspace...', async () => {
+        if (data.session) {
+          currentUser = data.user;
+          await loadEconomy();
+          addActivity('Account Created', `@${display}`);
+          enterApp();
+        } else {
+          openAuth('login');
+          showToast('Account created. Sign in now.');
         }
-      );
+      });
     }
 
     async function handleSignIn() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
 
-      const btn = document.getElementById('loginSubmitBtn');
+      const btn = document.getElementById('loginBtn');
       btn.disabled = true;
       btn.textContent = 'Signing In...';
 
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
       btn.disabled = false;
       btn.textContent = 'Sign In';
@@ -1782,340 +1479,285 @@
       currentUser = data.user;
       const handle = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
 
-      showBlurWelcome(
-        `Welcome back @${handle}`,
-        'Opening  Code Vault...',
-        async () => {
-          await initUserEconomy();
-          logActivity('Signed In', `@${handle}`);
-          enterWorkspace();
-        }
-      );
+      showBlurWelcome(`Welcome back @${handle}`, 'Opening Code Vault...', async () => {
+        await loadEconomy();
+        addActivity('Signed In', `@${handle}`);
+        enterApp();
+      });
     }
 
     async function handleSignOut() {
-      await supabaseClient.auth.signOut();
-      logActivity('Signed Out', currentUser?.email || '');
+      await sb.auth.signOut();
       currentUser = null;
-      allDocs = [];
+      docs = [];
       document.getElementById('topCoinHud').classList.add('hidden');
-      showTopPage('welcome');
+      document.getElementById('bellWrap').classList.add('hidden');
+      showPage('home');
     }
 
-    /* ---------- Vault Coins & +10MB Economy ---------- */
-    async function initUserEconomy() {
-      const { data, error } = await supabaseClient
-        .from('user_vault_economy')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .maybeSingle();
+    function enterApp() {
+      const name = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
+      document.getElementById('sidebarName').textContent = name;
+      document.getElementById('sidebarEmail').textContent = currentUser.email;
+      document.getElementById('secEmail').textContent = currentUser.email;
+      document.getElementById('secUid').textContent = currentUser.id;
+      document.getElementById('noteArea').value = localStorage.getItem(`cv_note_${currentUser.id}`) || '';
+      document.getElementById('topCoinHud').classList.remove('hidden');
+      document.getElementById('bellWrap').classList.remove('hidden');
+      renderNotifications();
+      showPage('app');
+      switchTab('overview');
+      loadDocs();
+    }
 
+    /* Economy (Daily Vault Coins & +10 MB) */
+    function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+    async function loadEconomy() {
+      const { data, error } = await sb.from('user_vault_economy').select('*').eq('user_id', currentUser.id).maybeSingle();
       if (!error && data) {
         economy = data;
       } else {
-        const defaultRow = {
-          user_id: currentUser.id,
-          vault_coins: 0,
-          bonus_quota_bytes: 0,
-          last_claim_date: ''
-        };
-        const { data: inserted } = await supabaseClient
-          .from('user_vault_economy')
-          .upsert(defaultRow)
-          .select()
-          .single();
-        economy = inserted || defaultRow;
+        const def = { user_id: currentUser.id, vault_coins: 0, bonus_quota_bytes: 0, last_claim_date: '' };
+        const { data: up } = await sb.from('user_vault_economy').upsert(def).select().single();
+        economy = up || def;
       }
       syncEconomyUI();
     }
 
-    function getTotalQuotaBytes() {
-      return BASE_QUOTA_BYTES + (economy.bonus_quota_bytes || 0);
-    }
+    function totalQuota() { return BASE_QUOTA + (economy.bonus_quota_bytes || 0); }
 
     function syncEconomyUI() {
       const coins = economy.vault_coins || 0;
-      const bonusBytes = economy.bonus_quota_bytes || 0;
-      const totalQuota = getTotalQuotaBytes();
-      const usedBytes = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
-      const pct = Math.min(100, (usedBytes / totalQuota) * 100);
+      const bonus = economy.bonus_quota_bytes || 0;
+      const limit = totalQuota();
+      const used = docs.reduce((s, d) => s + (d.file_size || 0), 0);
+      const pct = Math.min(100, (used / limit) * 100);
 
-      document.getElementById('topCoinHud').classList.remove('hidden');
       document.getElementById('topCoinCount').textContent = coins;
-      document.getElementById('navCoinCount').textContent = coins;
+      document.getElementById('navCoins').textContent = coins;
       document.getElementById('kpiCoins').textContent = coins;
-      document.getElementById('kpiTotalQuota').textContent = formatBytes(totalQuota);
-      document.getElementById('coinBalanceBig').textContent = coins;
-      document.getElementById('expandCoinBalance').textContent = coins;
-      document.getElementById('expandBonusMb').textContent = formatBytes(bonusBytes);
-      document.getElementById('expandTotalLimit').textContent = formatBytes(totalQuota);
-      document.getElementById('quotaLabel').textContent = `${formatBytes(usedBytes)} / ${formatBytes(totalQuota)}`;
+      document.getElementById('kpiQuota').textContent = fmtBytes(limit);
+      document.getElementById('bigCoinCount').textContent = coins;
+      document.getElementById('streakCoins').textContent = coins;
+      document.getElementById('quotaLabel').textContent = `${fmtBytes(used)} / ${fmtBytes(limit)}`;
       document.getElementById('quotaFill').style.width = `${pct}%`;
-      document.getElementById('secBonus').textContent = formatBytes(bonusBytes);
+      document.getElementById('secBonus').textContent = fmtBytes(bonus);
 
-      const claimedToday = economy.last_claim_date === getTodayKey();
-      const claimBtn = document.getElementById('claimDailyBtn');
-      const statusEl = document.getElementById('dailyClaimStatus');
-      if (claimedToday) {
-        claimBtn.disabled = true;
-        claimBtn.textContent = 'Claimed Today ✓';
-        statusEl.textContent = 'You already collected today\'s Vault Coin! Come back tomorrow for +1 Coin.';
+      const bonusMb = Math.round(bonus / (1024 * 1024));
+      const totalMb = Math.round(limit / (1024 * 1024));
+      document.getElementById('engineFormula').textContent = `100 MB Base + ${bonusMb} MB Bonus = ${totalMb} MB Total`;
+      document.getElementById('engineProgress').style.width = `${Math.min(100, (coins / COIN_COST) * 100)}%`;
+
+      const expansionsReady = Math.floor(coins / COIN_COST);
+      document.getElementById('streakSub').textContent = expansionsReady > 0
+        ? `Enough coins for ${expansionsReady} storage expansion(s).`
+        : `Collect ${COIN_COST - coins} more coin(s) to unlock +10 MB.`;
+
+      const claimed = economy.last_claim_date === todayKey();
+      const cBtn = document.getElementById('claimBtn');
+      const cTxt = document.getElementById('claimStatusText');
+      if (claimed) {
+        cBtn.disabled = true;
+        cBtn.textContent = 'Claimed Today';
+        cTxt.textContent = "Today's Vault Coin has been collected. Return tomorrow for +1 Coin.";
       } else {
-        claimBtn.disabled = false;
-        claimBtn.textContent = 'Collect 1 Daily Vault Coin';
-        statusEl.textContent = 'Your daily Vault Coin is ready to collect!';
+        cBtn.disabled = false;
+        cBtn.textContent = 'Collect 1 Daily Vault Coin';
+        cTxt.textContent = 'Your daily +1 Vault Coin is ready to collect.';
       }
 
-      document.getElementById('expand10MbBtn').disabled = (coins < COIN_COST_FOR_10MB);
+      document.getElementById('expandBtn').disabled = (coins < COIN_COST);
     }
 
     async function claimDailyCoin() {
-      const today = getTodayKey();
-      if (economy.last_claim_date === today) {
-        return showToast('Daily coin already claimed today!', true);
-      }
+      const today = todayKey();
+      if (economy.last_claim_date === today) return showToast('Daily coin already claimed today.', true);
 
-      const nextCoins = (economy.vault_coins || 0) + 1;
-      const { data, error } = await supabaseClient
-        .from('user_vault_economy')
-        .upsert({
-          user_id: currentUser.id,
-          vault_coins: nextCoins,
-          bonus_quota_bytes: economy.bonus_quota_bytes || 0,
-          last_claim_date: today,
-          updated_at: new Date().toISOString()
-        })
-        .select()
-        .single();
+      const { data, error } = await sb.from('user_vault_economy').upsert({
+        user_id: currentUser.id,
+        vault_coins: (economy.vault_coins || 0) + 1,
+        bonus_quota_bytes: economy.bonus_quota_bytes || 0,
+        last_claim_date: today,
+        updated_at: new Date().toISOString()
+      }).select().single();
 
       if (error) return showToast(error.message, true);
       economy = data;
-
-      const coinEl = document.getElementById('vaultCoin3d');
-      const plusEl = document.getElementById('plusCoinAnim');
-      coinEl.classList.remove('burst');
-      plusEl.classList.remove('fly');
-      void coinEl.offsetWidth;
-      void plusEl.offsetWidth;
-      coinEl.classList.add('burst');
-      plusEl.classList.add('fly');
-
-      playCoinSound();
+      playRewardBeep();
       syncEconomyUI();
-      logActivity('Daily Coin Claimed', '+1 Vault Coin');
+      addActivity('Daily Coin Claimed', '+1 Vault Coin added');
       showToast('Collected +1 Vault Coin!');
     }
 
     async function redeemTenMb() {
       const coins = economy.vault_coins || 0;
-      if (coins < COIN_COST_FOR_10MB) {
-        return showToast('You need 10 Vault Coins to expand +10 MB.', true);
-      }
+      if (coins < COIN_COST) return showToast('You need 10 Vault Coins for +10 MB.', true);
 
-      const nextCoins = coins - COIN_COST_FOR_10MB;
-      const nextBonus = (economy.bonus_quota_bytes || 0) + EXPAND_STEP_BYTES;
-
-      const { data, error } = await supabaseClient
-        .from('user_vault_economy')
-        .upsert({
-          user_id: currentUser.id,
-          vault_coins: nextCoins,
-          bonus_quota_bytes: nextBonus,
-          last_claim_date: economy.last_claim_date || '',
-          updated_at: new Date().toISOString()
-        })
-        .select()
-        .single();
+      const { data, error } = await sb.from('user_vault_economy').upsert({
+        user_id: currentUser.id,
+        vault_coins: coins - COIN_COST,
+        bonus_quota_bytes: (economy.bonus_quota_bytes || 0) + STEP_BYTES,
+        last_claim_date: economy.last_claim_date || '',
+        updated_at: new Date().toISOString()
+      }).select().single();
 
       if (error) return showToast(error.message, true);
       economy = data;
-
-      const plusMb = document.getElementById('plusMbAnim');
-      plusMb.classList.remove('fly');
-      void plusMb.offsetWidth;
-      plusMb.classList.add('fly');
-
-      playCoinSound();
+      playRewardBeep();
       syncEconomyUI();
-      logActivity('Expanded Storage', 'Spent 10 Coins for +10 MB');
-      showToast('Expanded your storage by +10 MB!');
+      addActivity('Storage Expanded', 'Spent 10 Coins for +10 MB');
+      showToast('Storage expanded by +10 MB!');
     }
 
-    /* ---------- Workspace & Sub-Views ---------- */
-    function enterWorkspace() {
-      const name = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
-      document.getElementById('sidebarUserName').textContent = name;
-      document.getElementById('sidebarUserEmail').textContent = currentUser.email;
-      document.getElementById('secEmail').textContent = currentUser.email;
-      document.getElementById('secUid').textContent = currentUser.id;
-      document.getElementById('scratchpadArea').value = localStorage.getItem(`hcv_note_${currentUser.id}`) || '';
-      showTopPage('app');
-      switchTab('overview');
-      loadDocuments();
-    }
-
+    /* Tabs & Documents */
     function switchTab(tab) {
       currentTab = tab;
-      document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tab);
-      });
-
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
       document.querySelectorAll('.subview').forEach(v => v.classList.add('hidden'));
 
       let target = null;
-      if (tab === 'starred' || tab === 'files') {
+      if (tab === 'files' || tab === 'starred') {
         target = document.getElementById('view-files');
         document.getElementById('explorerTitle').textContent = tab === 'starred' ? 'Starred Files' : 'My Files';
         renderExplorer();
       } else {
         target = document.getElementById(`view-${tab}`);
       }
-
-      if (target) {
-        target.classList.remove('hidden');
-        target.classList.remove('animate-page');
-        void target.offsetWidth;
-        target.classList.add('animate-page');
-      }
-      if (tab === 'activity') renderActivityLog();
+      if (target) target.classList.remove('hidden');
     }
 
-    async function loadDocuments() {
-      const { data, error } = await supabaseClient
-        .from('documents')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+    async function loadDocs() {
+      const { data, error } = await sb.from('documents').select('*').order('created_at', { ascending: false });
       if (error) return showToast(error.message, true);
-      allDocs = data || [];
-      selectedIds.clear();
-      updateBulkBar();
-      updateDashboardStats();
-      renderRecentTable();
+      docs = data || [];
+      selected.clear();
+      updateBulk();
+      updateStats();
+      renderRecent();
       renderExplorer();
     }
 
-    function getCategory(doc) {
-      const mime = (doc.mime_type || '').toLowerCase();
-      const name = (doc.file_name || '').toLowerCase();
-      if (mime.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp|svg)$/.test(name)) return 'images';
-      if (mime.includes('zip') || mime.includes('rar') || /\.(zip|rar|7z|gz)$/.test(name)) return 'archives';
-      if (mime.includes('pdf') || mime.includes('word') || mime.includes('text') || /\.(pdf|doc|docx|txt|csv|xlsx|pptx|md)$/.test(name)) return 'docs';
+    function fileCat(d) {
+      const m = (d.mime_type || '').toLowerCase();
+      const n = (d.file_name || '').toLowerCase();
+      if (m.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp|svg)$/.test(n)) return 'images';
+      if (m.includes('zip') || m.includes('rar') || /\.(zip|rar|7z|gz)$/.test(n)) return 'archives';
+      if (m.includes('pdf') || m.includes('word') || m.includes('text') || /\.(pdf|doc|docx|txt|csv|xlsx|pptx|md)$/.test(n)) return 'docs';
       return 'other';
     }
 
-    function updateDashboardStats() {
-      const usedBytes = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
-      const stars = allDocs.filter(d => starredIds.has(d.id)).length;
-      document.getElementById('navFileCount').textContent = allDocs.length;
-      document.getElementById('navStarCount').textContent = stars;
-      document.getElementById('kpiFiles').textContent = allDocs.length;
-      document.getElementById('kpiUsed').textContent = formatBytes(usedBytes);
+    function updateStats() {
+      const used = docs.reduce((s, d) => s + (d.file_size || 0), 0);
+      const st = docs.filter(d => starred.has(d.id)).length;
+      document.getElementById('navFiles').textContent = docs.length;
+      document.getElementById('navStars').textContent = st;
+      document.getElementById('kpiFiles').textContent = docs.length;
+      document.getElementById('kpiUsed').textContent = fmtBytes(used);
 
-      const cats = { docs: 0, images: 0, archives: 0, other: 0 };
-      allDocs.forEach(d => { cats[getCategory(d)]++; });
-      document.getElementById('catCountDocs').textContent = cats.docs;
-      document.getElementById('catCountImgs').textContent = cats.images;
-      document.getElementById('catCountArch').textContent = cats.archives;
-      document.getElementById('catCountOther').textContent = cats.other;
+      const c = { docs: 0, images: 0, archives: 0, other: 0 };
+      docs.forEach(d => c[fileCat(d)]++);
+      document.getElementById('catDocs').textContent = c.docs;
+      document.getElementById('catImgs').textContent = c.images;
+      document.getElementById('catArch').textContent = c.archives;
+      document.getElementById('catOther').textContent = c.other;
 
       syncEconomyUI();
     }
 
-    function renderRecentTable() {
-      const tbody = document.getElementById('recentTableBody');
-      const rows = allDocs.slice(0, 5);
-      if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:1.8rem; color:var(--text-muted);">No files yet.</td></tr>';
+    function renderRecent() {
+      const body = document.getElementById('recentBody');
+      const top = docs.slice(0, 5);
+      if (!top.length) {
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:1.6rem; color:var(--text-muted);">No files uploaded yet.</td></tr>';
         return;
       }
-      tbody.innerHTML = rows.map(d => `
+      body.innerHTML = top.map(d => `
         <tr>
-          <td><strong>${escapeHtml(d.file_name)}</strong></td>
-          <td class="mono">${escapeHtml(d.mime_type)}</td>
-          <td class="mono">${formatBytes(d.file_size)}</td>
+          <td><strong>${esc(d.file_name)}</strong></td>
+          <td class="mono">${esc(d.mime_type)}</td>
+          <td class="mono">${fmtBytes(d.file_size)}</td>
           <td class="mono">${new Date(d.created_at).toLocaleDateString()}</td>
-          <td><button class="btn btn-outline btn-sm" onclick="downloadDoc('${d.storage_path}', '${escapeHtml(d.file_name)}')">Download</button></td>
+          <td><button class="btn btn-outline btn-sm" onclick="downloadDoc('${d.storage_path}','${esc(d.file_name)}')">Download</button></td>
         </tr>
       `).join('');
     }
 
-    function toggleLayoutMode() {
-      const isGrid = !document.getElementById('explorerGridWrap').classList.contains('hidden');
-      document.getElementById('viewModeBtn').textContent = isGrid ? 'Grid View' : 'List View';
-      document.getElementById('explorerTableWrap').classList.toggle('hidden', !isGrid);
-      document.getElementById('explorerGridWrap').classList.toggle('hidden', isGrid);
+    function toggleLayout() {
+      const isGrid = !document.getElementById('gridWrap').classList.contains('hidden');
+      document.getElementById('layoutBtn').textContent = isGrid ? 'Grid View' : 'List View';
+      document.getElementById('tableWrap').classList.toggle('hidden', !isGrid);
+      document.getElementById('gridWrap').classList.toggle('hidden', isGrid);
       renderExplorer();
     }
 
-    function getFilteredExplorerDocs() {
+    function filteredDocs() {
       const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-      const sort = document.getElementById('sortSelect').value;
-      let list = [...allDocs];
-      if (currentTab === 'starred') list = list.filter(d => starredIds.has(d.id));
+      const s = document.getElementById('sortSelect').value;
+      let list = [...docs];
+      if (currentTab === 'starred') list = list.filter(d => starred.has(d.id));
       if (q) list = list.filter(d => (d.file_name || '').toLowerCase().includes(q) || (d.mime_type || '').toLowerCase().includes(q));
       list.sort((a, b) => {
-        if (sort === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
-        if (sort === 'largest') return (b.file_size || 0) - (a.file_size || 0);
-        if (sort === 'az') return (a.file_name || '').localeCompare(b.file_name || '');
+        if (s === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
+        if (s === 'largest') return (b.file_size || 0) - (a.file_size || 0);
+        if (s === 'az') return (a.file_name || '').localeCompare(b.file_name || '');
         return new Date(b.created_at) - new Date(a.created_at);
       });
       return list;
     }
 
     function renderExplorer() {
-      const list = getFilteredExplorerDocs();
-      const gridVisible = !document.getElementById('explorerGridWrap').classList.contains('hidden');
-
-      if (!gridVisible) {
-        const tbody = document.getElementById('filesTableBody');
-        if (list.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No matching files.</td></tr>';
+      const list = filteredDocs();
+      const gridOn = !document.getElementById('gridWrap').classList.contains('hidden');
+      if (!gridOn) {
+        const body = document.getElementById('filesBody');
+        if (!list.length) {
+          body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1.8rem; color:var(--text-muted);">No matching files.</td></tr>';
           return;
         }
-        tbody.innerHTML = list.map(doc => {
-          const st = starredIds.has(doc.id);
-          const ch = selectedIds.has(doc.id);
+        body.innerHTML = list.map(d => {
+          const isSt = starred.has(d.id);
+          const isCh = selected.has(d.id);
           return `
             <tr>
-              <td><input type="checkbox" ${ch ? 'checked' : ''} onchange="toggleSelect('${doc.id}', this.checked)" /></td>
-              <td><button class="star-btn ${st ? 'starred' : ''}" onclick="toggleStar('${doc.id}')">${st ? '★' : '☆'}</button></td>
-              <td><strong>${escapeHtml(doc.file_name)}</strong></td>
-              <td class="mono">${escapeHtml(doc.mime_type)}</td>
-              <td class="mono">${formatBytes(doc.file_size)}</td>
-              <td class="mono">${new Date(doc.created_at).toLocaleDateString()}</td>
+              <td><input type="checkbox" ${isCh ? 'checked' : ''} onchange="toggleSel('${d.id}',this.checked)" /></td>
+              <td><button class="star-btn ${isSt ? 'starred' : ''}" onclick="toggleStar('${d.id}')">${isSt ? '★' : '☆'}</button></td>
+              <td><strong>${esc(d.file_name)}</strong></td>
+              <td class="mono">${esc(d.mime_type)}</td>
+              <td class="mono">${fmtBytes(d.file_size)}</td>
+              <td class="mono">${new Date(d.created_at).toLocaleDateString()}</td>
               <td>
                 <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
-                  <button class="btn btn-outline btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
-                  <button class="btn btn-outline btn-sm" onclick="copyShareLink('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Share</button>
-                  <button class="btn btn-outline btn-sm" onclick="openInspector('${doc.id}')">Info</button>
-                  <button class="btn btn-danger btn-sm" onclick="deleteDoc('${doc.id}', '${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Delete</button>
+                  <button class="btn btn-outline btn-sm" onclick="downloadDoc('${d.storage_path}','${esc(d.file_name)}')">Download</button>
+                  <button class="btn btn-outline btn-sm" onclick="shareDoc('${d.storage_path}','${esc(d.file_name)}')">Share</button>
+                  <button class="btn btn-outline btn-sm" onclick="openInfo('${d.id}')">Info</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteDoc('${d.id}','${d.storage_path}','${esc(d.file_name)}')">Delete</button>
                 </div>
               </td>
             </tr>
           `;
         }).join('');
       } else {
-        const grid = document.getElementById('explorerGridWrap');
-        if (list.length === 0) {
-          grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">No matching files.</div>';
+        const g = document.getElementById('gridWrap');
+        if (!list.length) {
+          g.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:1.8rem; color:var(--text-muted);">No matching files.</div>';
           return;
         }
-        grid.innerHTML = list.map(doc => {
-          const st = starredIds.has(doc.id);
+        g.innerHTML = list.map(d => {
+          const isSt = starred.has(d.id);
           return `
             <div class="file-tile">
               <div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
-                  <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">${getCategory(doc).toUpperCase()}</span>
-                  <button class="star-btn ${st ? 'starred' : ''}" onclick="toggleStar('${doc.id}')">${st ? '★' : '☆'}</button>
+                  <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">${fileCat(d).toUpperCase()}</span>
+                  <button class="star-btn ${isSt ? 'starred' : ''}" onclick="toggleStar('${d.id}')">${isSt ? '★' : '☆'}</button>
                 </div>
-                <div style="font-weight:700; word-break:break-word;">${escapeHtml(doc.file_name)}</div>
-                <div class="mono" style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem;">${formatBytes(doc.file_size)}</div>
+                <div style="font-weight:700; word-break:break-word;">${esc(d.file_name)}</div>
+                <div class="mono" style="font-size:0.74rem; color:var(--text-muted); margin-top:0.25rem;">${fmtBytes(d.file_size)}</div>
               </div>
-              <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
-                <button class="btn btn-primary btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteDoc('${doc.id}', '${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Delete</button>
+              <div style="display:flex; gap:0.35rem;">
+                <button class="btn btn-primary btn-sm" onclick="downloadDoc('${d.storage_path}','${esc(d.file_name)}')">Download</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteDoc('${d.id}','${d.storage_path}','${esc(d.file_name)}')">Delete</button>
               </div>
             </div>
           `;
@@ -2124,163 +1766,163 @@
     }
 
     function toggleStar(id) {
-      if (starredIds.has(id)) starredIds.delete(id); else starredIds.add(id);
-      localStorage.setItem('hcv_starred', JSON.stringify([...starredIds]));
-      updateDashboardStats();
+      if (starred.has(id)) starred.delete(id); else starred.add(id);
+      localStorage.setItem('cv_starred', JSON.stringify([...starred]));
+      updateStats();
       renderExplorer();
     }
 
-    function toggleSelect(id, checked) {
-      if (checked) selectedIds.add(id); else selectedIds.delete(id);
-      updateBulkBar();
+    function toggleSel(id, checked) {
+      if (checked) selected.add(id); else selected.delete(id);
+      updateBulk();
     }
 
     function toggleSelectAll(checked) {
-      const list = getFilteredExplorerDocs();
-      if (checked) list.forEach(d => selectedIds.add(d.id)); else selectedIds.clear();
-      updateBulkBar();
+      if (checked) filteredDocs().forEach(d => selected.add(d.id)); else selected.clear();
+      updateBulk();
       renderExplorer();
     }
 
-    function updateBulkBar() {
-      document.getElementById('selectedCount').textContent = selectedIds.size;
-      document.getElementById('bulkDeleteBtn').classList.toggle('hidden', selectedIds.size === 0);
+    function updateBulk() {
+      document.getElementById('selCount').textContent = selected.size;
+      document.getElementById('bulkDelBtn').classList.toggle('hidden', selected.size === 0);
     }
 
-    async function bulkDeleteSelected() {
-      const items = allDocs.filter(d => selectedIds.has(d.id));
+    async function bulkDelete() {
+      const items = docs.filter(d => selected.has(d.id));
       if (!items.length) return;
-      await supabaseClient.storage.from('vault-files').remove(items.map(i => i.storage_path));
-      const { error } = await supabaseClient.from('documents').delete().in('id', items.map(i => i.id));
+      await sb.storage.from('vault-files').remove(items.map(i => i.storage_path));
+      const { error } = await sb.from('documents').delete().in('id', items.map(i => i.id));
       if (error) return showToast(error.message, true);
-      logActivity('Bulk Delete', `${items.length} files`);
-      showToast(`Deleted ${items.length} files.`);
-      loadDocuments();
+      addActivity('Bulk Delete', `${items.length} file(s) deleted`);
+      showToast(`Deleted ${items.length} file(s).`);
+      loadDocs();
     }
 
     async function downloadDoc(path, name) {
-      const { data, error } = await supabaseClient.storage.from('vault-files').createSignedUrl(path, 120);
+      const { data, error } = await sb.storage.from('vault-files').createSignedUrl(path, 120);
       if (error) return showToast(error.message, true);
-      logActivity('Downloaded', name);
+      addActivity('File Downloaded', name);
       window.open(data.signedUrl, '_blank');
     }
 
-    async function copyShareLink(path, name) {
-      const { data, error } = await supabaseClient.storage.from('vault-files').createSignedUrl(path, 3600);
+    async function shareDoc(path, name) {
+      const { data, error } = await sb.storage.from('vault-files').createSignedUrl(path, 3600);
       if (error) return showToast(error.message, true);
       await navigator.clipboard.writeText(data.signedUrl);
-      logActivity('Shared Link', name);
+      addActivity('Share Link Copied', `${name} (1 hour)`);
       showToast('1-hour share link copied!');
     }
 
-    function openInspector(id) {
-      const doc = allDocs.find(d => d.id === id);
-      if (!doc) return;
-      document.getElementById('inspectorContent').innerHTML = `
-        <div class="detail-row"><span>File Name</span><strong>${escapeHtml(doc.file_name)}</strong></div>
-        <div class="detail-row"><span>Type</span><span class="mono">${escapeHtml(doc.mime_type)}</span></div>
-        <div class="detail-row"><span>Size</span><span class="mono">${formatBytes(doc.file_size)}</span></div>
-        <div class="detail-row"><span>Uploaded</span><span class="mono">${new Date(doc.created_at).toLocaleString()}</span></div>
+    function openInfo(id) {
+      const d = docs.find(x => x.id === id);
+      if (!d) return;
+      document.getElementById('infoBody').innerHTML = `
+        <div class="detail-row"><span>Name</span><strong>${esc(d.file_name)}</strong></div>
+        <div class="detail-row"><span>Type</span><span class="mono">${esc(d.mime_type)}</span></div>
+        <div class="detail-row"><span>Size</span><span class="mono">${fmtBytes(d.file_size)}</span></div>
+        <div class="detail-row"><span>Uploaded</span><span class="mono">${new Date(d.created_at).toLocaleString()}</span></div>
         <div style="margin-top:1rem; display:flex; gap:0.5rem;">
-          <button class="btn btn-primary btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
-          <button class="btn btn-outline btn-sm" onclick="renameDoc('${doc.id}', '${escapeHtml(doc.file_name)}')">Rename</button>
+          <button class="btn btn-primary btn-sm" onclick="downloadDoc('${d.storage_path}','${esc(d.file_name)}')">Download</button>
+          <button class="btn btn-outline btn-sm" onclick="renameDoc('${d.id}','${esc(d.file_name)}')">Rename</button>
         </div>
       `;
-      document.getElementById('inspectorModal').classList.remove('hidden');
+      document.getElementById('infoModal').classList.remove('hidden');
     }
 
-    function closeInspector() { document.getElementById('inspectorModal').classList.add('hidden'); }
+    function closeInfoModal() { document.getElementById('infoModal').classList.add('hidden'); }
 
     async function renameDoc(id, oldName) {
-      const next = prompt('New name:', oldName);
+      const next = prompt('Enter new file name:', oldName);
       if (!next || !next.trim() || next.trim() === oldName) return;
-      const { error } = await supabaseClient.from('documents').update({ file_name: next.trim() }).eq('id', id);
+      const { error } = await sb.from('documents').update({ file_name: next.trim() }).eq('id', id);
       if (error) return showToast(error.message, true);
-      logActivity('Renamed', `${oldName} -> ${next.trim()}`);
-      closeInspector();
-      loadDocuments();
+      addActivity('File Renamed', `${oldName} -> ${next.trim()}`);
+      closeInfoModal();
+      loadDocs();
     }
 
     async function deleteDoc(id, path, name) {
-      await supabaseClient.storage.from('vault-files').remove([path]);
-      const { error } = await supabaseClient.from('documents').delete().eq('id', id);
+      await sb.storage.from('vault-files').remove([path]);
+      const { error } = await sb.from('documents').delete().eq('id', id);
       if (error) return showToast(error.message, true);
-      starredIds.delete(id);
-      localStorage.setItem('hcv_starred', JSON.stringify([...starredIds]));
-      logActivity('Deleted', name);
+      starred.delete(id);
+      localStorage.setItem('cv_starred', JSON.stringify([...starred]));
+      addActivity('File Deleted', name);
       showToast(`Deleted "${name}".`);
-      loadDocuments();
+      loadDocs();
     }
 
-    function queueSelectedFiles(fileList) {
-      const usedNow = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
-      const queuedNow = uploadQueue.reduce((s, q) => s + (q.status === 'Ready' ? q.file.size : 0), 0);
-      let projected = usedNow + queuedNow;
-      const limit = getTotalQuotaBytes();
+    /* Upload Queue */
+    function queueFiles(fileList) {
+      const usedNow = docs.reduce((s, d) => s + (d.file_size || 0), 0);
+      const qNow = queue.reduce((s, q) => s + (q.status === 'Ready' ? q.file.size : 0), 0);
+      let proj = usedNow + qNow;
+      const limit = totalQuota();
 
       Array.from(fileList || []).forEach(file => {
-        if (file.size > MAX_SINGLE_FILE_BYTES) {
+        if (file.size > MAX_FILE) {
           showToast(`"${file.name}" exceeds 50 MB max single file.`, true);
-        } else if (projected + file.size > limit) {
-          showToast(`"${file.name}" exceeds your current quota (${formatBytes(limit)}). Earn coins to expand +10 MB!`, true);
+        } else if (proj + file.size > limit) {
+          showToast(`"${file.name}" exceeds your quota (${fmtBytes(limit)}).`, true);
         } else {
-          projected += file.size;
-          uploadQueue.push({ file, status: 'Ready' });
+          proj += file.size;
+          queue.push({ file, status: 'Ready' });
         }
       });
       renderQueue();
     }
 
     function clearQueue() {
-      uploadQueue = [];
-      document.getElementById('multiFileInput').value = '';
+      queue = [];
+      document.getElementById('fileInput').value = '';
       renderQueue();
     }
 
     function renderQueue() {
-      document.getElementById('queueCount').textContent = uploadQueue.length;
-      document.getElementById('queueSection').classList.toggle('hidden', uploadQueue.length === 0);
-      document.getElementById('queueList').innerHTML = uploadQueue.map((item, idx) => `
+      document.getElementById('qCount').textContent = queue.length;
+      document.getElementById('queueWrap').classList.toggle('hidden', queue.length === 0);
+      document.getElementById('queueList').innerHTML = queue.map((it, idx) => `
         <div class="queue-item">
-          <div><strong>${escapeHtml(item.file.name)}</strong> <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">${formatBytes(item.file.size)}</span></div>
+          <div><strong>${esc(it.file.name)}</strong> <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">${fmtBytes(it.file.size)}</span></div>
           <div style="display:flex; align-items:center; gap:0.5rem;">
-            <span class="mono" style="font-size:0.76rem; color:var(--primary);">${item.status}</span>
-            ${item.status === 'Ready' ? `<button class="btn btn-ghost btn-sm" onclick="uploadQueue.splice(${idx},1); renderQueue();">✕</button>` : ''}
+            <span class="mono" style="font-size:0.76rem; color:var(--primary);">${it.status}</span>
+            ${it.status === 'Ready' ? `<button class="btn btn-outline btn-sm" onclick="queue.splice(${idx},1); renderQueue();">Remove</button>` : ''}
           </div>
         </div>
       `).join('');
     }
 
-    async function processUploadQueue() {
-      if (!uploadQueue.length) return;
-      const btn = document.getElementById('startBatchBtn');
+    async function uploadQueueFiles() {
+      if (!queue.length) return;
+      const btn = document.getElementById('uploadAllBtn');
       btn.disabled = true;
       btn.textContent = 'Uploading...';
 
-      for (let item of uploadQueue) {
+      for (let item of queue) {
         if (item.status === 'Done') continue;
         item.status = 'Uploading...';
         renderQueue();
         try {
-          const usedNow = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
-          if (usedNow + item.file.size > getTotalQuotaBytes()) throw new Error('Storage quota exceeded');
-          const storagePath = `${currentUser.id}/${Date.now()}_${item.file.name}`;
-          const { error: upErr } = await supabaseClient.storage.from('vault-files').upload(storagePath, item.file);
-          if (upErr) throw upErr;
-          const { error: dbErr } = await supabaseClient.from('documents').insert({
+          const usedNow = docs.reduce((s, d) => s + (d.file_size || 0), 0);
+          if (usedNow + item.file.size > totalQuota()) throw new Error('Quota exceeded');
+          const path = `${currentUser.id}/${Date.now()}_${item.file.name}`;
+          const { error: uErr } = await sb.storage.from('vault-files').upload(path, item.file);
+          if (uErr) throw uErr;
+          const { error: dErr } = await sb.from('documents').insert({
             user_id: currentUser.id,
             file_name: item.file.name,
             file_size: item.file.size,
             mime_type: item.file.type || 'application/octet-stream',
-            storage_path: storagePath
+            storage_path: path
           });
-          if (dbErr) {
-            await supabaseClient.storage.from('vault-files').remove([storagePath]);
-            throw dbErr;
+          if (dErr) {
+            await sb.storage.from('vault-files').remove([path]);
+            throw dErr;
           }
           item.status = 'Done';
-          logActivity('Uploaded', item.file.name);
-          await loadDocuments();
+          addActivity('File Uploaded', `${item.file.name} (${fmtBytes(item.file.size)})`);
+          await loadDocs();
         } catch (err) {
           item.status = 'Failed';
           showToast(`${item.file.name}: ${err.message}`, true);
@@ -2291,91 +1933,79 @@
       btn.textContent = 'Upload All';
     }
 
-    function saveScratchpad() {
+    /* Notes, Theme & Account Deletion */
+    function saveNotes() {
       if (!currentUser) return;
-      localStorage.setItem(`hcv_note_${currentUser.id}`, document.getElementById('scratchpadArea').value);
+      localStorage.setItem(`cv_note_${currentUser.id}`, document.getElementById('noteArea').value);
+      addActivity('Scratchpad Saved', 'Updated local notes');
       showToast('Scratchpad saved!');
     }
 
-    function renderActivityLog() {
-      const tbody = document.getElementById('activityTableBody');
-      if (!activityLogs.length) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.8rem; color:var(--text-muted);">No activity yet.</td></tr>';
-        return;
-      }
-      tbody.innerHTML = activityLogs.map(a => `
-        <tr><td class="mono">${escapeHtml(a.time)}</td><td><strong>${escapeHtml(a.action)}</strong></td><td style="color:var(--text-muted);">${escapeHtml(a.details)}</td></tr>
-      `).join('');
+    function setTheme(cls) {
+      document.body.className = cls === 'default' ? '' : cls;
+      localStorage.setItem('cv_theme', cls);
+      showToast('Theme updated.');
     }
 
-    function clearActivityLog() {
-      activityLogs = [];
-      localStorage.removeItem('hcv_activity');
-      renderActivityLog();
+    function openDelModal() {
+      document.getElementById('delFileCount').textContent = docs.length;
+      document.getElementById('delInput').value = '';
+      document.getElementById('confirmDelBtn').disabled = true;
+      document.getElementById('delModal').classList.remove('hidden');
     }
 
-    function setTheme(themeClass) {
-      document.body.className = themeClass === 'default' ? '' : themeClass;
-      localStorage.setItem('hcv_theme', themeClass);
-      showToast('Theme applied.');
-    }
-
-    function openDeleteAccountModal() {
-      document.getElementById('delModalFileCount').textContent = allDocs.length;
-      document.getElementById('deleteConfirmInput').value = '';
-      document.getElementById('confirmDeleteAcctBtn').disabled = true;
-      document.getElementById('deleteAccountModal').classList.remove('hidden');
-    }
-
-    function closeDeleteAccountModal() { document.getElementById('deleteAccountModal').classList.add('hidden'); }
-    function validateDeleteInput() {
-      document.getElementById('confirmDeleteAcctBtn').disabled = (document.getElementById('deleteConfirmInput').value.trim() !== 'DELETE');
+    function closeDelModal() { document.getElementById('delModal').classList.add('hidden'); }
+    function checkDelInput() {
+      document.getElementById('confirmDelBtn').disabled = (document.getElementById('delInput').value.trim() !== 'DELETE');
     }
 
     async function executeDeleteAccount() {
-      const btn = document.getElementById('confirmDeleteAcctBtn');
+      const btn = document.getElementById('confirmDelBtn');
       btn.disabled = true;
       btn.textContent = 'Deleting...';
       try {
-        if (allDocs.length > 0) {
-          await supabaseClient.storage.from('vault-files').remove(allDocs.map(d => d.storage_path));
+        if (docs.length > 0) {
+          await sb.storage.from('vault-files').remove(docs.map(d => d.storage_path));
         }
-        const { error } = await supabaseClient.rpc('delete_own_account');
+        const { error } = await sb.rpc('delete_own_account');
         if (error) throw error;
-        await supabaseClient.auth.signOut();
+        await sb.auth.signOut();
         currentUser = null;
-        allDocs = [];
+        docs = [];
         document.getElementById('topCoinHud').classList.add('hidden');
-        closeDeleteAccountModal();
-        showTopPage('welcome');
+        document.getElementById('bellWrap').classList.add('hidden');
+        closeDelModal();
+        showPage('home');
         showToast('Account permanently deleted.');
       } catch (err) {
-        showToast(err.message || 'Delete failed.', true);
+        showToast(err.message || 'Could not delete account.', true);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Permanently Delete Account';
+        btn.textContent = 'Permanently Delete';
       }
     }
 
-    function formatBytes(bytes) {
-      if (!bytes) return '0 B';
-      const k = 1024, sizes = ['B', 'KB', 'MB', 'GB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    /* Helpers */
+    function fmtBytes(b) {
+      if (!b) return '0 B';
+      const k = 1024, u = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(b) / Math.log(k));
+      return parseFloat((b / Math.pow(k, i)).toFixed(2)) + ' ' + u[i];
     }
 
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m]));
     }
 
-    const dz = document.getElementById('multiDropzone');
-    ['dragenter', 'dragover'].forEach(evt => dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.add('dragover'); }));
-    ['dragleave', 'drop'].forEach(evt => dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.remove('dragover'); }));
-    dz.addEventListener('drop', e => { if (e.dataTransfer.files.length) queueSelectedFiles(e.dataTransfer.files); });
+    const dz = document.getElementById('dropzone');
+    ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('dragover'); }));
+    ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('dragover'); }));
+    dz.addEventListener('drop', e => { if (e.dataTransfer.files.length) queueFiles(e.dataTransfer.files); });
 
     window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('hcv_theme');
-      if (savedTheme && savedTheme !== 'default') document.body.className = savedTheme;
+      initHangingBg();
+      const t = localStorage.getItem('cv_theme');
+      if (t && t !== 'default') document.body.className = t;
       checkSession();
     });
   </script>
