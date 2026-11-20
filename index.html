@@ -6,52 +6,30 @@
   <title>Harshal Code Vault</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-page: #f4f6fb;
-      --bg-mesh-1: rgba(99, 102, 241, 0.14);
-      --bg-mesh-2: rgba(14, 165, 233, 0.14);
-      --bg-mesh-3: rgba(236, 72, 153, 0.10);
-      --surface: rgba(255, 255, 255, 0.88);
+      --bg-page: #f3f6fc;
+      --surface: rgba(255, 255, 255, 0.9);
       --surface-solid: #ffffff;
       --surface-soft: #f1f5f9;
       --border: rgba(15, 23, 42, 0.09);
-      --border-strong: rgba(99, 102, 241, 0.32);
       --text-main: #0f172a;
       --text-muted: #64748b;
-
       --primary: #4f46e5;
       --primary-2: #0ea5e9;
       --accent-pink: #ec4899;
+      --coin-gold: #f59e0b;
       --success: #059669;
-      --warning: #d97706;
       --danger: #e11d48;
       --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.05);
-      --shadow-lg: 0 22px 50px -12px rgba(15, 23, 42, 0.12);
+      --shadow-lg: 0 24px 55px -12px rgba(15, 23, 42, 0.13);
     }
 
-    body.theme-ocean {
-      --primary: #0284c7;
-      --primary-2: #06b6d4;
-      --bg-mesh-1: rgba(2, 132, 199, 0.15);
-      --bg-mesh-2: rgba(6, 182, 212, 0.15);
-    }
-
-    body.theme-emerald {
-      --primary: #059669;
-      --primary-2: #10b981;
-      --bg-mesh-1: rgba(5, 150, 105, 0.14);
-      --bg-mesh-2: rgba(16, 185, 129, 0.14);
-    }
-
-    body.theme-sunset {
-      --primary: #e11d48;
-      --primary-2: #f97316;
-      --bg-mesh-1: rgba(225, 29, 72, 0.13);
-      --bg-mesh-2: rgba(249, 115, 22, 0.13);
-    }
+    body.theme-ocean { --primary: #0284c7; --primary-2: #06b6d4; }
+    body.theme-emerald { --primary: #059669; --primary-2: #10b981; }
+    body.theme-sunset { --primary: #e11d48; --primary-2: #f97316; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -59,9 +37,9 @@
       font-family: 'Outfit', system-ui, -apple-system, sans-serif;
       background-color: var(--bg-page);
       background-image:
-        radial-gradient(circle at 12% 10%, var(--bg-mesh-1), transparent 38%),
-        radial-gradient(circle at 88% 12%, var(--bg-mesh-2), transparent 40%),
-        radial-gradient(circle at 50% 92%, var(--bg-mesh-3), transparent 44%);
+        radial-gradient(circle at 12% 10%, rgba(79, 70, 229, 0.14), transparent 38%),
+        radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.14), transparent 40%),
+        radial-gradient(circle at 50% 92%, rgba(236, 72, 153, 0.10), transparent 44%);
       color: var(--text-main);
       min-height: 100vh;
       line-height: 1.55;
@@ -71,70 +49,68 @@
     .hidden { display: none !important; }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* ================= CLICK RIPPLE EFFECT ================= */
     .ripple-circle {
       position: fixed;
       border-radius: 50%;
       pointer-events: none;
       transform: translate(-50%, -50%) scale(0);
-      background: radial-gradient(circle, rgba(79, 70, 229, 0.35) 0%, rgba(14, 165, 233, 0.12) 60%, transparent 100%);
-      animation: clickPulse 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.36) 0%, rgba(14, 165, 233, 0.14) 60%, transparent 100%);
+      animation: clickPulse 0.62s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       z-index: 9999;
     }
 
     @keyframes clickPulse {
       0% { width: 0px; height: 0px; opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
-      100% { width: 130px; height: 130px; opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+      100% { width: 140px; height: 140px; opacity: 0; transform: translate(-50%, -50%) scale(1.25); }
     }
 
-    /* ================= ANIMATED HEADER & SITE NAME ================= */
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(255, 255, 255, 0.78);
+      z-index: 60;
+      background: rgba(255, 255, 255, 0.82);
       backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
     }
 
     .topbar-inner {
-      max-width: 1320px;
+      max-width: 1360px;
       margin: 0 auto;
-      padding: 0.95rem 1.5rem;
+      padding: 0.9rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 1rem;
     }
 
     .animated-brand {
       display: inline-flex;
       align-items: center;
-      gap: 0.7rem;
+      gap: 0.72rem;
       cursor: pointer;
       user-select: none;
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .animated-brand:hover { transform: scale(1.03); }
-    .animated-brand:active { transform: scale(0.96); }
+    .animated-brand:active { transform: scale(0.95); }
 
     .brand-orb {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
       background: linear-gradient(135deg, var(--primary), var(--primary-2), var(--accent-pink));
-      background-size: 200% 200%;
-      animation: gradientFlow 4s ease infinite, floatOrb 3.2s ease-in-out infinite;
+      background-size: 220% 220%;
+      animation: gradientFlow 4s ease infinite, floatOrb 3s ease-in-out infinite;
       display: grid;
       place-items: center;
       color: #fff;
-      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.28);
+      box-shadow: 0 8px 22px rgba(79, 70, 229, 0.3);
     }
 
     .brand-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.48rem;
+      font-size: 1.5rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       background: linear-gradient(90deg, #4f46e5, #0ea5e9, #ec4899, #4f46e5);
@@ -142,6 +118,48 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shimmerText 4.5s linear infinite;
+    }
+
+    .top-right-controls { display: flex; align-items: center; gap: 0.6rem; }
+
+    .coin-hud {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.42rem 0.9rem;
+      border-radius: 999px;
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      color: #92400e;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .coin-hud:hover { transform: scale(1.05); }
+    .coin-hud:active { transform: scale(0.95); }
+
+    .spinning-coin {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+      color: #78350f;
+      font-size: 0.72rem;
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.45);
+      animation: coinSpin 3.4s linear infinite;
+    }
+
+    @keyframes coinSpin {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
     }
 
     @keyframes shimmerText {
@@ -159,25 +177,20 @@
       50% { transform: translateY(-3px) rotate(4deg); }
     }
 
-    /* ================= PAGE & ELEMENT ANIMATIONS ================= */
     @keyframes pageEnter {
-      from { opacity: 0; transform: translateY(16px) scale(0.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.92); }
+      0% { opacity: 0; transform: scale(0.9); }
       100% { opacity: 1; transform: scale(1); }
     }
 
-    .animate-page {
-      animation: pageEnter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
+    .animate-page { animation: pageEnter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-    /* ================= BUTTONS WITH SPRING CLICK ================= */
     .btn {
       position: relative;
-      overflow: hidden;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -193,7 +206,7 @@
     }
 
     .btn:hover { transform: translateY(-2px); }
-    .btn:active { transform: scale(0.94); }
+    .btn:active { transform: scale(0.93); }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
     .btn-primary {
@@ -202,8 +215,11 @@
       box-shadow: 0 8px 22px rgba(79, 70, 229, 0.25);
     }
 
-    .btn-primary:hover {
-      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.35);
+    .btn-gold {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #451a03;
+      font-weight: 700;
+      box-shadow: 0 8px 22px rgba(245, 158, 11, 0.3);
     }
 
     .btn-outline {
@@ -213,46 +229,18 @@
       box-shadow: var(--shadow-sm);
     }
 
-    .btn-outline:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-    }
-
-    .btn-ghost:hover {
-      background: rgba(15, 23, 42, 0.05);
-      color: var(--text-main);
-    }
-
-    .btn-danger {
-      background: #fff1f2;
-      border-color: #fecdd3;
-      color: var(--danger);
-    }
-
-    .btn-danger:hover {
-      background: #ffe4e6;
-      border-color: #fda4af;
-    }
-
-    .btn-danger-solid {
-      background: linear-gradient(135deg, #e11d48, #be123c);
-      color: #ffffff;
-      box-shadow: 0 8px 22px rgba(225, 29, 72, 0.28);
-    }
-
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-ghost { background: transparent; color: var(--text-muted); }
+    .btn-ghost:hover { background: rgba(15, 23, 42, 0.05); color: var(--text-main); }
+    .btn-danger { background: #fff1f2; border-color: #fecdd3; color: var(--danger); }
+    .btn-danger-solid { background: linear-gradient(135deg, #e11d48, #be123c); color: #fff; }
     .btn-sm { padding: 0.44rem 0.85rem; font-size: 0.8rem; border-radius: 10px; }
 
-    /* ================= TOAST ================= */
     .toast-wrap {
       position: fixed;
       bottom: 1.35rem;
       right: 1.35rem;
-      z-index: 200;
+      z-index: 250;
       display: flex;
       flex-direction: column;
       gap: 0.55rem;
@@ -267,200 +255,276 @@
       background: #ffffff;
       border-left: 4px solid var(--primary);
       color: var(--text-main);
-      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
       animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .toast.error {
-      border-left-color: var(--danger);
-      background: #fff1f2;
-      color: #9f1239;
+    .toast.error { border-left-color: var(--danger); background: #fff1f2; color: #9f1239; }
+
+    .blur-welcome-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(15, 23, 42, 0.42);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+      animation: fadeOverlay 0.25s ease forwards;
     }
 
-    /* ================= PAGE 1: WELCOME / CHOICE SCREEN ================= */
-    .welcome-screen {
-      max-width: 960px;
-      margin: 4rem auto;
-      padding: 0 1.5rem;
+    @keyframes fadeOverlay {
+      from { opacity: 0; backdrop-filter: blur(0px); }
+      to { opacity: 1; backdrop-filter: blur(18px); }
+    }
+
+    .blur-welcome-card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 28px;
+      padding: 2.5rem 3rem;
       text-align: center;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: 0 30px 70px rgba(15, 23, 42, 0.3);
+      animation: welcomePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
-    .welcome-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.42rem 1rem;
-      border-radius: 999px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      color: var(--primary);
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-bottom: 1.25rem;
+    @keyframes welcomePop {
+      0% { opacity: 0; transform: scale(0.78) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    .welcome-screen h1 {
+    .blur-welcome-card h2 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.2rem, 4.8vw, 3.5rem);
+      font-size: clamp(1.6rem, 3.6vw, 2.35rem);
       font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.14;
-      margin-bottom: 1rem;
-    }
-
-    .welcome-screen h1 span {
+      line-height: 1.2;
       background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent-pink));
       background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: shimmerText 4s linear infinite;
+      animation: shimmerText 3s linear infinite;
     }
 
-    .welcome-screen p.lead {
-      max-width: 580px;
-      margin: 0 auto 2.35rem;
-      color: var(--text-muted);
-      font-size: 1.05rem;
+    .blur-welcome-card p { margin-top: 0.55rem; color: var(--text-muted); font-size: 0.95rem; }
+
+    .auth-stage {
+      position: relative;
+      min-height: calc(100vh - 68px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.25rem;
+      overflow: hidden;
     }
 
-    .gate-cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.4rem;
-      max-width: 740px;
-      margin: 0 auto 2.75rem;
+    .drum-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0.92;
     }
 
-    @media (max-width: 640px) { .gate-cards { grid-template-columns: 1fr; } }
+    .drum-hero-banner { position: relative; z-index: 3; text-align: center; margin-bottom: 1.2rem; }
 
-    .gate-card {
-      background: var(--surface);
-      backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 2.1rem 1.85rem;
-      text-align: left;
-      cursor: pointer;
-      box-shadow: var(--shadow-lg);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    .drum-100mb-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(90deg, #4f46e5, #0ea5e9, #ec4899, #f59e0b, #4f46e5);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmerText 3.2s linear infinite, badgeBounce 2.2s ease-in-out infinite;
+      filter: drop-shadow(0 10px 24px rgba(79, 70, 229, 0.2));
     }
 
-    .gate-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--primary);
-      box-shadow: 0 26px 55px -15px rgba(79, 70, 229, 0.22);
+    @keyframes badgeBounce {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-7px) scale(1.03); }
     }
 
-    .gate-card:active { transform: scale(0.97); }
+    .drum-kit-container {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 1rem 2rem 2rem;
+      max-width: 780px;
+      width: 100%;
+    }
 
-    .gate-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
+    .drum-unit { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+    .cymbal {
+      width: 130px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, #d97706, #fde68a, #f59e0b, #fef3c7, #b45309);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35), inset 0 2px 4px rgba(255,255,255,0.8);
+      transform-origin: center center;
+      animation: cymbalWobble 1.2s ease-in-out infinite;
+      margin-bottom: 4px;
+    }
+
+    .cymbal-stand { width: 6px; height: 130px; background: linear-gradient(180deg, #cbd5e1, #64748b); border-radius: 99px; }
+
+    @keyframes cymbalWobble {
+      0%, 100% { transform: rotate(-5deg) scale(1); }
+      25% { transform: rotate(6deg) scale(1.04); }
+      50% { transform: rotate(-3deg) scale(1); }
+      75% { transform: rotate(4deg) scale(1.02); }
+    }
+
+    .drum-shell {
+      position: relative;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #1e1b4b 0%, #4338ca 28%, #6366f1 50%, #312e81 82%, #1e1b4b 100%);
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.25), inset 0 -6px 14px rgba(0,0,0,0.35);
+      border: 2px solid #cbd5e1;
+      overflow: visible;
+    }
+
+    .drum-head {
+      position: absolute;
+      top: -11px;
+      left: -4px;
+      right: -4px;
+      height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f1f5f9 65%, #cbd5e1 100%);
+      border: 2.5px solid #94a3b8;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+      animation: headHit 0.6s ease-out infinite;
+    }
+
+    .snare-shell { width: 136px; height: 78px; animation: drumBounce 0.6s ease-out infinite; }
+    .tom-shell { width: 122px; height: 92px; animation: drumBounce 0.8s ease-out infinite 0.2s; }
+    .kick-shell {
+      width: 175px;
+      height: 155px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #6366f1, #312e81 65%, #0f172a 100%);
+      border: 6px solid #e2e8f0;
+      box-shadow: 0 22px 45px rgba(15, 23, 42, 0.32), inset 0 0 24px rgba(0,0,0,0.5);
       display: grid;
       place-items: center;
-      margin-bottom: 1.2rem;
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(14, 165, 233, 0.14));
-      color: var(--primary);
+      animation: kickThump 0.5s ease-out infinite;
     }
 
-    .gate-card h3 {
+    .kick-inner {
+      width: 138px;
+      height: 138px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 85%, #94a3b8 100%);
+      display: grid;
+      place-items: center;
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.32rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
+      font-weight: 800;
+      color: #312e81;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
     }
 
-    .gate-card p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 1.4rem;
+    @keyframes drumBounce {
+      0%, 100% { transform: translateY(0px) scaleY(1); }
+      20% { transform: translateY(5px) scaleY(0.95); }
+      50% { transform: translateY(-2px) scaleY(1.02); }
     }
 
-    .feature-chips {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.65rem;
+    @keyframes headHit {
+      0%, 100% { transform: scaleX(1); }
+      20% { transform: scaleX(1.04) scaleY(0.82); }
     }
 
-    .f-chip {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      background: #ffffff;
-      border: 1px solid var(--border);
-      padding: 0.45rem 0.95rem;
-      border-radius: 999px;
-      box-shadow: var(--shadow-sm);
+    @keyframes kickThump {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.06); }
+      60% { transform: scale(0.98); }
     }
 
-    /* ================= PAGE 2 & 3: AUTH PAGES ================= */
-    .auth-page {
-      max-width: 465px;
-      margin: 3.25rem auto;
-      padding: 0 1.25rem;
+    .drumstick {
+      position: absolute;
+      top: -54px;
+      width: 8px;
+      height: 92px;
+      border-radius: 99px;
+      background: linear-gradient(180deg, #fde68a, #d97706);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transform-origin: bottom center;
+    }
+
+    .drumstick::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #f8fafc;
+      border: 2px solid #d97706;
+    }
+
+    .stick-left { left: 26px; animation: stickStrikeLeft 0.6s ease-in-out infinite; }
+    .stick-right { right: 26px; animation: stickStrikeRight 0.6s ease-in-out infinite 0.3s; }
+
+    @keyframes stickStrikeLeft {
+      0%, 100% { transform: rotate(-28deg); }
+      35% { transform: rotate(22deg); }
+    }
+
+    @keyframes stickStrikeRight {
+      0%, 100% { transform: rotate(28deg); }
+      35% { transform: rotate(-22deg); }
     }
 
     .auth-card {
-      background: var(--surface-solid);
-      border: 1px solid var(--border);
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 455px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.75);
       border-radius: 26px;
-      padding: 2.3rem;
-      box-shadow: var(--shadow-lg);
+      padding: 2.2rem;
+      box-shadow: 0 28px 65px rgba(15, 23, 42, 0.22);
     }
 
-    .auth-top-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.45rem;
-    }
-
-    .auth-card h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.65rem;
-      font-weight: 800;
-      margin-bottom: 0.25rem;
-    }
-
-    .auth-card p.sub {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 1.65rem;
-    }
-
-    .field { margin-bottom: 1.15rem; }
-    .field label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-main);
-      margin-bottom: 0.4rem;
-    }
-
+    .auth-top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.3rem; }
+    .auth-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 800; }
+    .auth-card p.sub { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+    .field { margin-bottom: 1.05rem; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.38rem; }
     .input-wrap { position: relative; }
-
     .field input {
       width: 100%;
-      padding: 0.78rem 1rem;
-      border-radius: 13px;
+      padding: 0.75rem 0.95rem;
+      border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--surface-soft);
       color: var(--text-main);
       font-family: inherit;
-      font-size: 0.94rem;
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
     }
-
     .field input:focus {
       outline: none;
-      background: #ffffff;
+      background: #fff;
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
     }
-
     .toggle-pass {
       position: absolute;
       right: 0.8rem;
@@ -469,475 +533,232 @@
       background: none;
       border: none;
       color: var(--primary);
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.78rem;
       cursor: pointer;
     }
-
-    .strength-bar {
-      height: 6px;
-      border-radius: 99px;
-      background: #e2e8f0;
-      margin-top: 0.45rem;
-      overflow: hidden;
-    }
-
-    .strength-fill {
-      height: 100%;
-      width: 0%;
-      transition: width 0.25s ease, background 0.25s ease;
-    }
-
-    .auth-footer {
-      margin-top: 1.5rem;
-      padding-top: 1.15rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      font-size: 0.86rem;
-      color: var(--text-muted);
-    }
-
-    .link-btn {
-      background: none;
-      border: none;
-      color: var(--primary);
-      font-weight: 700;
-      cursor: pointer;
-      font-size: inherit;
-    }
-
+    .strength-bar { height: 6px; border-radius: 99px; background: #e2e8f0; margin-top: 0.45rem; overflow: hidden; }
+    .strength-fill { height: 100%; width: 0%; transition: width 0.25s ease, background 0.25s ease; }
+    .auth-footer { margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    .link-btn { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; font-size: inherit; }
     .link-btn:hover { text-decoration: underline; }
 
-    /* ================= PAGE 4: WORKSPACE DASHBOARD ================= */
-    .app-shell {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 1.6rem 1.5rem;
-      display: grid;
-      grid-template-columns: 255px 1fr;
-      gap: 1.5rem;
-      align-items: start;
+    .welcome-screen { max-width: 980px; margin: 3.5rem auto; padding: 0 1.5rem; text-align: center; }
+    .welcome-pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.42rem 1rem; border-radius: 999px; background: #fff;
+      border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+      color: var(--primary); font-size: 0.8rem; font-weight: 700; margin-bottom: 1.2rem;
+    }
+    .welcome-screen h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.2rem, 4.8vw, 3.5rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.14; margin-bottom: 1rem;
+    }
+    .welcome-screen h1 span {
+      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent-pink));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmerText 4s linear infinite;
+    }
+    .welcome-screen p.lead { max-width: 600px; margin: 0 auto 2.2rem; color: var(--text-muted); font-size: 1.04rem; }
+    .gate-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem; max-width: 740px; margin: 0 auto 2.5rem; }
+    @media (max-width: 640px) { .gate-cards { grid-template-columns: 1fr; } }
+    .gate-card {
+      background: var(--surface); backdrop-filter: blur(16px); border: 1px solid var(--border);
+      border-radius: 24px; padding: 2rem 1.8rem; text-align: left; cursor: pointer; box-shadow: var(--shadow-lg);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease;
+    }
+    .gate-card:hover { transform: translateY(-6px); border-color: var(--primary); }
+    .gate-card:active { transform: scale(0.97); }
+    .gate-icon {
+      width: 50px; height: 50px; border-radius: 15px; display: grid; place-items: center;
+      margin-bottom: 1.1rem; background: rgba(79, 70, 229, 0.1); color: var(--primary);
+    }
+    .gate-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .gate-card p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.3rem; }
+    .feature-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+    .f-chip {
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted); background: #fff;
+      border: 1px solid var(--border); padding: 0.42rem 0.9rem; border-radius: 999px; box-shadow: var(--shadow-sm);
     }
 
-    @media (max-width: 920px) { .app-shell { grid-template-columns: 1fr; } }
+    .app-shell {
+      max-width: 1360px; margin: 0 auto; padding: 1.5rem;
+      display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; align-items: start;
+    }
+    @media (max-width: 940px) { .app-shell { grid-template-columns: 1fr; } }
 
     .sidebar {
-      background: var(--surface-solid);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 1.3rem;
-      box-shadow: var(--shadow-lg);
-      position: sticky;
-      top: 5.3rem;
+      background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px;
+      padding: 1.25rem; box-shadow: var(--shadow-lg); position: sticky; top: 5.2rem;
     }
 
     .user-mini {
-      padding: 0.9rem;
-      border-radius: 16px;
+      padding: 0.85rem; border-radius: 16px;
       background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(14, 165, 233, 0.08));
-      border: 1px solid rgba(79, 70, 229, 0.16);
-      margin-bottom: 1.2rem;
+      border: 1px solid rgba(79, 70, 229, 0.16); margin-bottom: 1rem;
     }
+    .user-mini small { display: block; font-size: 0.68rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .user-mini strong { display: block; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .user-mini small {
-      display: block;
-      font-size: 0.7rem;
-      color: var(--primary);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .user-mini strong {
-      display: block;
-      font-size: 0.92rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 0.15rem;
-    }
-
-    .nav-list { display: flex; flex-direction: column; gap: 0.38rem; }
-
+    .nav-list { display: flex; flex-direction: column; gap: 0.28rem; max-height: 410px; overflow-y: auto; padding-right: 2px; }
     .nav-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0.74rem 0.95rem;
-      border-radius: 13px;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex; align-items: center; justify-content: space-between; width: 100%;
+      padding: 0.64rem 0.88rem; border-radius: 12px; background: transparent; border: 1px solid transparent;
+      color: var(--text-muted); font-family: inherit; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; text-align: left; transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
-    .nav-item:hover {
-      background: var(--surface-soft);
-      color: var(--text-main);
-      transform: translateX(3px);
-    }
-
+    .nav-item:hover { background: var(--surface-soft); color: var(--text-main); transform: translateX(3px); }
     .nav-item:active { transform: scale(0.96); }
-
     .nav-item.active {
       background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #ffffff;
-      box-shadow: 0 8px 18px rgba(79, 70, 229, 0.22);
+      color: #fff; box-shadow: 0 6px 16px rgba(79, 70, 229, 0.22);
     }
-
-    .nav-item.active .nav-count {
-      background: rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-    }
-
+    .nav-item.active .nav-count { background: rgba(255,255,255,0.25); color: #fff; }
     .nav-count {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      padding: 0.14rem 0.5rem;
-      border-radius: 99px;
-      background: var(--surface-soft);
-      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.1rem 0.45rem;
+      border-radius: 99px; background: var(--surface-soft); color: var(--primary);
     }
 
-    .quota-widget {
-      margin-top: 1.35rem;
-      padding-top: 1.15rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .quota-top {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-bottom: 0.45rem;
-    }
-
-    .progress-track {
-      height: 8px;
-      border-radius: 99px;
-      background: #e2e8f0;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--primary), var(--primary-2));
-      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
+    .quota-widget { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .quota-top { display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e2e8f0; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--primary-2)); transition: width 0.35s ease; }
 
     .main-view {
-      background: var(--surface-solid);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 1.85rem;
-      box-shadow: var(--shadow-lg);
-      min-height: 560px;
+      background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px;
+      padding: 1.8rem; box-shadow: var(--shadow-lg); min-height: 560px;
     }
 
     .view-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      padding-bottom: 1.25rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 1.5rem;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 1rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 1.45rem;
     }
+    .view-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.38rem; font-weight: 800; }
+    .view-header p { font-size: 0.85rem; color: var(--text-muted); }
 
-    .view-header h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.42rem;
-      font-weight: 800;
-    }
-
-    .view-header p { font-size: 0.86rem; color: var(--text-muted); }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 1050px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.95rem; margin-bottom: 1.45rem; }
+    @media (max-width: 1080px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 520px) { .kpi-grid { grid-template-columns: 1fr; } }
 
     .kpi-card {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 1.15rem 1.25rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--surface-soft); border: 1px solid var(--border); border-radius: 17px;
+      padding: 1.1rem 1.2rem; transition: transform 0.2s ease;
     }
-
-    .kpi-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .kpi-card small { font-size: 0.76rem; color: var(--text-muted); font-weight: 600; }
-    .kpi-card .val {
-      font-size: 1.58rem;
-      font-weight: 800;
-      margin-top: 0.25rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--primary);
-    }
+    .kpi-card:hover { transform: translateY(-3px); }
+    .kpi-card small { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .kpi-card .val { font-size: 1.5rem; font-weight: 800; margin-top: 0.2rem; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
 
     .section-card {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 1.3rem;
-      margin-bottom: 1.5rem;
+      background: var(--surface-soft); border: 1px solid var(--border); border-radius: 18px;
+      padding: 1.3rem; margin-bottom: 1.35rem;
     }
 
-    .stacked-bar {
-      display: flex;
-      height: 12px;
-      border-radius: 99px;
+    .coin-arena { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.4rem; }
+    @media (max-width: 780px) { .coin-arena { grid-template-columns: 1fr; } }
+
+    .coin-machine-card {
+      position: relative;
+      background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px solid #fcd34d;
+      border-radius: 22px;
+      padding: 1.5rem;
       overflow: hidden;
-      background: #e2e8f0;
-      margin: 0.85rem 0;
+      box-shadow: 0 14px 32px rgba(245, 158, 11, 0.14);
     }
 
-    .legend-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.1rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .expand-machine-card {
+      position: relative;
+      background: linear-gradient(145deg, #eef2ff 0%, #e0f2fe 100%);
+      border: 1.5px solid rgba(79, 70, 229, 0.28);
+      border-radius: 22px;
+      padding: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 14px 32px rgba(79, 70, 229, 0.12);
     }
 
-    .dot-swatch {
-      display: inline-block;
-      width: 9px;
-      height: 9px;
+    .vault-coin-3d {
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
-      margin-right: 0.35rem;
+      background: radial-gradient(circle at 30% 30%, #fef08a, #f59e0b 65%, #b45309 100%);
+      border: 4px solid #fef3c7;
+      box-shadow: 0 10px 24px rgba(217, 119, 6, 0.35), inset 0 0 10px rgba(255,255,255,0.7);
+      display: grid;
+      place-items: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #78350f;
+      margin: 0.75rem 0 1rem;
+      animation: coinFloatSpin 3.6s ease-in-out infinite;
     }
 
-    .explorer-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 1.15rem;
+    .vault-coin-3d.burst { animation: coinBurst 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+    @keyframes coinFloatSpin {
+      0%, 100% { transform: translateY(0px) rotateY(0deg); }
+      50% { transform: translateY(-6px) rotateY(180deg); }
     }
 
-    .tabs-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-
-    .tab-btn {
-      padding: 0.44rem 0.86rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.16s ease;
+    @keyframes coinBurst {
+      0% { transform: scale(1) rotate(0deg); }
+      45% { transform: scale(1.32) rotate(180deg); }
+      100% { transform: scale(1) rotate(360deg); }
     }
 
-    .tab-btn:active { transform: scale(0.95); }
-
-    .tab-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-      border-color: var(--primary);
+    .floating-plus-coin {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #d97706;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .controls-right { display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center; }
+    .floating-plus-coin.fly { animation: plusFlyUp 1.1s ease-out forwards; }
 
-    .input-compact, .select-compact {
-      padding: 0.5rem 0.85rem;
-      border-radius: 11px;
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.84rem;
+    @keyframes plusFlyUp {
+      0% { opacity: 1; transform: translateY(8px) scale(0.8); }
+      100% { opacity: 0; transform: translateY(-34px) scale(1.25); }
     }
 
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: #ffffff;
-    }
-
-    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
-    th {
-      text-align: left;
-      padding: 0.82rem 0.95rem;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      background: var(--surface-soft);
-      border-bottom: 1px solid var(--border);
-    }
-
-    td {
-      padding: 0.88rem 0.95rem;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 16px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 0.8rem 0.95rem; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); background: var(--surface-soft); border-bottom: 1px solid var(--border); }
+    td { padding: 0.85rem 0.95rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
-    tbody tr { transition: background 0.15s ease; }
-    tbody tr:hover { background: rgba(79, 70, 229, 0.03); }
 
-    .star-btn {
-      background: none;
-      border: none;
-      font-size: 1.1rem;
-      cursor: pointer;
-      color: #cbd5e1;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
+    .star-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #cbd5e1; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .star-btn:hover { transform: scale(1.25); }
     .star-btn.starred { color: #f59e0b; }
 
-    .files-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
-      gap: 1rem;
-    }
+    .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+    .file-tile { background: var(--surface-soft); border: 1px solid var(--border); border-radius: 18px; padding: 1.1rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.85rem; transition: transform 0.2s ease; }
+    .file-tile:hover { transform: translateY(-3px); border-color: var(--primary); }
 
-    .file-tile {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 1.15rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 0.9rem;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
+    .big-dropzone { border: 2px dashed rgba(79, 70, 229, 0.35); border-radius: 22px; padding: 2.3rem 1.5rem; text-align: center; background: rgba(79, 70, 229, 0.03); margin-bottom: 1.25rem; }
+    .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-radius: 13px; background: var(--surface-soft); border: 1px solid var(--border); margin-bottom: 0.5rem; font-size: 0.85rem; animation: popIn 0.2s ease; }
 
-    .file-tile:hover {
-      border-color: var(--primary);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-sm);
-    }
+    .danger-zone { background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 18px; padding: 1.35rem; margin-top: 1.3rem; }
+    .danger-zone h4 { color: #be123c; font-weight: 800; margin-bottom: 0.25rem; }
+    .danger-zone p { color: #881337; font-size: 0.84rem; margin-bottom: 0.9rem; }
 
-    .tile-name { font-weight: 700; font-size: 0.92rem; word-break: break-word; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(6px); z-index: 150; display: grid; place-items: center; padding: 1rem; }
+    .modal-box { width: 100%; max-width: 470px; background: #fff; border: 1px solid var(--border); border-radius: 22px; padding: 1.7rem; animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .detail-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.62rem 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
+    .warning-banner { background: #fff1f2; border: 1px solid #fda4af; color: #9f1239; padding: 0.85rem 1rem; border-radius: 12px; font-size: 0.84rem; margin: 0.85rem 0 1.1rem; }
 
-    .big-dropzone {
-      border: 2px dashed rgba(79, 70, 229, 0.35);
-      border-radius: 22px;
-      padding: 2.6rem 1.5rem;
-      text-align: center;
-      background: rgba(79, 70, 229, 0.03);
-      margin-bottom: 1.4rem;
-      transition: all 0.22s ease;
-    }
-
-    .big-dropzone.dragover {
-      border-color: var(--primary);
-      background: rgba(79, 70, 229, 0.09);
-      transform: scale(1.01);
-    }
-
-    .queue-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.8rem 1rem;
-      border-radius: 13px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      margin-bottom: 0.55rem;
-      font-size: 0.86rem;
-      animation: popIn 0.22s ease;
-    }
-
-    /* Danger Zone Card for Account Deletion */
-    .danger-zone {
-      background: #fff1f2;
-      border: 1.5px solid #fecdd3;
-      border-radius: 18px;
-      padding: 1.4rem;
-      margin-top: 1.5rem;
-    }
-
-    .danger-zone h4 {
-      color: #be123c;
-      font-size: 1rem;
-      font-weight: 800;
-      margin-bottom: 0.3rem;
-    }
-
-    .danger-zone p {
-      color: #881337;
-      font-size: 0.84rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Modals */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.55);
-      backdrop-filter: blur(6px);
-      z-index: 120;
-      display: grid;
-      place-items: center;
-      padding: 1rem;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .modal-box {
-      width: 100%;
-      max-width: 470px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 1.75rem;
-      box-shadow: 0 28px 60px rgba(15, 23, 42, 0.25);
-      animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 0.65rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-    }
-
-    .warning-banner {
-      background: #fff1f2;
-      border: 1px solid #fda4af;
-      color: #9f1239;
-      padding: 0.85rem 1rem;
-      border-radius: 12px;
-      font-size: 0.84rem;
-      margin: 0.85rem 0 1.1rem;
-      line-height: 1.5;
-    }
+    .quick-note-area { width: 100%; min-height: 170px; padding: 1rem; border-radius: 14px; border: 1px solid var(--border); background: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; resize: vertical; }
   </style>
 </head>
 <body>
 
-  <!-- Animated Header with Harshal Code Vault -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="animated-brand" onclick="goHome()">
@@ -948,18 +769,35 @@
         </div>
         <span class="brand-title">Harshal Code Vault</span>
       </div>
+
+      <div class="top-right-controls">
+        <button class="coin-hud hidden" id="topCoinHud" onclick="switchTab('coins')" title="Vault Coins & +10MB Expansion">
+          <span class="spinning-coin">V</span>
+          <span id="topCoinCount">0</span>
+          <span>Coins</span>
+        </button>
+        <button class="btn btn-outline btn-sm" id="soundToggleBtn" onclick="toggleSound()">
+          Sound: ON
+        </button>
+      </div>
     </div>
   </header>
 
   <div id="toastWrap" class="toast-wrap"></div>
 
-  <!-- ==================== PAGE 1: WELCOME / SIGN IN OR CREATE ACCOUNT ==================== -->
+  <div id="blurWelcomeOverlay" class="blur-welcome-overlay hidden">
+    <div class="blur-welcome-card">
+      <h2 id="blurWelcomeTitle">Welcome</h2>
+      <p id="blurWelcomeSub">Preparing your workspace...</p>
+    </div>
+  </div>
+
   <section id="pageWelcome" class="welcome-screen animate-page">
-    <div class="welcome-pill">100 MB Free Personal Quota • Instant Access</div>
+    <div class="welcome-pill">Start with 100 MB Free + Daily Vault Coins (+10 MB per 10 Coins)</div>
     <h1>Welcome to <span>Harshal Code Vault</span></h1>
     <p class="lead">
-      Store, organize, preview, and share your documents, images, and project archives
-      in your own private cloud workspace.
+      Your animated cloud file vault with daily Vault Coins, 100 MB starter storage,
+      expandable space, and instant multi-page tools.
     </p>
 
     <div class="gate-cards">
@@ -970,8 +808,8 @@
           </svg>
         </div>
         <h3>Sign In</h3>
-        <p>Already have an account? Open your vault and manage your uploaded files.</p>
-        <span class="btn btn-primary btn-sm">Continue to Sign In &rarr;</span>
+        <p>Already have an account? Sign in to collect daily coins and open your vault.</p>
+        <span class="btn btn-primary btn-sm">Sign In &rarr;</span>
       </div>
 
       <div class="gate-card" onclick="openAuthPage('register')">
@@ -981,23 +819,51 @@
           </svg>
         </div>
         <h3>Create Account</h3>
-        <p>New user? Get 100 MB of dedicated personal storage in seconds.</p>
-        <span class="btn btn-outline btn-sm">Create New Account &rarr;</span>
+        <p>Create your account to claim 100 MB storage and start earning daily Vault Coins.</p>
+        <span class="btn btn-outline btn-sm">Create Account &rarr;</span>
       </div>
     </div>
 
     <div class="feature-chips">
-      <span class="f-chip">100 MB Per User</span>
-      <span class="f-chip">Batch Drag & Drop</span>
-      <span class="f-chip">Grid & List Views</span>
-      <span class="f-chip">Starred Favorites</span>
-      <span class="f-chip">1-Hour Share Links</span>
-      <span class="f-chip">Self-Service Account Control</span>
+      <span class="f-chip">100 MB Base + Expandable</span>
+      <span class="f-chip">Daily Vault Coins</span>
+      <span class="f-chip">10 Coins = +10 MB</span>
+      <span class="f-chip">Click Sound Effects</span>
+      <span class="f-chip">10+ Workspace Views</span>
+      <span class="f-chip">Account Self-Delete</span>
     </div>
   </section>
 
-  <!-- ==================== PAGE 2: DEDICATED SIGN IN PAGE ==================== -->
-  <section id="pageLogin" class="auth-page hidden">
+  <section id="pageLogin" class="auth-stage hidden">
+    <div class="drum-backdrop">
+      <div class="drum-hero-banner">
+        <div class="drum-100mb-text">100MB for You!</div>
+      </div>
+      <div class="drum-kit-container">
+        <div class="drum-unit">
+          <div class="cymbal"></div>
+          <div class="cymbal-stand"></div>
+        </div>
+        <div class="drum-unit">
+          <div class="drumstick stick-left"></div>
+          <div class="drum-shell snare-shell">
+            <div class="drum-head"></div>
+          </div>
+        </div>
+        <div class="drum-unit">
+          <div class="kick-shell">
+            <div class="kick-inner">VAULT BEAT</div>
+          </div>
+        </div>
+        <div class="drum-unit">
+          <div class="drumstick stick-right"></div>
+          <div class="drum-shell tom-shell">
+            <div class="drum-head"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="auth-card animate-page">
       <div class="auth-top-nav">
         <button class="btn btn-ghost btn-sm" onclick="showTopPage('welcome')">&larr; Back</button>
@@ -1005,7 +871,7 @@
       </div>
 
       <h2>Sign In</h2>
-      <p class="sub">Access your Harshal Code Vault workspace</p>
+      <p class="sub">Enter your account to unlock Harshal Code Vault</p>
 
       <form onsubmit="event.preventDefault(); handleSignIn();">
         <div class="field">
@@ -1027,27 +893,54 @@
       </form>
 
       <div class="auth-footer">
-        Don't have an account?
-        <button class="link-btn" onclick="openAuthPage('register')">Create Account</button>
+        New here? <button class="link-btn" onclick="openAuthPage('register')">Create Account</button>
       </div>
     </div>
   </section>
 
-  <!-- ==================== PAGE 3: DEDICATED CREATE ACCOUNT PAGE ==================== -->
-  <section id="pageRegister" class="auth-page hidden">
+  <section id="pageRegister" class="auth-stage hidden">
+    <div class="drum-backdrop">
+      <div class="drum-hero-banner">
+        <div class="drum-100mb-text">100MB for You!</div>
+      </div>
+      <div class="drum-kit-container">
+        <div class="drum-unit">
+          <div class="cymbal"></div>
+          <div class="cymbal-stand"></div>
+        </div>
+        <div class="drum-unit">
+          <div class="drumstick stick-left"></div>
+          <div class="drum-shell snare-shell">
+            <div class="drum-head"></div>
+          </div>
+        </div>
+        <div class="drum-unit">
+          <div class="kick-shell">
+            <div class="kick-inner">100 MB CLUB</div>
+          </div>
+        </div>
+        <div class="drum-unit">
+          <div class="drumstick stick-right"></div>
+          <div class="drum-shell tom-shell">
+            <div class="drum-head"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="auth-card animate-page">
       <div class="auth-top-nav">
         <button class="btn btn-ghost btn-sm" onclick="showTopPage('welcome')">&larr; Back</button>
-        <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">NEW ACCOUNT</span>
+        <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">CREATE ACCOUNT</span>
       </div>
 
       <h2>Create Account</h2>
-      <p class="sub">Includes 100 MB personal file quota</p>
+      <p class="sub">Claim 100MB for You! + daily Vault Coins</p>
 
       <form onsubmit="event.preventDefault(); handleSignUp();">
         <div class="field">
-          <label for="regName">Display Name</label>
-          <input type="text" id="regName" placeholder="Your Name" />
+          <label for="regName">Your Name</label>
+          <input type="text" id="regName" placeholder="Harshal" required />
         </div>
 
         <div class="field">
@@ -1058,7 +951,7 @@
         <div class="field">
           <label for="regPassword">Password (min 6 characters)</label>
           <div class="input-wrap">
-            <input type="password" id="regPassword" placeholder="Create a password" oninput="updatePassStrength(this.value)" required />
+            <input type="password" id="regPassword" placeholder="Create password" oninput="updatePassStrength(this.value)" required />
             <button type="button" class="toggle-pass" onclick="togglePassword('regPassword', this)">Show</button>
           </div>
           <div class="strength-bar"><div id="strengthFill" class="strength-fill"></div></div>
@@ -1066,7 +959,7 @@
 
         <div class="field">
           <label for="regConfirm">Confirm Password</label>
-          <input type="password" id="regConfirm" placeholder="Re-enter password" required />
+          <input type="password" id="regConfirm" placeholder="Confirm password" required />
         </div>
 
         <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="width:100%; margin-top:0.5rem;">
@@ -1075,47 +968,42 @@
       </form>
 
       <div class="auth-footer">
-        Already have an account?
-        <button class="link-btn" onclick="openAuthPage('login')">Sign In</button>
+        Already registered? <button class="link-btn" onclick="openAuthPage('login')">Sign In</button>
       </div>
     </div>
   </section>
 
-  <!-- ==================== PAGE 4: MULTI-VIEW WORKSPACE ==================== -->
   <section id="pageApp" class="app-shell hidden">
     <aside class="sidebar animate-page">
       <div class="user-mini">
-        <small>Active User</small>
+        <small>Signed In As</small>
         <strong id="sidebarUserName">User</strong>
-        <span class="mono" id="sidebarUserEmail" style="font-size:0.74rem; color:var(--text-muted);"></span>
+        <span class="mono" id="sidebarUserEmail" style="font-size:0.73rem; color:var(--text-muted);"></span>
       </div>
 
       <nav class="nav-list">
-        <button class="nav-item active" data-tab="overview" onclick="switchTab('overview')">
-          <span>Overview</span>
-        </button>
+        <button class="nav-item active" data-tab="overview" onclick="switchTab('overview')">1. Overview</button>
         <button class="nav-item" data-tab="files" onclick="switchTab('files')">
-          <span>My Files</span>
-          <span class="nav-count" id="navFileCount">0</span>
+          <span>2. My Files</span><span class="nav-count" id="navFileCount">0</span>
         </button>
         <button class="nav-item" data-tab="starred" onclick="switchTab('starred')">
-          <span>Starred</span>
-          <span class="nav-count" id="navStarCount">0</span>
+          <span>3. Starred</span><span class="nav-count" id="navStarCount">0</span>
         </button>
-        <button class="nav-item" data-tab="upload" onclick="switchTab('upload')">
-          <span>Upload Center</span>
+        <button class="nav-item" data-tab="upload" onclick="switchTab('upload')">4. Upload Center</button>
+        <button class="nav-item" data-tab="coins" onclick="switchTab('coins')">
+          <span>5. Vault Coins</span><span class="nav-count" id="navCoinCount">0</span>
         </button>
-        <button class="nav-item" data-tab="activity" onclick="switchTab('activity')">
-          <span>Activity Log</span>
-        </button>
-        <button class="nav-item" data-tab="settings" onclick="switchTab('settings')">
-          <span>Account & Settings</span>
-        </button>
+        <button class="nav-item" data-tab="expand" onclick="switchTab('expand')">6. Expand +10MB</button>
+        <button class="nav-item" data-tab="categories" onclick="switchTab('categories')">7. File Categories</button>
+        <button class="nav-item" data-tab="notes" onclick="switchTab('notes')">8. Quick Scratchpad</button>
+        <button class="nav-item" data-tab="activity" onclick="switchTab('activity')">9. Activity Log</button>
+        <button class="nav-item" data-tab="security" onclick="switchTab('security')">10. Security & Quota</button>
+        <button class="nav-item" data-tab="settings" onclick="switchTab('settings')">11. Theme & Account</button>
       </nav>
 
       <div class="quota-widget">
         <div class="quota-top">
-          <span>My Storage Quota</span>
+          <span>Storage Limit</span>
           <strong id="quotaLabel">0 B / 100 MB</strong>
         </div>
         <div class="progress-track">
@@ -1123,21 +1011,20 @@
         </div>
       </div>
 
-      <button class="btn btn-outline btn-sm" style="width:100%; margin-top:1.15rem;" onclick="handleSignOut()">
+      <button class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem;" onclick="handleSignOut()">
         Sign Out
       </button>
     </aside>
 
     <div class="main-view animate-page">
-      <!-- SUB-VIEW A: OVERVIEW -->
-      <div id="view-overview" class="animate-page">
+      <div id="view-overview" class="subview animate-page">
         <div class="view-header">
           <div>
             <h2>Workspace Overview</h2>
-            <p>Summary of your files and 100 MB personal quota</p>
+            <p>Live stats, Vault Coins, and expanded storage limit</p>
           </div>
-          <div style="display:flex; gap:0.55rem;">
-            <button class="btn btn-outline btn-sm" onclick="loadDocuments()">Refresh</button>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button class="btn btn-gold btn-sm" onclick="switchTab('coins')">Claim Daily Coin</button>
             <button class="btn btn-primary btn-sm" onclick="switchTab('upload')">+ Upload Files</button>
           </div>
         </div>
@@ -1145,82 +1032,62 @@
         <div class="kpi-grid">
           <div class="kpi-card">
             <small>Total Files</small>
-            <div class="val" id="kpiTotalFiles">0</div>
+            <div class="val" id="kpiFiles">0</div>
           </div>
           <div class="kpi-card">
-            <small>Used Storage</small>
-            <div class="val" id="kpiStorageUsed">0 B</div>
+            <small>Storage Used</small>
+            <div class="val" id="kpiUsed">0 B</div>
           </div>
           <div class="kpi-card">
-            <small>Remaining Quota</small>
-            <div class="val" id="kpiRemaining">100 MB</div>
+            <small>Total Quota</small>
+            <div class="val" id="kpiTotalQuota">100 MB</div>
           </div>
           <div class="kpi-card">
-            <small>Starred Files</small>
-            <div class="val" id="kpiStarred">0</div>
+            <small>Vault Coins</small>
+            <div class="val" id="kpiCoins" style="color:#d97706;">0</div>
           </div>
         </div>
 
         <div class="section-card">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong style="font-size:0.94rem;">File Category Breakdown</strong>
-            <span class="mono" style="font-size:0.78rem; color:var(--text-muted);" id="breakdownSummary">0 files</span>
-          </div>
-          <div class="stacked-bar" id="stackedBar"></div>
-          <div class="legend-row">
-            <span><i class="dot-swatch" style="background:#4f46e5;"></i>Documents (<span id="catDocs">0</span>)</span>
-            <span><i class="dot-swatch" style="background:#0ea5e9;"></i>Images (<span id="catImgs">0</span>)</span>
-            <span><i class="dot-swatch" style="background:#f59e0b;"></i>Archives (<span id="catArch">0</span>)</span>
-            <span><i class="dot-swatch" style="background:#ec4899;"></i>Other (<span id="catOther">0</span>)</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <strong style="font-size:0.96rem;">Daily Vault Coin & +10 MB Boost</strong>
+              <p style="font-size:0.82rem; color:var(--text-muted);">Collect 1 Vault Coin per day after login • Spend 10 Coins = +10 MB extra storage</p>
+            </div>
+            <button class="btn btn-gold btn-sm" onclick="claimDailyCoin()">Collect Daily Coin</button>
           </div>
         </div>
 
         <h3 style="font-size:1rem; margin-bottom:0.75rem;">Recent Uploads</h3>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Size</th>
-                <th>Uploaded</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Date</th><th>Action</th></tr></thead>
             <tbody id="recentTableBody"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- SUB-VIEW B: MY FILES & STARRED EXPLORER -->
-      <div id="view-files" class="hidden animate-page">
+      <div id="view-files" class="subview hidden animate-page">
         <div class="view-header">
           <div>
             <h2 id="explorerTitle">My Files</h2>
-            <p>Search, filter, sort, rename, share, or delete your files</p>
+            <p>Search, sort, toggle grid/list, share links, rename, or delete</p>
           </div>
           <div style="display:flex; gap:0.5rem;">
             <button class="btn btn-danger btn-sm hidden" id="bulkDeleteBtn" onclick="bulkDeleteSelected()">
-              Delete Selected (<span id="selectedCount">0</span>)
+              Delete (<span id="selectedCount">0</span>)
             </button>
             <button class="btn btn-primary btn-sm" onclick="switchTab('upload')">+ Upload</button>
           </div>
         </div>
 
-        <div class="explorer-bar">
-          <div class="tabs-group" id="categoryTabs">
-            <button class="tab-btn active" onclick="setCategoryFilter('all', this)">All</button>
-            <button class="tab-btn" onclick="setCategoryFilter('docs', this)">Docs & PDF</button>
-            <button class="tab-btn" onclick="setCategoryFilter('images', this)">Images</button>
-            <button class="tab-btn" onclick="setCategoryFilter('archives', this)">Archives</button>
-          </div>
-
-          <div class="controls-right">
-            <input type="text" id="searchInput" class="input-compact" placeholder="Search files..." oninput="renderExplorer()" />
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.6rem; margin-bottom:1rem;">
+          <input type="text" id="searchInput" class="input-compact" placeholder="Search files..." oninput="renderExplorer()" />
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
             <select id="sortSelect" class="select-compact" onchange="renderExplorer()">
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
-              <option value="largest">Largest Size</option>
+              <option value="largest">Largest First</option>
               <option value="az">Name (A–Z)</option>
             </select>
             <button class="btn btn-outline btn-sm" id="viewModeBtn" onclick="toggleLayoutMode()">Grid View</button>
@@ -1231,8 +1098,8 @@
           <table>
             <thead>
               <tr>
-                <th style="width:34px;"><input type="checkbox" id="selectAllBox" onchange="toggleSelectAll(this.checked)" /></th>
-                <th style="width:36px;"></th>
+                <th style="width:32px;"><input type="checkbox" id="selectAllBox" onchange="toggleSelectAll(this.checked)" /></th>
+                <th style="width:34px;"></th>
                 <th>File Name</th>
                 <th>Type</th>
                 <th>Size</th>
@@ -1243,108 +1110,183 @@
             <tbody id="filesTableBody"></tbody>
           </table>
         </div>
-
         <div id="explorerGridWrap" class="files-grid hidden"></div>
       </div>
 
-      <!-- SUB-VIEW C: UPLOAD CENTER -->
-      <div id="view-upload" class="hidden animate-page">
+      <div id="view-upload" class="subview hidden animate-page">
         <div class="view-header">
           <div>
             <h2>Upload Center</h2>
-            <p>Batch upload files within your 100 MB user storage limit</p>
+            <p>Batch upload files within your active storage quota</p>
           </div>
         </div>
 
         <div class="big-dropzone" id="multiDropzone">
-          <h3 style="margin-bottom:0.35rem;">Drop files here to queue</h3>
-          <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1.15rem;">
-            Supports PDFs, Office docs, images, ZIP archives, and code files (max 50 MB per file)
-          </p>
+          <h3 style="margin-bottom:0.35rem;">Drag & drop files here</h3>
+          <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:1rem;">Up to 50 MB per single file</p>
           <input type="file" id="multiFileInput" multiple class="hidden" onchange="queueSelectedFiles(this.files)" />
-          <button class="btn btn-primary" onclick="document.getElementById('multiFileInput').click()">
-            Select Files from Device
-          </button>
+          <button class="btn btn-primary" onclick="document.getElementById('multiFileInput').click()">Browse Files</button>
         </div>
 
         <div id="queueSection" class="hidden">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-            <strong style="font-size:0.94rem;">Upload Queue (<span id="queueCount">0</span>)</strong>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
+            <strong>Queue (<span id="queueCount">0</span>)</strong>
             <div style="display:flex; gap:0.5rem;">
               <button class="btn btn-outline btn-sm" onclick="clearQueue()">Clear</button>
-              <button class="btn btn-primary btn-sm" id="startBatchBtn" onclick="processUploadQueue()">Upload All Now</button>
+              <button class="btn btn-primary btn-sm" id="startBatchBtn" onclick="processUploadQueue()">Upload All</button>
             </div>
           </div>
           <div id="queueList"></div>
         </div>
       </div>
 
-      <!-- SUB-VIEW D: ACTIVITY LOG -->
-      <div id="view-activity" class="hidden animate-page">
+      <div id="view-coins" class="subview hidden animate-page">
+        <div class="view-header">
+          <div>
+            <h2>Daily Vault Coins</h2>
+            <p>Collect 1 Vault Coin per day after login and grow your storage</p>
+          </div>
+        </div>
+
+        <div class="coin-arena">
+          <div class="coin-machine-card">
+            <span class="floating-plus-coin" id="plusCoinAnim">+1 COIN!</span>
+            <small class="mono" style="color:#b45309; font-weight:700;">DAILY LOGIN REWARD</small>
+            <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.35rem; margin-top:0.2rem;">Vault Coin Collector</h3>
+            <div class="vault-coin-3d" id="vaultCoin3d">V</div>
+            <p style="font-size:0.85rem; color:#78350f; margin-bottom:1rem;" id="dailyClaimStatus">
+              Checking today's claim status...
+            </p>
+            <button class="btn btn-gold" id="claimDailyBtn" onclick="claimDailyCoin()">
+              Collect 1 Daily Vault Coin
+            </button>
+          </div>
+
+          <div class="section-card" style="margin-bottom:0; background:#fff;">
+            <small class="mono" style="color:var(--primary); font-weight:700;">COIN BALANCE</small>
+            <div style="font-family:'Space Grotesk',sans-serif; font-size:2.4rem; font-weight:800; color:#d97706; margin:0.35rem 0;">
+              <span id="coinBalanceBig">0</span> <span style="font-size:1rem; color:var(--text-muted);">Vault Coins</span>
+            </div>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:1rem;">
+              Every <strong>10 Vault Coins</strong> can be redeemed on the <strong>Expand +10MB</strong> page to add <strong>+10 MB</strong> to your storage limit.
+            </p>
+            <button class="btn btn-primary btn-sm" onclick="switchTab('expand')">Go to Expand +10MB &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-expand" class="subview hidden animate-page">
+        <div class="view-header">
+          <div>
+            <h2>Expand Storage (+10 MB per 10 Coins)</h2>
+            <p>Spend 10 Vault Coins to permanently expand your personal storage by +10 MB</p>
+          </div>
+        </div>
+
+        <div class="expand-machine-card">
+          <span class="floating-plus-coin" id="plusMbAnim" style="color:#4f46e5;">+10 MB!</span>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
+            <div class="kpi-card" style="background:#fff;">
+              <small>Available Coins</small>
+              <div class="val" id="expandCoinBalance" style="color:#d97706;">0</div>
+            </div>
+            <div class="kpi-card" style="background:#fff;">
+              <small>Bonus Storage Earned</small>
+              <div class="val" id="expandBonusMb">0 MB</div>
+            </div>
+            <div class="kpi-card" style="background:#fff;">
+              <small>Current Total Limit</small>
+              <div class="val" id="expandTotalLimit">100 MB</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="expand10MbBtn" onclick="redeemTenMb()">
+            Spend 10 Vault Coins for +10 MB Storage
+          </button>
+        </div>
+      </div>
+
+      <div id="view-categories" class="subview hidden animate-page">
+        <div class="view-header">
+          <div>
+            <h2>File Categories</h2>
+            <p>Breakdown of your files by format</p>
+          </div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><small>Documents & PDF</small><div class="val" id="catCountDocs">0</div></div>
+          <div class="kpi-card"><small>Images</small><div class="val" id="catCountImgs">0</div></div>
+          <div class="kpi-card"><small>Archives (ZIP/RAR)</small><div class="val" id="catCountArch">0</div></div>
+          <div class="kpi-card"><small>Other Files</small><div class="val" id="catCountOther">0</div></div>
+        </div>
+      </div>
+
+      <div id="view-notes" class="subview hidden animate-page">
+        <div class="view-header">
+          <div>
+            <h2>Quick Scratchpad</h2>
+            <p>Jot down quick notes or snippets locally in your workspace</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveScratchpad()">Save Note</button>
+        </div>
+        <textarea id="scratchpadArea" class="quick-note-area" placeholder="Write quick notes here..."></textarea>
+      </div>
+
+      <div id="view-activity" class="subview hidden animate-page">
         <div class="view-header">
           <div>
             <h2>Activity Log</h2>
-            <p>History of actions performed in your workspace</p>
+            <p>Recent actions in Harshal Code Vault</p>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="clearActivityLog()">Clear Log</button>
+          <button class="btn btn-outline btn-sm" onclick="clearActivityLog()">Clear</button>
         </div>
-
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Action</th>
-                <th>Details</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Time</th><th>Action</th><th>Details</th></tr></thead>
             <tbody id="activityTableBody"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- SUB-VIEW E: ACCOUNT & SETTINGS (WITH DELETE ACCOUNT) -->
-      <div id="view-settings" class="hidden animate-page">
+      <div id="view-security" class="subview hidden animate-page">
         <div class="view-header">
           <div>
-            <h2>Account & Settings</h2>
-            <p>Customize theme colors, view account details, or delete your account</p>
+            <h2>Security & Quota Status</h2>
+            <p>Active user isolation and quota details</p>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="detail-row"><span>User Email</span><span class="mono" id="secEmail">-</span></div>
+          <div class="detail-row"><span>Tenant ID</span><span class="mono" id="secUid">-</span></div>
+          <div class="detail-row"><span>Base Starter Quota</span><span class="mono">100 MB</span></div>
+          <div class="detail-row"><span>Expanded Bonus Quota</span><span class="mono" id="secBonus">0 MB</span></div>
+          <div class="detail-row" style="border-bottom:none;"><span>Access Control</span><span class="mono" style="color:var(--success);">Active (Per-User Isolated)</span></div>
+        </div>
+      </div>
+
+      <div id="view-settings" class="subview hidden animate-page">
+        <div class="view-header">
+          <div>
+            <h2>Theme & Account</h2>
+            <p>Switch accent colors or permanently delete your account</p>
           </div>
         </div>
 
         <div class="section-card">
-          <strong style="font-size:0.96rem;">Color Theme</strong>
-          <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.75rem;">Switch the accent color palette</p>
-          <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-            <button class="btn btn-outline btn-sm" onclick="setTheme('default')">Indigo Glow</button>
-            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-ocean')">Ocean Sky</button>
-            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-emerald')">Emerald Mint</button>
-            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-sunset')">Sunset Rose</button>
+          <strong style="font-size:0.95rem;">Accent Theme</strong>
+          <div style="display:flex; gap:0.55rem; flex-wrap:wrap; margin-top:0.75rem;">
+            <button class="btn btn-outline btn-sm" onclick="setTheme('default')">Indigo</button>
+            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-ocean')">Ocean</button>
+            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-emerald')">Emerald</button>
+            <button class="btn btn-outline btn-sm" onclick="setTheme('theme-sunset')">Sunset</button>
           </div>
         </div>
 
-        <div class="section-card">
-          <strong style="font-size:0.96rem;">Account Details</strong>
-          <div class="detail-row">
-            <span style="color:var(--text-muted);">Email Address</span>
-            <span class="mono" id="setEmail">-</span>
-          </div>
-          <div class="detail-row">
-            <span style="color:var(--text-muted);">User ID</span>
-            <span class="mono" id="setUid">-</span>
-          </div>
-          <div class="detail-row" style="border-bottom:none;">
-            <span style="color:var(--text-muted);">Storage Allowance</span>
-            <span class="mono" style="color:var(--primary); font-weight:700;">100 MB Per User</span>
-          </div>
-        </div>
-
-        <!-- Danger Zone: Delete Account -->
         <div class="danger-zone">
           <h4>Danger Zone — Delete Account</h4>
           <p>
-            Permanently delete your Harshal Code Vault account along with all uploaded files and metadata.
-            This action cannot be undone.
+            Warning: Deleting your account permanently removes your profile, Vault Coins, bonus storage,
+            and all uploaded files. This cannot be undone.
           </p>
           <button class="btn btn-danger-solid btn-sm" onclick="openDeleteAccountModal()">
             Delete My Account
@@ -1354,41 +1296,34 @@
     </div>
   </section>
 
-  <!-- FILE INSPECTOR MODAL -->
   <div id="inspectorModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeInspector()">
     <div class="modal-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="font-size:1.12rem;">File Details</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem;">
+        <h3>File Details</h3>
         <button class="btn btn-ghost btn-sm" onclick="closeInspector()">✕</button>
       </div>
       <div id="inspectorContent"></div>
     </div>
   </div>
 
-  <!-- DELETE ACCOUNT WARNING CONFIRMATION MODAL -->
   <div id="deleteAccountModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeDeleteAccountModal()">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-size:1.18rem; color:#be123c;">Warning: Permanent Account Deletion</h3>
+        <h3 style="color:#be123c;">Warning: Permanent Account Deletion</h3>
         <button class="btn btn-ghost btn-sm" onclick="closeDeleteAccountModal()">✕</button>
       </div>
 
       <div class="warning-banner">
-        <strong>Are you absolutely sure?</strong><br>
-        Deleting your account will permanently erase:
-        <ul style="margin:0.45rem 0 0 1.2rem;">
-          <li>All files stored in your vault (<strong id="delModalFileCount">0</strong> files)</li>
-          <li>All file metadata and share links</li>
-          <li>Your login profile and 100 MB workspace</li>
-        </ul>
+        <strong>Are you sure you want to delete your account?</strong><br>
+        This will permanently erase <strong id="delModalFileCount">0</strong> file(s), your Vault Coins, and your account login.
       </div>
 
       <div class="field">
-        <label for="deleteConfirmInput">Type <strong>DELETE</strong> below to confirm:</label>
+        <label for="deleteConfirmInput">Type <strong>DELETE</strong> to confirm:</label>
         <input type="text" id="deleteConfirmInput" placeholder="DELETE" oninput="validateDeleteInput()" />
       </div>
 
-      <div style="display:flex; justify-content:flex-end; gap:0.65rem; margin-top:1.1rem;">
+      <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1rem;">
         <button class="btn btn-outline btn-sm" onclick="closeDeleteAccountModal()">Cancel</button>
         <button class="btn btn-danger-solid btn-sm" id="confirmDeleteAcctBtn" disabled onclick="executeDeleteAccount()">
           Permanently Delete Account
@@ -1400,32 +1335,65 @@
   <script>
     const SUPABASE_URL = "https://nnhktqaxrhwotcqeaqdp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_8yqtlBDzJWwFl7wpDhebMQ_2W9B_jjV";
-    const USER_QUOTA_BYTES = 100 * 1024 * 1024; // 100 MB per user
-    const MAX_SINGLE_FILE_BYTES = 50 * 1024 * 1024; // 50 MB max single file
+    const BASE_QUOTA_BYTES = 100 * 1024 * 1024;
+    const EXPAND_STEP_BYTES = 10 * 1024 * 1024;
+    const COIN_COST_FOR_10MB = 10;
+    const MAX_SINGLE_FILE_BYTES = 50 * 1024 * 1024;
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    let soundEnabled = true;
+    let audioCtx = null;
     let currentUser = null;
     let allDocs = [];
     let currentTab = 'overview';
-    let categoryFilter = 'all';
-    let layoutMode = 'list';
-    let uploadQueue = [];
     let selectedIds = new Set();
+    let uploadQueue = [];
     let starredIds = new Set(JSON.parse(localStorage.getItem('hcv_starred') || '[]'));
     let activityLogs = JSON.parse(localStorage.getItem('hcv_activity') || '[]');
+    let economy = { vault_coins: 0, bonus_quota_bytes: 0, last_claim_date: '' };
 
-    /* ---------- Global Click Ripple Animation ---------- */
+    function playClickSound(freq = 540, type = 'sine', duration = 0.07) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.35, audioCtx.currentTime + duration);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch {}
+    }
+
+    function playCoinSound() {
+      if (!soundEnabled) return;
+      playClickSound(880, 'triangle', 0.11);
+      setTimeout(() => playClickSound(1174, 'sine', 0.14), 85);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundToggleBtn').textContent = `Sound: ${soundEnabled ? 'ON' : 'OFF'}`;
+      if (soundEnabled) playClickSound(620, 'sine', 0.08);
+    }
+
     document.addEventListener('click', (e) => {
+      playClickSound(480, 'sine', 0.055);
       const ripple = document.createElement('span');
       ripple.className = 'ripple-circle';
       ripple.style.left = `${e.clientX}px`;
       ripple.style.top = `${e.clientY}px`;
       document.body.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 620);
+      setTimeout(() => ripple.remove(), 640);
     });
 
-    /* ---------- Toast & Activity ---------- */
     function showToast(msg, isError = false) {
       const wrap = document.getElementById('toastWrap');
       const el = document.createElement('div');
@@ -1436,27 +1404,33 @@
     }
 
     function logActivity(action, details) {
-      activityLogs.unshift({
-        time: new Date().toLocaleTimeString(),
-        action,
-        details
-      });
-      activityLogs = activityLogs.slice(0, 50);
+      activityLogs.unshift({ time: new Date().toLocaleTimeString(), action, details });
+      activityLogs = activityLogs.slice(0, 60);
       localStorage.setItem('hcv_activity', JSON.stringify(activityLogs));
       renderActivityLog();
     }
 
-    /* ---------- Page Routing ---------- */
+    function getTodayKey() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function showBlurWelcome(headingText, subText, onComplete) {
+      const overlay = document.getElementById('blurWelcomeOverlay');
+      document.getElementById('blurWelcomeTitle').textContent = headingText;
+      document.getElementById('blurWelcomeSub').textContent = subText;
+      overlay.classList.remove('hidden');
+      playCoinSound();
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+        if (typeof onComplete === 'function') onComplete();
+      }, 1750);
+    }
+
     function showTopPage(page) {
       ['pageWelcome', 'pageLogin', 'pageRegister', 'pageApp'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
-      const map = {
-        welcome: 'pageWelcome',
-        login: 'pageLogin',
-        register: 'pageRegister',
-        app: 'pageApp'
-      };
+      const map = { welcome: 'pageWelcome', login: 'pageLogin', register: 'pageRegister', app: 'pageApp' };
       const target = document.getElementById(map[page]);
       target.classList.remove('hidden');
       target.classList.remove('animate-page');
@@ -1494,11 +1468,11 @@
       fill.style.background = score < 40 ? '#e11d48' : score < 75 ? '#d97706' : '#059669';
     }
 
-    /* ---------- Authentication ---------- */
     async function checkSession() {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session && session.user) {
         currentUser = session.user;
+        await initUserEconomy();
         enterWorkspace();
       } else {
         showTopPage('welcome');
@@ -1518,25 +1492,33 @@
       btn.disabled = true;
       btn.textContent = 'Creating Account...';
 
+      const displayName = name || email.split('@')[0];
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
-        options: { data: { display_name: name || email.split('@')[0] } }
+        options: { data: { display_name: displayName } }
       });
 
       btn.disabled = false;
       btn.textContent = 'Create Account';
 
       if (error) return showToast(error.message, true);
-      if (data.session) {
-        currentUser = data.user;
-        logActivity('Account Created', email);
-        enterWorkspace();
-        showToast('Account created! You have 100 MB storage.');
-      } else {
-        showToast('Account created! Please sign in now.');
-        openAuthPage('login');
-      }
+
+      showBlurWelcome(
+        `Welcome to harshal code vault @${displayName}`,
+        'Setting up your 100 MB personal vault...',
+        async () => {
+          if (data.session) {
+            currentUser = data.user;
+            await initUserEconomy();
+            logActivity('Account Created', displayName);
+            enterWorkspace();
+          } else {
+            openAuthPage('login');
+            showToast('Account created! Sign in to enter your vault.');
+          }
+        }
+      );
     }
 
     async function handleSignIn() {
@@ -1553,10 +1535,19 @@
       btn.textContent = 'Sign In';
 
       if (error) return showToast(error.message, true);
+
       currentUser = data.user;
-      logActivity('Signed In', email);
-      enterWorkspace();
-      showToast('Welcome back to Harshal Code Vault!');
+      const handle = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
+
+      showBlurWelcome(
+        `Welcome back @${handle}`,
+        'Opening Harshal Code Vault...',
+        async () => {
+          await initUserEconomy();
+          logActivity('Signed In', `@${handle}`);
+          enterWorkspace();
+        }
+      );
     }
 
     async function handleSignOut() {
@@ -1564,109 +1555,186 @@
       logActivity('Signed Out', currentUser?.email || '');
       currentUser = null;
       allDocs = [];
-      selectedIds.clear();
+      document.getElementById('topCoinHud').classList.add('hidden');
       showTopPage('welcome');
-      showToast('Signed out.');
+    }
+
+    async function initUserEconomy() {
+      const { data, error } = await supabaseClient
+        .from('user_vault_economy')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (!error && data) {
+        economy = data;
+      } else {
+        const defaultRow = {
+          user_id: currentUser.id,
+          vault_coins: 0,
+          bonus_quota_bytes: 0,
+          last_claim_date: ''
+        };
+        const { data: inserted } = await supabaseClient
+          .from('user_vault_economy')
+          .upsert(defaultRow)
+          .select()
+          .single();
+        economy = inserted || defaultRow;
+      }
+      syncEconomyUI();
+    }
+
+    function getTotalQuotaBytes() {
+      return BASE_QUOTA_BYTES + (economy.bonus_quota_bytes || 0);
+    }
+
+    function syncEconomyUI() {
+      const coins = economy.vault_coins || 0;
+      const bonusBytes = economy.bonus_quota_bytes || 0;
+      const totalQuota = getTotalQuotaBytes();
+      const usedBytes = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
+      const pct = Math.min(100, (usedBytes / totalQuota) * 100);
+
+      document.getElementById('topCoinHud').classList.remove('hidden');
+      document.getElementById('topCoinCount').textContent = coins;
+      document.getElementById('navCoinCount').textContent = coins;
+      document.getElementById('kpiCoins').textContent = coins;
+      document.getElementById('kpiTotalQuota').textContent = formatBytes(totalQuota);
+      document.getElementById('coinBalanceBig').textContent = coins;
+      document.getElementById('expandCoinBalance').textContent = coins;
+      document.getElementById('expandBonusMb').textContent = formatBytes(bonusBytes);
+      document.getElementById('expandTotalLimit').textContent = formatBytes(totalQuota);
+      document.getElementById('quotaLabel').textContent = `${formatBytes(usedBytes)} / ${formatBytes(totalQuota)}`;
+      document.getElementById('quotaFill').style.width = `${pct}%`;
+      document.getElementById('secBonus').textContent = formatBytes(bonusBytes);
+
+      const claimedToday = economy.last_claim_date === getTodayKey();
+      const claimBtn = document.getElementById('claimDailyBtn');
+      const statusEl = document.getElementById('dailyClaimStatus');
+      if (claimedToday) {
+        claimBtn.disabled = true;
+        claimBtn.textContent = 'Claimed Today ✓';
+        statusEl.textContent = 'You already collected today\'s Vault Coin! Come back tomorrow for +1 Coin.';
+      } else {
+        claimBtn.disabled = false;
+        claimBtn.textContent = 'Collect 1 Daily Vault Coin';
+        statusEl.textContent = 'Your daily Vault Coin is ready to collect!';
+      }
+
+      document.getElementById('expand10MbBtn').disabled = (coins < COIN_COST_FOR_10MB);
+    }
+
+    async function claimDailyCoin() {
+      const today = getTodayKey();
+      if (economy.last_claim_date === today) {
+        return showToast('Daily coin already claimed today!', true);
+      }
+
+      const nextCoins = (economy.vault_coins || 0) + 1;
+      const { data, error } = await supabaseClient
+        .from('user_vault_economy')
+        .upsert({
+          user_id: currentUser.id,
+          vault_coins: nextCoins,
+          bonus_quota_bytes: economy.bonus_quota_bytes || 0,
+          last_claim_date: today,
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) return showToast(error.message, true);
+      economy = data;
+
+      const coinEl = document.getElementById('vaultCoin3d');
+      const plusEl = document.getElementById('plusCoinAnim');
+      coinEl.classList.remove('burst');
+      plusEl.classList.remove('fly');
+      void coinEl.offsetWidth;
+      void plusEl.offsetWidth;
+      coinEl.classList.add('burst');
+      plusEl.classList.add('fly');
+
+      playCoinSound();
+      syncEconomyUI();
+      logActivity('Daily Coin Claimed', '+1 Vault Coin');
+      showToast('Collected +1 Vault Coin!');
+    }
+
+    async function redeemTenMb() {
+      const coins = economy.vault_coins || 0;
+      if (coins < COIN_COST_FOR_10MB) {
+        return showToast('You need 10 Vault Coins to expand +10 MB.', true);
+      }
+
+      const nextCoins = coins - COIN_COST_FOR_10MB;
+      const nextBonus = (economy.bonus_quota_bytes || 0) + EXPAND_STEP_BYTES;
+
+      const { data, error } = await supabaseClient
+        .from('user_vault_economy')
+        .upsert({
+          user_id: currentUser.id,
+          vault_coins: nextCoins,
+          bonus_quota_bytes: nextBonus,
+          last_claim_date: economy.last_claim_date || '',
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) return showToast(error.message, true);
+      economy = data;
+
+      const plusMb = document.getElementById('plusMbAnim');
+      plusMb.classList.remove('fly');
+      void plusMb.offsetWidth;
+      plusMb.classList.add('fly');
+
+      playCoinSound();
+      syncEconomyUI();
+      logActivity('Expanded Storage', 'Spent 10 Coins for +10 MB');
+      showToast('Expanded your storage by +10 MB!');
     }
 
     function enterWorkspace() {
-      const displayName = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
-      document.getElementById('sidebarUserName').textContent = displayName;
+      const name = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
+      document.getElementById('sidebarUserName').textContent = name;
       document.getElementById('sidebarUserEmail').textContent = currentUser.email;
-      document.getElementById('setEmail').textContent = currentUser.email;
-      document.getElementById('setUid').textContent = currentUser.id;
+      document.getElementById('secEmail').textContent = currentUser.email;
+      document.getElementById('secUid').textContent = currentUser.id;
+      document.getElementById('scratchpadArea').value = localStorage.getItem(`hcv_note_${currentUser.id}`) || '';
       showTopPage('app');
       switchTab('overview');
       loadDocuments();
     }
 
-    /* ---------- Self-Service Account Deletion ---------- */
-    function openDeleteAccountModal() {
-      document.getElementById('delModalFileCount').textContent = allDocs.length;
-      document.getElementById('deleteConfirmInput').value = '';
-      document.getElementById('confirmDeleteAcctBtn').disabled = true;
-      document.getElementById('deleteAccountModal').classList.remove('hidden');
-    }
-
-    function closeDeleteAccountModal() {
-      document.getElementById('deleteAccountModal').classList.add('hidden');
-    }
-
-    function validateDeleteInput() {
-      const val = document.getElementById('deleteConfirmInput').value.trim();
-      document.getElementById('confirmDeleteAcctBtn').disabled = (val !== 'DELETE');
-    }
-
-    async function executeDeleteAccount() {
-      const btn = document.getElementById('confirmDeleteAcctBtn');
-      btn.disabled = true;
-      btn.textContent = 'Deleting Account...';
-
-      try {
-        // 1. Delete all user files from Storage bucket first
-        if (allDocs.length > 0) {
-          const paths = allDocs.map(d => d.storage_path);
-          await supabaseClient.storage.from('vault-files').remove(paths);
-        }
-
-        // 2. Call Supabase RPC to delete user metadata and auth user record
-        const { error: rpcErr } = await supabaseClient.rpc('delete_own_account');
-        if (rpcErr) throw rpcErr;
-
-        // 3. Sign out & clear local state
-        await supabaseClient.auth.signOut();
-        localStorage.removeItem('hcv_starred');
-        localStorage.removeItem('hcv_activity');
-        currentUser = null;
-        allDocs = [];
-        selectedIds.clear();
-
-        closeDeleteAccountModal();
-        showTopPage('welcome');
-        showToast('Your account and all files have been permanently deleted.');
-      } catch (err) {
-        showToast(err.message || 'Could not delete account. Ensure SQL script is run.', true);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Permanently Delete Account';
-      }
-    }
-
-    /* ---------- Sub-Navigation ---------- */
     function switchTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.nav-item').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tab);
       });
 
-      ['view-overview', 'view-files', 'view-upload', 'view-activity', 'view-settings'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
-      });
+      document.querySelectorAll('.subview').forEach(v => v.classList.add('hidden'));
 
-      let targetEl = null;
-      if (tab === 'starred') {
-        targetEl = document.getElementById('view-files');
-        document.getElementById('explorerTitle').textContent = 'Starred Files';
-        renderExplorer();
-      } else if (tab === 'files') {
-        targetEl = document.getElementById('view-files');
-        document.getElementById('explorerTitle').textContent = 'My Files';
+      let target = null;
+      if (tab === 'starred' || tab === 'files') {
+        target = document.getElementById('view-files');
+        document.getElementById('explorerTitle').textContent = tab === 'starred' ? 'Starred Files' : 'My Files';
         renderExplorer();
       } else {
-        targetEl = document.getElementById(`view-${tab}`);
+        target = document.getElementById(`view-${tab}`);
       }
 
-      if (targetEl) {
-        targetEl.classList.remove('hidden');
-        targetEl.classList.remove('animate-page');
-        void targetEl.offsetWidth;
-        targetEl.classList.add('animate-page');
+      if (target) {
+        target.classList.remove('hidden');
+        target.classList.remove('animate-page');
+        void target.offsetWidth;
+        target.classList.add('animate-page');
       }
-
       if (tab === 'activity') renderActivityLog();
     }
 
-    /* ---------- Data & Analytics (100 MB Quota) ---------- */
     async function loadDocuments() {
       const { data, error } = await supabaseClient
         .from('documents')
@@ -1677,146 +1745,102 @@
       allDocs = data || [];
       selectedIds.clear();
       updateBulkBar();
-      updateAnalytics();
+      updateDashboardStats();
       renderRecentTable();
       renderExplorer();
     }
 
-    function getTotalUsedBytes() {
-      return allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
-    }
-
-    function getFileCategory(doc) {
+    function getCategory(doc) {
       const mime = (doc.mime_type || '').toLowerCase();
       const name = (doc.file_name || '').toLowerCase();
       if (mime.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp|svg)$/.test(name)) return 'images';
-      if (mime.includes('zip') || mime.includes('rar') || mime.includes('tar') || /\.(zip|rar|7z|gz)$/.test(name)) return 'archives';
-      if (mime.includes('pdf') || mime.includes('word') || mime.includes('text') || mime.includes('sheet') || /\.(pdf|doc|docx|txt|csv|xlsx|pptx|md)$/.test(name)) return 'docs';
+      if (mime.includes('zip') || mime.includes('rar') || /\.(zip|rar|7z|gz)$/.test(name)) return 'archives';
+      if (mime.includes('pdf') || mime.includes('word') || mime.includes('text') || /\.(pdf|doc|docx|txt|csv|xlsx|pptx|md)$/.test(name)) return 'docs';
       return 'other';
     }
 
-    function updateAnalytics() {
-      const count = allDocs.length;
-      const totalBytes = getTotalUsedBytes();
-      const remainingBytes = Math.max(0, USER_QUOTA_BYTES - totalBytes);
-      const starCount = allDocs.filter(d => starredIds.has(d.id)).length;
-
-      document.getElementById('navFileCount').textContent = count;
-      document.getElementById('navStarCount').textContent = starCount;
-      document.getElementById('kpiTotalFiles').textContent = count;
-      document.getElementById('kpiStorageUsed').textContent = formatBytes(totalBytes);
-      document.getElementById('kpiRemaining').textContent = formatBytes(remainingBytes);
-      document.getElementById('kpiStarred').textContent = starCount;
-
-      const pct = Math.min(100, (totalBytes / USER_QUOTA_BYTES) * 100);
-      document.getElementById('quotaLabel').textContent = `${formatBytes(totalBytes)} / 100 MB`;
-      document.getElementById('quotaFill').style.width = `${pct}%`;
+    function updateDashboardStats() {
+      const usedBytes = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
+      const stars = allDocs.filter(d => starredIds.has(d.id)).length;
+      document.getElementById('navFileCount').textContent = allDocs.length;
+      document.getElementById('navStarCount').textContent = stars;
+      document.getElementById('kpiFiles').textContent = allDocs.length;
+      document.getElementById('kpiUsed').textContent = formatBytes(usedBytes);
 
       const cats = { docs: 0, images: 0, archives: 0, other: 0 };
-      allDocs.forEach(d => { cats[getFileCategory(d)]++; });
-      document.getElementById('catDocs').textContent = cats.docs;
-      document.getElementById('catImgs').textContent = cats.images;
-      document.getElementById('catArch').textContent = cats.archives;
-      document.getElementById('catOther').textContent = cats.other;
-      document.getElementById('breakdownSummary').textContent = `${count} files (${pct.toFixed(1)}% of 100 MB)`;
+      allDocs.forEach(d => { cats[getCategory(d)]++; });
+      document.getElementById('catCountDocs').textContent = cats.docs;
+      document.getElementById('catCountImgs').textContent = cats.images;
+      document.getElementById('catCountArch').textContent = cats.archives;
+      document.getElementById('catCountOther').textContent = cats.other;
 
-      const bar = document.getElementById('stackedBar');
-      if (count === 0) {
-        bar.innerHTML = '';
-      } else {
-        bar.innerHTML = `
-          <div style="width:${(cats.docs/count)*100}%; background:#4f46e5;"></div>
-          <div style="width:${(cats.images/count)*100}%; background:#0ea5e9;"></div>
-          <div style="width:${(cats.archives/count)*100}%; background:#f59e0b;"></div>
-          <div style="width:${(cats.other/count)*100}%; background:#ec4899;"></div>
-        `;
-      }
+      syncEconomyUI();
     }
 
     function renderRecentTable() {
       const tbody = document.getElementById('recentTableBody');
-      const recent = allDocs.slice(0, 5);
-      if (recent.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-muted);">No files uploaded yet.</td></tr>';
+      const rows = allDocs.slice(0, 5);
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:1.8rem; color:var(--text-muted);">No files yet.</td></tr>';
         return;
       }
-      tbody.innerHTML = recent.map(doc => `
+      tbody.innerHTML = rows.map(d => `
         <tr>
-          <td><strong>${escapeHtml(doc.file_name)}</strong></td>
-          <td class="mono">${escapeHtml(doc.mime_type)}</td>
-          <td class="mono">${formatBytes(doc.file_size)}</td>
-          <td class="mono">${new Date(doc.created_at).toLocaleDateString()}</td>
-          <td>
-            <button class="btn btn-outline btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
-          </td>
+          <td><strong>${escapeHtml(d.file_name)}</strong></td>
+          <td class="mono">${escapeHtml(d.mime_type)}</td>
+          <td class="mono">${formatBytes(d.file_size)}</td>
+          <td class="mono">${new Date(d.created_at).toLocaleDateString()}</td>
+          <td><button class="btn btn-outline btn-sm" onclick="downloadDoc('${d.storage_path}', '${escapeHtml(d.file_name)}')">Download</button></td>
         </tr>
       `).join('');
     }
 
-    /* ---------- File Explorer ---------- */
-    function setCategoryFilter(cat, btn) {
-      categoryFilter = cat;
-      document.querySelectorAll('#categoryTabs .tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderExplorer();
-    }
-
     function toggleLayoutMode() {
-      layoutMode = layoutMode === 'list' ? 'grid' : 'list';
-      document.getElementById('viewModeBtn').textContent = layoutMode === 'list' ? 'Grid View' : 'List View';
+      const isGrid = !document.getElementById('explorerGridWrap').classList.contains('hidden');
+      document.getElementById('viewModeBtn').textContent = isGrid ? 'Grid View' : 'List View';
+      document.getElementById('explorerTableWrap').classList.toggle('hidden', !isGrid);
+      document.getElementById('explorerGridWrap').classList.toggle('hidden', isGrid);
       renderExplorer();
     }
 
-    function getFilteredDocs() {
+    function getFilteredExplorerDocs() {
       const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
       const sort = document.getElementById('sortSelect').value;
-
       let list = [...allDocs];
       if (currentTab === 'starred') list = list.filter(d => starredIds.has(d.id));
-      if (categoryFilter !== 'all') list = list.filter(d => getFileCategory(d) === categoryFilter);
-      if (q) {
-        list = list.filter(d =>
-          (d.file_name || '').toLowerCase().includes(q) ||
-          (d.mime_type || '').toLowerCase().includes(q)
-        );
-      }
-
+      if (q) list = list.filter(d => (d.file_name || '').toLowerCase().includes(q) || (d.mime_type || '').toLowerCase().includes(q));
       list.sort((a, b) => {
         if (sort === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
         if (sort === 'largest') return (b.file_size || 0) - (a.file_size || 0);
         if (sort === 'az') return (a.file_name || '').localeCompare(b.file_name || '');
         return new Date(b.created_at) - new Date(a.created_at);
       });
-
       return list;
     }
 
     function renderExplorer() {
-      const list = getFilteredDocs();
-      const tableWrap = document.getElementById('explorerTableWrap');
-      const gridWrap = document.getElementById('explorerGridWrap');
+      const list = getFilteredExplorerDocs();
+      const gridVisible = !document.getElementById('explorerGridWrap').classList.contains('hidden');
 
-      if (layoutMode === 'list') {
-        tableWrap.classList.remove('hidden');
-        gridWrap.classList.add('hidden');
+      if (!gridVisible) {
         const tbody = document.getElementById('filesTableBody');
         if (list.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2.5rem; color:var(--text-muted);">No matching files found.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No matching files.</td></tr>';
           return;
         }
         tbody.innerHTML = list.map(doc => {
-          const isStar = starredIds.has(doc.id);
-          const isChecked = selectedIds.has(doc.id);
+          const st = starredIds.has(doc.id);
+          const ch = selectedIds.has(doc.id);
           return `
             <tr>
-              <td><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRowSelect('${doc.id}', this.checked)" /></td>
-              <td><button class="star-btn ${isStar ? 'starred' : ''}" onclick="toggleStar('${doc.id}')">${isStar ? '★' : '☆'}</button></td>
+              <td><input type="checkbox" ${ch ? 'checked' : ''} onchange="toggleSelect('${doc.id}', this.checked)" /></td>
+              <td><button class="star-btn ${st ? 'starred' : ''}" onclick="toggleStar('${doc.id}')">${st ? '★' : '☆'}</button></td>
               <td><strong>${escapeHtml(doc.file_name)}</strong></td>
               <td class="mono">${escapeHtml(doc.mime_type)}</td>
               <td class="mono">${formatBytes(doc.file_size)}</td>
               <td class="mono">${new Date(doc.created_at).toLocaleDateString()}</td>
               <td>
-                <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
                   <button class="btn btn-outline btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
                   <button class="btn btn-outline btn-sm" onclick="copyShareLink('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Share</button>
                   <button class="btn btn-outline btn-sm" onclick="openInspector('${doc.id}')">Info</button>
@@ -1827,27 +1851,25 @@
           `;
         }).join('');
       } else {
-        tableWrap.classList.add('hidden');
-        gridWrap.classList.remove('hidden');
+        const grid = document.getElementById('explorerGridWrap');
         if (list.length === 0) {
-          gridWrap.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2.5rem; color:var(--text-muted);">No matching files found.</div>';
+          grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">No matching files.</div>';
           return;
         }
-        gridWrap.innerHTML = list.map(doc => {
-          const isStar = starredIds.has(doc.id);
+        grid.innerHTML = list.map(doc => {
+          const st = starredIds.has(doc.id);
           return `
             <div class="file-tile">
               <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.45rem;">
-                  <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">${getFileCategory(doc).toUpperCase()}</span>
-                  <button class="star-btn ${isStar ? 'starred' : ''}" onclick="toggleStar('${doc.id}')">${isStar ? '★' : '☆'}</button>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                  <span class="mono" style="font-size:0.72rem; color:var(--primary); font-weight:700;">${getCategory(doc).toUpperCase()}</span>
+                  <button class="star-btn ${st ? 'starred' : ''}" onclick="toggleStar('${doc.id}')">${st ? '★' : '☆'}</button>
                 </div>
-                <div class="tile-name">${escapeHtml(doc.file_name)}</div>
-                <div class="mono" style="font-size:0.76rem; color:var(--text-muted); margin-top:0.35rem;">${formatBytes(doc.file_size)}</div>
+                <div style="font-weight:700; word-break:break-word;">${escapeHtml(doc.file_name)}</div>
+                <div class="mono" style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem;">${formatBytes(doc.file_size)}</div>
               </div>
-              <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
                 <button class="btn btn-primary btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
-                <button class="btn btn-outline btn-sm" onclick="openInspector('${doc.id}')">Info</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteDoc('${doc.id}', '${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Delete</button>
               </div>
             </div>
@@ -1857,54 +1879,44 @@
     }
 
     function toggleStar(id) {
-      if (starredIds.has(id)) starredIds.delete(id);
-      else starredIds.add(id);
+      if (starredIds.has(id)) starredIds.delete(id); else starredIds.add(id);
       localStorage.setItem('hcv_starred', JSON.stringify([...starredIds]));
-      updateAnalytics();
+      updateDashboardStats();
       renderExplorer();
     }
 
-    function toggleRowSelect(id, checked) {
-      if (checked) selectedIds.add(id);
-      else selectedIds.delete(id);
+    function toggleSelect(id, checked) {
+      if (checked) selectedIds.add(id); else selectedIds.delete(id);
       updateBulkBar();
     }
 
     function toggleSelectAll(checked) {
-      const list = getFilteredDocs();
-      if (checked) list.forEach(d => selectedIds.add(d.id));
-      else selectedIds.clear();
+      const list = getFilteredExplorerDocs();
+      if (checked) list.forEach(d => selectedIds.add(d.id)); else selectedIds.clear();
       updateBulkBar();
       renderExplorer();
     }
 
     function updateBulkBar() {
-      const btn = document.getElementById('bulkDeleteBtn');
       document.getElementById('selectedCount').textContent = selectedIds.size;
-      btn.classList.toggle('hidden', selectedIds.size === 0);
+      document.getElementById('bulkDeleteBtn').classList.toggle('hidden', selectedIds.size === 0);
     }
 
     async function bulkDeleteSelected() {
-      const toDelete = allDocs.filter(d => selectedIds.has(d.id));
-      if (toDelete.length === 0) return;
-
-      const paths = toDelete.map(d => d.storage_path);
-      const ids = toDelete.map(d => d.id);
-
-      await supabaseClient.storage.from('vault-files').remove(paths);
-      const { error } = await supabaseClient.from('documents').delete().in('id', ids);
+      const items = allDocs.filter(d => selectedIds.has(d.id));
+      if (!items.length) return;
+      await supabaseClient.storage.from('vault-files').remove(items.map(i => i.storage_path));
+      const { error } = await supabaseClient.from('documents').delete().in('id', items.map(i => i.id));
       if (error) return showToast(error.message, true);
-
-      logActivity('Bulk Delete', `${ids.length} files removed`);
-      showToast(`Deleted ${ids.length} files.`);
+      logActivity('Bulk Delete', `${items.length} files`);
+      showToast(`Deleted ${items.length} files.`);
       loadDocuments();
     }
 
-    /* ---------- File Actions ---------- */
     async function downloadDoc(path, name) {
       const { data, error } = await supabaseClient.storage.from('vault-files').createSignedUrl(path, 120);
       if (error) return showToast(error.message, true);
-      logActivity('Downloaded File', name);
+      logActivity('Downloaded', name);
       window.open(data.signedUrl, '_blank');
     }
 
@@ -1912,39 +1924,34 @@
       const { data, error } = await supabaseClient.storage.from('vault-files').createSignedUrl(path, 3600);
       if (error) return showToast(error.message, true);
       await navigator.clipboard.writeText(data.signedUrl);
-      logActivity('Copied Share Link', `${name} (1 hr)`);
-      showToast('1-hour share link copied to clipboard!');
+      logActivity('Shared Link', name);
+      showToast('1-hour share link copied!');
     }
 
     function openInspector(id) {
       const doc = allDocs.find(d => d.id === id);
       if (!doc) return;
       document.getElementById('inspectorContent').innerHTML = `
-        <div class="detail-row"><span style="color:var(--text-muted);">File Name</span><strong>${escapeHtml(doc.file_name)}</strong></div>
-        <div class="detail-row"><span style="color:var(--text-muted);">MIME Type</span><span class="mono">${escapeHtml(doc.mime_type)}</span></div>
-        <div class="detail-row"><span style="color:var(--text-muted);">File Size</span><span class="mono">${formatBytes(doc.file_size)} (${doc.file_size} B)</span></div>
-        <div class="detail-row"><span style="color:var(--text-muted);">Uploaded</span><span class="mono">${new Date(doc.created_at).toLocaleString()}</span></div>
-        <div class="detail-row"><span style="color:var(--text-muted);">Storage Path</span><span class="mono" style="font-size:0.72rem; word-break:break-all;">${escapeHtml(doc.storage_path)}</span></div>
-        <div style="margin-top:1.15rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <div class="detail-row"><span>File Name</span><strong>${escapeHtml(doc.file_name)}</strong></div>
+        <div class="detail-row"><span>Type</span><span class="mono">${escapeHtml(doc.mime_type)}</span></div>
+        <div class="detail-row"><span>Size</span><span class="mono">${formatBytes(doc.file_size)}</span></div>
+        <div class="detail-row"><span>Uploaded</span><span class="mono">${new Date(doc.created_at).toLocaleString()}</span></div>
+        <div style="margin-top:1rem; display:flex; gap:0.5rem;">
           <button class="btn btn-primary btn-sm" onclick="downloadDoc('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Download</button>
           <button class="btn btn-outline btn-sm" onclick="renameDoc('${doc.id}', '${escapeHtml(doc.file_name)}')">Rename</button>
-          <button class="btn btn-outline btn-sm" onclick="copyShareLink('${doc.storage_path}', '${escapeHtml(doc.file_name)}')">Copy Link</button>
         </div>
       `;
       document.getElementById('inspectorModal').classList.remove('hidden');
     }
 
-    function closeInspector() {
-      document.getElementById('inspectorModal').classList.add('hidden');
-    }
+    function closeInspector() { document.getElementById('inspectorModal').classList.add('hidden'); }
 
     async function renameDoc(id, oldName) {
-      const nextName = prompt('Enter new display file name:', oldName);
-      if (!nextName || nextName.trim() === '' || nextName === oldName) return;
-      const { error } = await supabaseClient.from('documents').update({ file_name: nextName.trim() }).eq('id', id);
+      const next = prompt('New name:', oldName);
+      if (!next || !next.trim() || next.trim() === oldName) return;
+      const { error } = await supabaseClient.from('documents').update({ file_name: next.trim() }).eq('id', id);
       if (error) return showToast(error.message, true);
-      logActivity('Renamed File', `${oldName} -> ${nextName.trim()}`);
-      showToast('File renamed.');
+      logActivity('Renamed', `${oldName} -> ${next.trim()}`);
       closeInspector();
       loadDocuments();
     }
@@ -1955,23 +1962,24 @@
       if (error) return showToast(error.message, true);
       starredIds.delete(id);
       localStorage.setItem('hcv_starred', JSON.stringify([...starredIds]));
-      logActivity('Deleted File', name);
+      logActivity('Deleted', name);
       showToast(`Deleted "${name}".`);
       loadDocuments();
     }
 
-    /* ---------- Upload Queue with 100 MB Per-User Enforcement ---------- */
     function queueSelectedFiles(fileList) {
-      const files = Array.from(fileList || []);
-      let projectedUsed = getTotalUsedBytes() + uploadQueue.reduce((s, q) => s + (q.status === 'Ready' ? q.file.size : 0), 0);
+      const usedNow = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
+      const queuedNow = uploadQueue.reduce((s, q) => s + (q.status === 'Ready' ? q.file.size : 0), 0);
+      let projected = usedNow + queuedNow;
+      const limit = getTotalQuotaBytes();
 
-      files.forEach(file => {
+      Array.from(fileList || []).forEach(file => {
         if (file.size > MAX_SINGLE_FILE_BYTES) {
-          showToast(`Skipped "${file.name}" (max 50 MB per file).`, true);
-        } else if (projectedUsed + file.size > USER_QUOTA_BYTES) {
-          showToast(`Skipped "${file.name}" — exceeds your 100 MB user quota.`, true);
+          showToast(`"${file.name}" exceeds 50 MB max single file.`, true);
+        } else if (projected + file.size > limit) {
+          showToast(`"${file.name}" exceeds your current quota (${formatBytes(limit)}). Earn coins to expand +10 MB!`, true);
         } else {
-          projectedUsed += file.size;
+          projected += file.size;
           uploadQueue.push({ file, status: 'Ready' });
         }
       });
@@ -1985,19 +1993,13 @@
     }
 
     function renderQueue() {
-      const sec = document.getElementById('queueSection');
-      const list = document.getElementById('queueList');
       document.getElementById('queueCount').textContent = uploadQueue.length;
-      sec.classList.toggle('hidden', uploadQueue.length === 0);
-
-      list.innerHTML = uploadQueue.map((item, idx) => `
+      document.getElementById('queueSection').classList.toggle('hidden', uploadQueue.length === 0);
+      document.getElementById('queueList').innerHTML = uploadQueue.map((item, idx) => `
         <div class="queue-item">
-          <div>
-            <strong>${escapeHtml(item.file.name)}</strong>
-            <span class="mono" style="margin-left:0.6rem; font-size:0.76rem; color:var(--text-muted);">${formatBytes(item.file.size)}</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:0.6rem;">
-            <span class="mono" style="font-size:0.78rem; font-weight:600; color:${item.status === 'Done' ? 'var(--success)' : item.status === 'Failed' ? 'var(--danger)' : 'var(--primary)'};">${item.status}</span>
+          <div><strong>${escapeHtml(item.file.name)}</strong> <span class="mono" style="font-size:0.75rem; color:var(--text-muted);">${formatBytes(item.file.size)}</span></div>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span class="mono" style="font-size:0.76rem; color:var(--primary);">${item.status}</span>
             ${item.status === 'Ready' ? `<button class="btn btn-ghost btn-sm" onclick="uploadQueue.splice(${idx},1); renderQueue();">✕</button>` : ''}
           </div>
         </div>
@@ -2005,7 +2007,7 @@
     }
 
     async function processUploadQueue() {
-      if (uploadQueue.length === 0) return;
+      if (!uploadQueue.length) return;
       const btn = document.getElementById('startBatchBtn');
       btn.disabled = true;
       btn.textContent = 'Uploading...';
@@ -2014,16 +2016,12 @@
         if (item.status === 'Done') continue;
         item.status = 'Uploading...';
         renderQueue();
-
         try {
-          if (getTotalUsedBytes() + item.file.size > USER_QUOTA_BYTES) {
-            throw new Error('100 MB user storage quota exceeded');
-          }
-
+          const usedNow = allDocs.reduce((s, d) => s + (d.file_size || 0), 0);
+          if (usedNow + item.file.size > getTotalQuotaBytes()) throw new Error('Storage quota exceeded');
           const storagePath = `${currentUser.id}/${Date.now()}_${item.file.name}`;
           const { error: upErr } = await supabaseClient.storage.from('vault-files').upload(storagePath, item.file);
           if (upErr) throw upErr;
-
           const { error: dbErr } = await supabaseClient.from('documents').insert({
             user_id: currentUser.id,
             file_name: item.file.name,
@@ -2035,9 +2033,8 @@
             await supabaseClient.storage.from('vault-files').remove([storagePath]);
             throw dbErr;
           }
-
           item.status = 'Done';
-          logActivity('Uploaded File', `${item.file.name} (${formatBytes(item.file.size)})`);
+          logActivity('Uploaded', item.file.name);
           await loadDocuments();
         } catch (err) {
           item.status = 'Failed';
@@ -2045,25 +2042,24 @@
         }
         renderQueue();
       }
-
       btn.disabled = false;
-      btn.textContent = 'Upload All Now';
-      showToast('Upload batch complete.');
+      btn.textContent = 'Upload All';
     }
 
-    /* ---------- Activity & Theme ---------- */
+    function saveScratchpad() {
+      if (!currentUser) return;
+      localStorage.setItem(`hcv_note_${currentUser.id}`, document.getElementById('scratchpadArea').value);
+      showToast('Scratchpad saved!');
+    }
+
     function renderActivityLog() {
       const tbody = document.getElementById('activityTableBody');
-      if (activityLogs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:2rem; color:var(--text-muted);">No activity recorded yet.</td></tr>';
+      if (!activityLogs.length) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.8rem; color:var(--text-muted);">No activity yet.</td></tr>';
         return;
       }
       tbody.innerHTML = activityLogs.map(a => `
-        <tr>
-          <td class="mono">${escapeHtml(a.time)}</td>
-          <td><strong>${escapeHtml(a.action)}</strong></td>
-          <td style="color:var(--text-muted);">${escapeHtml(a.details)}</td>
-        </tr>
+        <tr><td class="mono">${escapeHtml(a.time)}</td><td><strong>${escapeHtml(a.action)}</strong></td><td style="color:var(--text-muted);">${escapeHtml(a.details)}</td></tr>
       `).join('');
     }
 
@@ -2076,7 +2072,44 @@
     function setTheme(themeClass) {
       document.body.className = themeClass === 'default' ? '' : themeClass;
       localStorage.setItem('hcv_theme', themeClass);
-      showToast('Color theme updated.');
+      showToast('Theme applied.');
+    }
+
+    function openDeleteAccountModal() {
+      document.getElementById('delModalFileCount').textContent = allDocs.length;
+      document.getElementById('deleteConfirmInput').value = '';
+      document.getElementById('confirmDeleteAcctBtn').disabled = true;
+      document.getElementById('deleteAccountModal').classList.remove('hidden');
+    }
+
+    function closeDeleteAccountModal() { document.getElementById('deleteAccountModal').classList.add('hidden'); }
+    function validateDeleteInput() {
+      document.getElementById('confirmDeleteAcctBtn').disabled = (document.getElementById('deleteConfirmInput').value.trim() !== 'DELETE');
+    }
+
+    async function executeDeleteAccount() {
+      const btn = document.getElementById('confirmDeleteAcctBtn');
+      btn.disabled = true;
+      btn.textContent = 'Deleting...';
+      try {
+        if (allDocs.length > 0) {
+          await supabaseClient.storage.from('vault-files').remove(allDocs.map(d => d.storage_path));
+        }
+        const { error } = await supabaseClient.rpc('delete_own_account');
+        if (error) throw error;
+        await supabaseClient.auth.signOut();
+        currentUser = null;
+        allDocs = [];
+        document.getElementById('topCoinHud').classList.add('hidden');
+        closeDeleteAccountModal();
+        showTopPage('welcome');
+        showToast('Account permanently deleted.');
+      } catch (err) {
+        showToast(err.message || 'Delete failed.', true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Permanently Delete Account';
+      }
     }
 
     function formatBytes(bytes) {
@@ -2091,15 +2124,9 @@
     }
 
     const dz = document.getElementById('multiDropzone');
-    ['dragenter', 'dragover'].forEach(evt => {
-      dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.add('dragover'); });
-    });
-    ['dragleave', 'drop'].forEach(evt => {
-      dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.remove('dragover'); });
-    });
-    dz.addEventListener('drop', e => {
-      if (e.dataTransfer.files.length) queueSelectedFiles(e.dataTransfer.files);
-    });
+    ['dragenter', 'dragover'].forEach(evt => dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.add('dragover'); }));
+    ['dragleave', 'drop'].forEach(evt => dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.remove('dragover'); }));
+    dz.addEventListener('drop', e => { if (e.dataTransfer.files.length) queueSelectedFiles(e.dataTransfer.files); });
 
     window.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('hcv_theme');
