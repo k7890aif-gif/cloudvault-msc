@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harshal Code Vault</title>
+  <title> Code Vault</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
@@ -904,7 +904,7 @@
 </head>
 <body>
 
-  <!-- TOP BAR WITH ANIMATED HARSHAL CODE VAULT + SOUND TOGGLE + COIN HUD -->
+  <!-- TOP BAR WITH ANIMATED  CODE VAULT + SOUND TOGGLE + COIN HUD -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="animated-brand" onclick="goHome()">
@@ -913,7 +913,7 @@
             <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
           </svg>
         </div>
-        <span class="brand-title">Harshal Code Vault</span>
+        <span class="brand-title"> Code Vault</span>
       </div>
 
       <div class="top-right-controls">
@@ -944,7 +944,7 @@
   <div id="vaultHomeShowcase" class="vault-home-band animate-page">
     <div class="vs-hero-card">
       <div>
-        <span class="welcome-pill" style="margin-bottom:0.25rem;">Harshal Code Vault • 100 MB Base + Daily Vault Coins</span>
+        <span class="welcome-pill" style="margin-bottom:0.25rem;"> Code Vault • 100 MB Base + Daily Vault Coins</span>
         <h1>Every important file and asset, organized in <span>one vault</span>.</h1>
         <p class="vs-lead">
           Keep your project files, PDFs, images, and notes in a private workspace with 100 MB
@@ -1000,7 +1000,7 @@
 
     <div class="vs-cta-banner">
       <div>
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.35rem; font-weight:800;">Ready to enter Harshal Code Vault?</h3>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.35rem; font-weight:800;">Ready to enter  Code Vault?</h3>
         <p style="color:#cbd5e1; font-size:0.88rem; margin-top:0.2rem;">Choose Sign In or Create Account below to launch the animated drums stage and workspace.</p>
       </div>
       <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
@@ -1012,7 +1012,7 @@
 
   <section id="pageWelcome" class="welcome-screen animate-page">
     <div class="welcome-pill">Start with 100 MB Free + Daily Vault Coins (+10 MB per 10 Coins)</div>
-    <h1>Welcome to <span>Harshal Code Vault</span></h1>
+    <h1>Welcome to <span> Code Vault</span></h1>
     <p class="lead">
       Your animated cloud file vault with daily Vault Coins, 100 MB starter storage,
       expandable space, and instant multi-page tools.
@@ -1090,7 +1090,7 @@
       </div>
 
       <h2>Sign In</h2>
-      <p class="sub">Enter your account to unlock Harshal Code Vault</p>
+      <p class="sub">Enter your account to unlock  Code Vault</p>
 
       <form onsubmit="event.preventDefault(); handleSignIn();">
         <div class="field">
@@ -1160,7 +1160,7 @@
       <form onsubmit="event.preventDefault(); handleSignUp();">
         <div class="field">
           <label for="regName">Your Name</label>
-          <input type="text" id="regName" placeholder="Harshal" required />
+          <input type="text" id="regName" placeholder="" required />
         </div>
 
         <div class="field">
@@ -1465,7 +1465,7 @@
         <div class="view-header">
           <div>
             <h2>Activity Log</h2>
-            <p>Recent actions in Harshal Code Vault</p>
+            <p>Recent actions in  Code Vault</p>
           </div>
           <button class="btn btn-outline btn-sm" onclick="clearActivityLog()">Clear</button>
         </div>
@@ -1650,7 +1650,7 @@
       return new Date().toISOString().slice(0, 10);
     }
 
-    /* ---------- Blur Welcome Overlay ("Welcome back @username" / "Welcome to harshal code vault @name") ---------- */
+    /* ---------- Blur Welcome Overlay ("Welcome back @username" / "Welcome to  code vault @name") ---------- */
     function showBlurWelcome(headingText, subText, onComplete) {
       const overlay = document.getElementById('blurWelcomeOverlay');
       document.getElementById('blurWelcomeTitle').textContent = headingText;
@@ -1748,7 +1748,7 @@
       if (error) return showToast(error.message, true);
 
       showBlurWelcome(
-        `Welcome to harshal code vault @${displayName}`,
+        `Welcome to  code vault @${displayName}`,
         'Setting up your 100 MB personal vault...',
         async () => {
           if (data.session) {
@@ -1784,7 +1784,7 @@
 
       showBlurWelcome(
         `Welcome back @${handle}`,
-        'Opening Harshal Code Vault...',
+        'Opening  Code Vault...',
         async () => {
           await initUserEconomy();
           logActivity('Signed In', `@${handle}`);
